@@ -83,7 +83,7 @@
               var CurrentYear = new Date().getFullYear()
               document.write(CurrentYear)
             </script> 
-            , designed & developed by <a href="https://themefisher.com/" class="text-muted">Themefisher</a>
+            , designed & developed by <a href="" class="text-muted">Stands Web</a>
           </p>
         </div>
         <div class="col-sm-5 text-sm-right text-center">
