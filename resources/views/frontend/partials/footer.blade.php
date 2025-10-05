@@ -22,7 +22,7 @@
       <div class="row">
         <div class="col-lg-4 col-sm-8 mb-5 mb-lg-0">
           <!-- logo -->
-          <a class="logo-footer" href="index.html"><img class="img-fluid mb-4" src="{{ asset('frontend/images/logo.png') }}" width="150" alt="logo"></a>
+          <a class="logo-footer" href="index.html"><img class="img-fluid mb-4" src="{{ asset('./logo.png') }}" width="150" alt="logo"></a>
           <ul class="list-unstyled">
             <li class="mb-2">Sankar Azan Path, Hatigaon, Bhetapara Road, Near Hatigaon police station , PO- Hatigaon. Guwahati, Assam, 781038</li>
             <li class="mb-2">Company name- zagaran charitable trust</li>

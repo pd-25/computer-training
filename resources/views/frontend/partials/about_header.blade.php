@@ -29,7 +29,7 @@
   <div class="navigation w-100" style="background-color: #f8d7da;"> <!-- Added a distinct background color for demonstration -->
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-dark p-0">
-        <a class="navbar-brand" href="{{ route('frontend.index') }}"><img src="{{asset('frontend/images/logo.png')}}" width="120" alt="logo"></a>
+        <a class="navbar-brand" href="{{ route('frontend.index') }}"><img src="{{asset('./logo.png')}}" width="120" alt="logo"></a>
         <button class="navbar-toggler rounded-0" type="button" data-toggle="collapse" data-target="#navigation"
           aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>

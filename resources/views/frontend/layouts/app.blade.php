@@ -24,8 +24,8 @@
   <link href="{{ asset('frontend/css/style.css') }}" rel="stylesheet">
 
   <!-- Favicon -->
-  <link rel="shortcut icon" href="{{ asset('frontend/images/logo.png') }}" type="image/x-icon">
-  <link rel="icon" href="{{ asset('frontend/images/logo.png') }}" type="image/png">
+  <link rel="shortcut icon" href="{{ asset('./logo.png') }}" type="image/x-icon">
+  <link rel="icon" href="{{ asset('./logo.png') }}" type="image/png">
   
 
 </head>
