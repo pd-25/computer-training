@@ -22,12 +22,12 @@
       <div class="row">
         <div class="col-lg-4 col-sm-8 mb-5 mb-lg-0">
           <!-- logo -->
-          <a class="logo-footer" href="index.html"><img class="img-fluid mb-4" src="{{ asset('frontend/images/logo.png') }}" alt="logo"></a>
+          <a class="logo-footer" href="index.html"><img class="img-fluid mb-4" src="{{ asset('frontend/images/logo.png') }}" width="150" alt="logo"></a>
           <ul class="list-unstyled">
-            <li class="mb-2">23621 15 Mile Rd #C104, Clinton MI, 48035, New York, USA</li>
-            <li class="mb-2">+1 (2) 345 6789</li>
-            <li class="mb-2">+1 (2) 345 6789</li>
-            <li class="mb-2">contact@yourdomain.com</li>
+            <li class="mb-2">Sankar Azan Path, Hatigaon, Bhetapara Road, Near Hatigaon police station , PO- Hatigaon. Guwahati, Assam, 781038</li>
+            <li class="mb-2">Company name- zagaran charitable trust</li>
+            <li class="mb-2">+9864077781</li>
+            <li class="mb-2">niteducation2024@gmail.com</li>
           </ul>
         </div>
         <!-- company -->
@@ -83,7 +83,7 @@
               var CurrentYear = new Date().getFullYear()
               document.write(CurrentYear)
             </script> 
-            , designed & developed by <a href="" class="text-muted">Stands Web</a>
+            , reserved by <a href="" class="text-muted">niote.in </a>
           </p>
         </div>
         <div class="col-sm-5 text-sm-right text-center">

@@ -8,27 +8,28 @@
     <li class="nav-item @@courses">
         <a class="nav-link" href="#">Director message</a>
     </li>
-    <li class="nav-item @@events">
-        <a class="nav-link" href="#">gallery</a>
+    <li class="nav-item {{ Route::currentRouteName() == 'frontend.gallery' ? 'active' : '@@gallery' }}">
+        <a class="nav-link" href="{{ route('frontend.gallery') }}">Gallery</a>
     </li>
-    <li class="nav-item @@blog">
-        <a class="nav-link" href="#">certificate</a>
+    <li class="nav-item {{ Route::currentRouteName() == 'frontend.courses' ? 'active' : '@@courses' }}">
+        <a class="nav-link" href="{{ route('frontend.courses') }}">Courses</a>
     </li>
     <li class="nav-item dropdown view">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-Others
+            Others
         </a>
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Mission</a></li>
-            <li><a class="dropdown-item" href="#">vision</a></li>
-            <li><a class="dropdown-item" href="#">Pay Now</a></li>
-            <li><a class="dropdown-item" href="#">Marksheet</a></li>
-            <li><a class="dropdown-item" href="#">Typing</a></li>
-            <li><a class="dropdown-item" href="#">Franchise model</a></li>
-            <li><a class="dropdown-item" href="#">Wallet</a></li>
-            <li><a class="dropdown-item" href="#">verification</a></li>
-            <li><a class="dropdown-item" href="#">verification</a></li>
+            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.mission' ? 'active' : '' }}" href="{{ route('frontend.mission') }}">Mission</a></li>
+            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.vision' ? 'active' : '' }}" href="{{ route('frontend.vision') }}">vision</a></li>
+            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.paynow' ? 'active' : '' }}" href="{{ route('frontend.paynow') }}">Pay Now</a></li>
+            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.computer-marksheet' ? 'active' : '' }}" href="{{ route('frontend.computer-marksheet') }}">Computer Marksheet</a></li>
+            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.typing' ? 'active' : '' }}" href="{{ route('frontend.typing') }}">Typing</a></li>
+            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.certificate' ? 'active' : '' }}" href="{{ route('frontend.certificate') }}">Certificate</a></li>
+            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.franchise-mode' ? 'active' : '' }}" href="{{ route('frontend.franchise-mode') }}">Franchise model</a></li>
+            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.wallet' ? 'active' : '' }}" href="{{ route('frontend.wallet') }}">Wallet</a></li>
+            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.verification' ? 'active' : '' }}" href="{{ route('frontend.verification') }}">verification</a></li>
+            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.student-zone' ? 'active' : '' }}" href="{{ route('frontend.student-zone') }}">Student Zone</a></li>
         </ul>
     </li>
     <li class="nav-item {{ Route::currentRouteName() == 'frontend.contact' ? 'active' : '@@contact' }}">

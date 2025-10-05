@@ -4,7 +4,7 @@
 <head>
 
   <meta charset="utf-8">
-  <title>Educenter - Education HTML Template</title>
+  <title>National institute of technical education</title>
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="description" content="Construction Html5 Template">
@@ -23,8 +23,10 @@
 
   <link href="{{ asset('frontend/css/style.css') }}" rel="stylesheet">
 
-  <link rel="shortcut icon" href="{{ asset('frontend/images/favicon.png') }}" type="image/x-icon">
-  <link rel="icon" href="{{ asset('frontend/images/favicon.png') }}" type="image/x-xicon">
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{{ asset('frontend/images/logo.png') }}" type="image/x-icon">
+  <link rel="icon" href="{{ asset('frontend/images/logo.png') }}" type="image/png">
+  
 
 </head>
 
