@@ -2,14 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Course;
 use Illuminate\Http\Request;
 
 class FrontendController extends Controller
 {
+
     public function index()
     {
-        return view('frontend.index');
+        $categories = Category::whereNotNull('slug')->get();
+        $courses = Course::whereNotNull('slug')->get();
+        return view('frontend.index', compact('categories', 'courses'));
     }
+
+    public function allCategoriesView(){
+        $categories = Category::whereNotNull('slug')->get();
+        return view('frontend.categories', compact('categories'));
+    }
+
+    public function categoryWiseCourseView($slug)
+    {
+        $category = Category::where('slug', $slug)->firstOrFail();
+
+        $courses = Course::where('category_id', $category->id)->get();
+
+        return view('frontend.courses', compact('category', 'courses'));
+    }
+
+    public function courseDetails($slug)
+    {
+        $course = Course::where('slug', $slug)->firstOrFail();
+        return view('frontend.course-details', compact('course'));
+    }
+
     public function aboutUs()
     {
         return view('frontend.about');
@@ -18,11 +44,6 @@ class FrontendController extends Controller
     public function contact()
     {
         return view('frontend.contact');
-    }
-
-    public function courses()
-    {
-        return view('frontend.courses');
     }
 
     public function events()

@@ -1,5 +1,15 @@
 @extends('frontend.layouts.app')
 
+<style>
+  .course-description {
+    text-align: justify;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+
 @section('content')
 <!-- hero slider -->
 <section class="hero-section overlay bg-cover" data-background="{{ asset('frontend/images/banner/banner-1.jpg') }}">
@@ -220,144 +230,89 @@
           <h2 class="mb-0 text-nowrap mr-3">Our Course</h2>
           <div class="border-top w-100 border-primary d-none d-sm-block"></div>
           <div>
-            <a href="{{ route('frontend.courses') }}" class="btn btn-sm btn-outline-primary ml-sm-3 d-none d-sm-block">see all</a>
+            <a href="{{ route('frontend.categories') }}" class="btn btn-sm btn-outline-primary ml-sm-3 d-none d-sm-block">see all categories</a>
           </div>
         </div>
       </div>
     </div>
     <!-- course list -->
-    <div class="row justify-content-center">
+    <div class="row justify-content-start">
       <!-- course item -->
+      @foreach($courses as $course)
       <div class="col-lg-4 col-sm-6 mb-5">
         <div class="card p-0 border-primary rounded-0 hover-shadow">
-          <img class="card-img-top rounded-0" src="{{ asset('frontend/images/courses/course-1.jpg') }}" alt="course thumb">
+          <img class="card-img-top rounded-0" src="{{asset('storage/'.$course->image)}}" alt="course thumb">
           <div class="card-body">
             <ul class="list-inline mb-2">
-              <li class="list-inline-item"><i class="ti-calendar mr-1 text-color"></i>12 Months</li>
-              <li class="list-inline-item"><a class="text-color" href="#">Technical Education</a></li>
+              <li class="list-inline-item"><i class="ti-calendar mr-1 text-color"></i>{{$course->duration}}</li>
+              <li class="list-inline-item"><a class="text-color" href="#">{{$course->category->name}}</a></li>
             </ul>
-            <a href="#">
-              <h4 class="card-title">Diploma in Welding Technology</h4>
+            <a href="{{route('frontend.courses.details', $course->slug)}}">
+              <h4 class="card-title">{{$course->course_name}}</h4>
             </a>
-            <p class="card-text mb-4">
-              Learn the art and science of industrial welding techniques and fabrication processes to build strong foundations in technical craftsmanship.
+            <p class="card-text mb-4 course-description">
+              {{$course->description}}
             </p>
-            <a href="#" class="btn btn-primary btn-sm">Apply now</a>
+            <a href="{{route('frontend.courses.details', $course->slug)}}" class="btn btn-primary btn-sm">View Details</a>
           </div>
         </div>
       </div>
-
-      <!-- course item -->
-      <div class="col-lg-4 col-sm-6 mb-5">
-        <div class="card p-0 border-primary rounded-0 hover-shadow">
-          <img class="card-img-top rounded-0" src="{{ asset('frontend/images/courses/course-2.jpg') }}" alt="course thumb">
-          <div class="card-body">
-            <ul class="list-inline mb-2">
-              <li class="list-inline-item"><i class="ti-calendar mr-1 text-color"></i>24 Months</li>
-              <li class="list-inline-item"><a class="text-color" href="#">Agriculture Education</a></li>
-            </ul>
-            <a href="#">
-              <h4 class="card-title">Diploma in Horticulture</h4>
-            </a>
-            <p class="card-text mb-4">
-              Gain expertise in plant cultivation, nursery management, and sustainable agricultural techniques for a greener future.
-            </p>
-            <a href="#" class="btn btn-primary btn-sm">Apply now</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- course item -->
-      <div class="col-lg-4 col-sm-6 mb-5">
-        <div class="card p-0 border-primary rounded-0 hover-shadow">
-          <img class="card-img-top rounded-0" src="{{ asset('frontend/images/courses/course-3.jpg') }}" alt="course thumb">
-          <div class="card-body">
-            <ul class="list-inline mb-2">
-              <li class="list-inline-item"><i class="ti-calendar mr-1 text-color"></i>12 Months</li>
-              <li class="list-inline-item"><a class="text-color" href="#">Office Management</a></li>
-            </ul>
-            <a href="#">
-              <h4 class="card-title">Diploma in Office Computer Operator</h4>
-            </a>
-            <p class="card-text mb-4">
-              Learn essential office software, data management, and documentation skills to efficiently manage professional environments.
-            </p>
-            <a href="#" class="btn btn-primary btn-sm">Apply now</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- course item -->
-      <div class="col-lg-4 col-sm-6 mb-5">
-        <div class="card p-0 border-primary rounded-0 hover-shadow">
-          <img class="card-img-top rounded-0" src="{{ asset('frontend/images/courses/course-4.jpg') }}" alt="course thumb">
-          <div class="card-body">
-            <ul class="list-inline mb-2">
-              <li class="list-inline-item"><i class="ti-calendar mr-1 text-color"></i>24 Months</li>
-              <li class="list-inline-item"><a class="text-color" href="#">Automobile Education</a></li>
-            </ul>
-            <a href="#">
-              <h4 class="card-title">Diploma in Automobile Technology</h4>
-            </a>
-            <p class="card-text mb-4">
-              Explore modern automobile systems, vehicle maintenance, and emerging automotive technologies for a successful career.
-            </p>
-            <a href="#" class="btn btn-primary btn-sm">Apply now</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- course item -->
-      <div class="col-lg-4 col-sm-6 mb-5">
-        <div class="card p-0 border-primary rounded-0 hover-shadow">
-          <img class="card-img-top rounded-0" src="{{ asset('frontend/images/courses/course-5.jpg') }}" alt="course thumb">
-          <div class="card-body">
-            <ul class="list-inline mb-2">
-              <li class="list-inline-item"><i class="ti-calendar mr-1 text-color"></i>12 Months</li>
-              <li class="list-inline-item"><a class="text-color" href="#">Fire & Safety</a></li>
-            </ul>
-            <a href="#">
-              <h4 class="card-title">Diploma in Fire & Safety</h4>
-            </a>
-            <p class="card-text mb-4">
-              Train in fire prevention, industrial safety, and emergency management techniques to ensure safe working environments.
-            </p>
-            <a href="#" class="btn btn-primary btn-sm">Apply now</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- course item -->
-      <div class="col-lg-4 col-sm-6 mb-5">
-        <div class="card p-0 border-primary rounded-0 hover-shadow">
-          <img class="card-img-top rounded-0" src="{{ asset('frontend/images/courses/course-6.jpg') }}" alt="course thumb">
-          <div class="card-body">
-            <ul class="list-inline mb-2">
-              <li class="list-inline-item"><i class="ti-calendar mr-1 text-color"></i>24 Months</li>
-              <li class="list-inline-item"><a class="text-color" href="#">Hotel Management</a></li>
-            </ul>
-            <a href="#">
-              <h4 class="card-title">Diploma in Hotel Management & Catering Science</h4>
-            </a>
-            <p class="card-text mb-4">
-              Master hospitality operations, culinary skills, and guest relations to build a rewarding career in the hotel industry.
-            </p>
-            <a href="#" class="btn btn-primary btn-sm">Apply now</a>
-          </div>
-        </div>
-      </div>
+      @endforeach
     </div>
 
     <!-- /course list -->
     <!-- mobile see all button -->
     <div class="row">
       <div class="col-12 text-center">
-        <a href="{{ route('frontend.courses') }}" class="btn btn-sm btn-outline-primary d-sm-none d-inline-block">sell all</a>
+        <a href="{{ route('frontend.categories') }}" class="btn btn-sm btn-outline-primary d-sm-none d-inline-block">All Categories</a>
       </div>
     </div>
   </div>
 </section>
 <!-- /courses -->
+
+
+<!-- course categories -->
+<section class="section bg-gray">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex align-items-center section-title justify-content-between">
+          <h2 class="mb-0 text-nowrap mr-3">All Categories</h2>
+          <div class="border-top w-100 border-primary d-none d-sm-block"></div>
+          <div>
+            <a href="{{ route('frontend.categories') }}" class="btn btn-sm btn-outline-primary ml-sm-3 d-none d-sm-block">see all</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-start">
+      <!-- course item -->
+       @foreach($categories as $category)
+      <div class="col-lg-4 col-sm-6 mb-5 mb-lg-0">
+        <div class="card border-0 rounded-0 hover-shadow">
+          <div class="card-img position-relative">
+            <img class="card-img-top rounded-0" src="{{asset('storage/'.$category->image)}}" alt="event thumb">
+            <div class="card-date"><i class="ti-book" style="font-size: 2.5rem;"></i></div>
+          </div>
+          <div class="card-body">
+            <a href="{{route('frontend.courses', $category->slug)}}">
+              <h4 class="card-title">{{$category->name}}</h4>
+            </a>
+          </div>
+        </div>
+      </div>
+      @endforeach
+    </div>
+    <!-- mobile see all button -->
+    <div class="row">
+      <div class="col-12 text-center">
+        <a href="{{ route('frontend.categories') }}" class="btn btn-sm btn-outline-primary d-sm-none d-inline-block">see all</a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /course categories -->
 
 <!-- cta -->
 <section class="section bg-primary">

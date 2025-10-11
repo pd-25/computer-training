@@ -10,7 +10,36 @@ Route::get('admin/login', [AuthController::class, 'showLogin'])->name('admin.sho
 Route::post('admin/login', [AuthController::class, 'login'])->name('admin.login');
 
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
+
+
+    // Dashboard======================================================================================================>
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('admin.dashboard');
+    
+
+    // Category=======================================================================================================>
+    Route::get('/categories', [DashboardController::class, 'categoryView'])->name('admin.categories');
+    Route::post('/categories', [DashboardController::class, 'categoryAdd'])->name('admin.categories.add');
+    Route::put('/categories/edit/{id}', [DashboardController::class, 'categoryEdit'])->name('admin.categories.edit');
+    Route::delete('/categories/delete/{id}', [DashboardController::class, 'categoryDelete'])->name('admin.categories.delete');
+    
+    
+    // Course=======================================================================================================>
+    Route::get('/courses', [DashboardController::class, 'courseView'])->name('admin.courses');
+    Route::post('/courses', [DashboardController::class, 'courseAdd'])->name('admin.courses.add');
+    Route::put('/courses/edit/{id}', [DashboardController::class, 'courseEdit'])->name('admin.courses.edit');
+    Route::delete('/courses/delete/{id}', [DashboardController::class, 'courseDelete'])->name('admin.courses.delete');
+
+
+
+
+
+
+
+
+
+
+
+
     
     // Route::resource('/operation-schemes', OperationSchemesController::class);
     // Route::resource('/register-bookings', RegisterBookingController::class);

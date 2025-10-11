@@ -12,9 +12,17 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 // Frontend Routes
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.index');
-Route::get('/about', [FrontendController::class, 'aboutUs'])->name('frontend.about'); // Add this line
+
+
+Route::get('/categories', [FrontendController::class, 'allCategoriesView'])->name('frontend.categories');
+Route::get('/courses/{slug}', [FrontendController::class, 'categoryWiseCourseView'])->name('frontend.courses');
+Route::get('/courses-details/{slug}', [FrontendController::class, 'courseDetails'])->name('frontend.courses.details');
+
+
+
+
+Route::get('/about', [FrontendController::class, 'aboutUs'])->name('frontend.about');
 Route::get('/contact', [FrontendController::class, 'contact'])->name('frontend.contact');
-Route::get('/courses', [FrontendController::class, 'courses'])->name('frontend.courses');
 Route::get('/events', [FrontendController::class, 'events'])->name('frontend.events');
 Route::get('/event-details', [FrontendController::class, 'eventDetails'])->name('frontend.event-details');
 Route::get('/gallery', [FrontendController::class, 'gallery'])->name('frontend.gallery');

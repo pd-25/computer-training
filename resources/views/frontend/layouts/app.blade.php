@@ -4,7 +4,7 @@
 <head>
 
   <meta charset="utf-8">
-  <title>National institute of technical education</title>
+  <title>@yield('title', 'National institute of technical education')</title>
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="description" content="Construction Html5 Template">

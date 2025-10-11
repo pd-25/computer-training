@@ -11,8 +11,28 @@
     <li class="nav-item {{ Route::currentRouteName() == 'frontend.gallery' ? 'active' : '@@gallery' }}">
         <a class="nav-link" href="{{ route('frontend.gallery') }}">Gallery</a>
     </li>
-    <li class="nav-item {{ Route::currentRouteName() == 'frontend.courses' ? 'active' : '@@courses' }}">
-        <a class="nav-link" href="{{ route('frontend.courses') }}">Courses</a>
+    <li class="nav-item dropdown view">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Course Categories
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+            @foreach ($categories as $category)
+            <li>
+                <a class="dropdown-item" href="{{ route('frontend.courses', $category->slug) }}">
+                    {{ $category->name }}
+                </a>
+            </li>
+            @endforeach
+
+            <li>
+                <a class="dropdown-item" href="{{ route('frontend.categories') }}">
+                    All Categories
+                </a>
+            </li>
+
+        </ul>
     </li>
     <li class="nav-item dropdown view">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
