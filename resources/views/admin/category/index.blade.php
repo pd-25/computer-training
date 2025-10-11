@@ -131,34 +131,7 @@
                             @endforeach
                         </tbody>
 
-                        <tfoot>
-                            <tr>
-                                <td colspan="4">
-                                    <div class="pagination-wrapper text-center py-3">
-                                        <form method="GET" action="" class="pagination-form d-inline-flex align-items-center justify-content-center gap-2">
-
-                                            <button type="submit" name="page" value="{{ $categories->currentPage() - 1 }}"
-                                                class="btn btn-outline-primary"
-                                                {{ $categories->onFirstPage() ? 'disabled' : '' }}>
-                                                Prev
-                                            </button>
-
-                                            <div class="d-flex align-items-center gap-1">
-                                                <input type="text" class="form-control text-center" value="{{ $categories->currentPage() }}" readonly style="width: 60px;">
-                                                <span>/</span>
-                                                <input type="text" class="form-control text-center" value="{{ $categories->lastPage() }}" readonly style="width: 60px;">
-                                            </div>
-
-                                            <button type="submit" name="page" value="{{ $categories->currentPage() + 1 }}"
-                                                class="btn btn-outline-primary"
-                                                {{ !$categories->hasMorePages() ? 'disabled' : '' }}>
-                                                Next
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tfoot>
+                        
 
                     </table>
                 </div>
