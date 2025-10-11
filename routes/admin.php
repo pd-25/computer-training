@@ -35,10 +35,19 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::post('/subadmins', [DashboardController::class, 'addSubAdmin'])->name('admin.subadmins.add');
     Route::put('/subadmins/edit/{id}', [DashboardController::class, 'editSubAdmin'])->name('admin.subadmins.edit');
     Route::delete('/subadmins/delete/{id}', [DashboardController::class, 'deleteSubAdmin'])->name('admin.subadmins.delete');
-    
+
     // Auth
     Route::get('/subadmins/login-as/{id}', [DashboardController::class, 'loginAsSubAdmin'])->name('admin.subadmins.loginAs');
     Route::get('/subadmins/return-admin', [DashboardController::class, 'returnToAdmin'])->name('admin.subadmins.return');
+
+
+
+    // Students=======================================================================================================>
+    Route::get('/students', [DashboardController::class, 'studentsView'])->name('admin.students');
+    Route::post('/students', [DashboardController::class, 'studentAdd'])->name('admin.students.add');
+    Route::put('/students/edit/{id}', [DashboardController::class, 'studentEdit'])->name('admin.students.edit');
+    Route::delete('/students/delete/{id}', [DashboardController::class, 'studentDelete'])->name('admin.students.delete');
+
 
 
 

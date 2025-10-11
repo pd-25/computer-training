@@ -15,10 +15,11 @@ Route::group(['prefix' => 'subadmin', 'middleware' => 'subadmin'], function () {
 
     // Students=======================================================================================================>
     Route::get('/students', [DashboardController::class, 'studentsView'])->name('subadmin.students');
+    Route::post('/students', [DashboardController::class, 'studentAdd'])->name('subadmin.students.add');
+    Route::put('/students/edit/{id}', [DashboardController::class, 'studentEdit'])->name('subadmin.students.edit');
+    Route::delete('/students/delete/{id}', [DashboardController::class, 'studentDelete'])->name('subadmin.students.delete');
 
 
 
     Route::get('log-out', [AuthController::class, 'adminLogout'])->name('subadmin.logout');
 });
-
-
