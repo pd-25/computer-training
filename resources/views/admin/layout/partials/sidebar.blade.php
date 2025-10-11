@@ -22,6 +22,13 @@
                 <span>Add Courses</span>
             </a>
         </li>
+
+        <li class="nav-item {{ Route::is('admin.subadmins') ? 'active' : ''}}">
+            <a class="nav-link " href="{{route('admin.subadmins')}}">
+                <i class="bi bi-fingerprint"></i>
+                <span>Add Subadmins</span>
+            </a>
+        </li>
         
         
 

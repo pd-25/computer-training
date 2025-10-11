@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\admin\dashboard;
 
-use App\core\bookingregister\BookingRegisterInterface;
-use App\core\member\MemberInterface;
+
 use App\Http\Controllers\Controller;
-use App\Models\Client;
-use App\Models\User;
 use Illuminate\Support\Str;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\SubAdmin as ModelsSubAdmin;
+use Illuminate\Support\Facades\Validator;
 use Exception;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -197,5 +197,114 @@ class DashboardController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Failed to delete course: ' . $e->getMessage());
         }
+    }
+
+
+    // Sub admins===================================================================================================>
+    public function subadminView()
+    {
+        $subAdmins = ModelsSubAdmin::all();
+        return view('admin.subadmin.index', compact('subAdmins'));
+    }
+
+    public function addSubAdmin(Request $request)
+    {
+        // Validate input
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:sub_admins,email',
+            'password' => 'required|string|min:5|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->with('error', $validator->errors()->first())
+                ->withInput();
+        }
+
+        try {
+            $subAdmin = ModelsSubAdmin::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+            ]);
+
+            return redirect()->back()->with('success', 'Sub Admin added successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to add Sub Admin: ' . $e->getMessage());
+        }
+    }
+
+    public function editSubAdmin(Request $request, $id)
+    {
+        $subAdmin = ModelsSubAdmin::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:sub_admins,email,' . $subAdmin->id,
+            'password' => 'nullable|string|min:5|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->with('error', $validator->errors()->first())
+                ->withInput();
+        }
+
+        try {
+            $subAdmin->name = $request->name;
+            $subAdmin->email = $request->email;
+
+            if (!empty($request->password)) {
+                $subAdmin->password = bcrypt($request->password);
+            }
+
+            $subAdmin->save();
+
+            return redirect()->back()->with('success', 'Sub Admin updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to update Sub Admin: ' . $e->getMessage());
+        }
+    }
+
+    public function deleteSubAdmin($id)
+    {
+        try {
+            $subAdmin = ModelsSubAdmin::findOrFail($id);
+            $subAdmin->delete();
+
+            return redirect()->back()->with('success', 'Sub Admin deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to delete Sub Admin: ' . $e->getMessage());
+        }
+    }
+
+    public function loginAsSubAdmin($id)
+    {
+        $subAdmin = \App\Models\SubAdmin::findOrFail($id);
+
+        session(['admin_id' => Auth::guard('admin')->id()]);
+
+        Auth::guard('subadmin')->login($subAdmin);
+
+        return redirect()->route('subadmin.dashboard');
+    }
+
+    public function returnToAdmin()
+    {
+
+        $adminId = session('admin_id');
+
+        if ($adminId) {
+
+            Auth::logout();
+
+            Auth::guard('admin')->loginUsingId($adminId);
+            session()->forget('admin_id');
+
+            return redirect()->route('admin.dashboard');
+        }
+
+        return redirect()->route('admin.login');
     }
 }

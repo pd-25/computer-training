@@ -14,15 +14,15 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
     // Dashboard======================================================================================================>
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('admin.dashboard');
-    
+
 
     // Category=======================================================================================================>
     Route::get('/categories', [DashboardController::class, 'categoryView'])->name('admin.categories');
     Route::post('/categories', [DashboardController::class, 'categoryAdd'])->name('admin.categories.add');
     Route::put('/categories/edit/{id}', [DashboardController::class, 'categoryEdit'])->name('admin.categories.edit');
     Route::delete('/categories/delete/{id}', [DashboardController::class, 'categoryDelete'])->name('admin.categories.delete');
-    
-    
+
+
     // Course=======================================================================================================>
     Route::get('/courses', [DashboardController::class, 'courseView'])->name('admin.courses');
     Route::post('/courses', [DashboardController::class, 'courseAdd'])->name('admin.courses.add');
@@ -30,17 +30,30 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::delete('/courses/delete/{id}', [DashboardController::class, 'courseDelete'])->name('admin.courses.delete');
 
 
-
-
-
-
-
-
-
-
-
-
+    // Sub Admins=======================================================================================================>
+    Route::get('/subadmins', [DashboardController::class, 'subadminView'])->name('admin.subadmins');
+    Route::post('/subadmins', [DashboardController::class, 'addSubAdmin'])->name('admin.subadmins.add');
+    Route::put('/subadmins/edit/{id}', [DashboardController::class, 'editSubAdmin'])->name('admin.subadmins.edit');
+    Route::delete('/subadmins/delete/{id}', [DashboardController::class, 'deleteSubAdmin'])->name('admin.subadmins.delete');
     
+    // Auth
+    Route::get('/subadmins/login-as/{id}', [DashboardController::class, 'loginAsSubAdmin'])->name('admin.subadmins.loginAs');
+    Route::get('/subadmins/return-admin', [DashboardController::class, 'returnToAdmin'])->name('admin.subadmins.return');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Route::resource('/operation-schemes', OperationSchemesController::class);
     // Route::resource('/register-bookings', RegisterBookingController::class);
     // Route::resource('/booking-types', BookingTypesController::class);
@@ -62,5 +75,3 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 // Route::post('/save-pescription/{slug}', [RegisterBookingController::class, 'savePescription'])->name('admin.savePescription');
 
 // Route::get('/expenditure-export', [ExpenditureController::class, 'export'])->name('expenditure.download');
-
-

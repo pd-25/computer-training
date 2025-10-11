@@ -38,3 +38,4 @@ Route::get('/verification', [FrontendController::class, 'verification'])->name('
 Route::get('/student-zone', [FrontendController::class, 'studentZone'])->name('frontend.student-zone');
 
 require __DIR__ . '/admin.php';
+require __DIR__ . '/subadmin.php';
