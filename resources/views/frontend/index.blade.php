@@ -222,7 +222,7 @@
 
 
 <!-- courses -->
-<section class="section-sm">
+<!-- <section class="section-sm">
   <div class="container">
     <div class="row">
       <div class="col-12">
@@ -235,9 +235,9 @@
         </div>
       </div>
     </div>
-    <!-- course list -->
+   
     <div class="row justify-content-start">
-      <!-- course item -->
+ 
       @foreach($courses as $course)
       <div class="col-lg-4 col-sm-6 mb-5">
         <div class="card p-0 border-primary rounded-0 hover-shadow">
@@ -260,15 +260,13 @@
       @endforeach
     </div>
 
-    <!-- /course list -->
-    <!-- mobile see all button -->
     <div class="row">
       <div class="col-12 text-center">
         <a href="{{ route('frontend.categories') }}" class="btn btn-sm btn-outline-primary d-sm-none d-inline-block">All Categories</a>
       </div>
     </div>
   </div>
-</section>
+</section> -->
 <!-- /courses -->
 
 
@@ -278,7 +276,7 @@
     <div class="row">
       <div class="col-12">
         <div class="d-flex align-items-center section-title justify-content-between">
-          <h2 class="mb-0 text-nowrap mr-3">All Categories</h2>
+          <h2 class="mb-0 text-nowrap mr-3">Course Categories</h2>
           <div class="border-top w-100 border-primary d-none d-sm-block"></div>
           <div>
             <a href="{{ route('frontend.categories') }}" class="btn btn-sm btn-outline-primary ml-sm-3 d-none d-sm-block">see all</a>
