@@ -12,6 +12,7 @@ class Student extends Model
         'name',
         'email',
         'phone',
+        'assigned_course_id',
         'created_by',
     ];
 
@@ -19,4 +20,12 @@ class Student extends Model
     {
         return $this->belongsTo(SubAdmin::class, 'created_by');
     }
+
+    protected $casts = [
+        'assigned_course_id' => 'array',
+    ];
+
+    protected $attributes = [
+        'assigned_course_id' => '[]',
+    ];
 }

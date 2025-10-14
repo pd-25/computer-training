@@ -16,6 +16,13 @@
             </a>
         </li>
 
+        <li class="nav-item {{ Route::is('subadmin.course-assign') ? 'active' : ''}}">
+            <a class="nav-link " href="{{route('subadmin.course-assign')}}">
+                <i class="ri-book-fill"></i>
+                <span>Course Assign</span>
+            </a>
+        </li>
+
         <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.subadmins.return') }}">
                 <i class="bi bi-shield-lock"></i>
@@ -23,12 +30,12 @@
             </a>
         </li>
 
-        
-        
-        
 
-       
-        
+
+
+
+
+
 
     </ul>
 
