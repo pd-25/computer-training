@@ -134,7 +134,7 @@ class DashboardController extends Controller
             $courseIds = array_values($request->assigned_course_id);
 
             DB::transaction(function () use ($student, $courseIds) {
-                
+
                 $student->assigned_course_id = $courseIds;
                 $student->save();
             });
@@ -200,10 +200,17 @@ class DashboardController extends Controller
         return view('subadmin.certificate.index', compact('student', 'course'));
     }
 
-    public function generateIdCard(Request $request, $id)
+
+    public function generateIdCard(Request $request)
     {
-        $student = Student::findOrFail($id);
-        
-        return view('subadmin.idcard.index', compact('student'));
+        $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'course_id' => 'required|exists:courses,id',
+        ]);
+
+        $student = Student::findOrFail($request->student_id);
+        $course = Course::findOrFail($request->course_id);
+
+        return view('subadmin.idcard.index', compact('student', 'course'));
     }
 }

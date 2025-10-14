@@ -382,11 +382,11 @@
     @foreach($students as $student)
     <div class="modal fade" id="generateIdCard{{ $student->id }}" tabindex="-1">
         <div class="modal-dialog modal-lg">
-            <form class="modal-content" action="{{ route('subadmin.idcard.generate', $student->id) }}" method="POST" target="_blank">
+            <form class="modal-content" action="{{ route('subadmin.idcard.generate') }}" method="POST" target="_blank">
                 @csrf
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Generate ID Card for {{ $student->name }} - {{ $student->email }}</h5>
+                    <h5 class="modal-title">Generate ID Card for {{ $student->name }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -401,6 +401,30 @@
                     <div class="mb-3">
                         <label>Student Email</label>
                         <input type="email" class="form-control" value="{{ $student->email }}" readonly>
+                    </div>
+
+                    <!-- Assigned Courses -->
+                    <div class="mb-3">
+                        <label>Select Course to Generate Certificate</label>
+                        <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+                            @foreach($student->assigned_course_id as $course_id)
+                            @php
+                            $course = $courses->where('id', $course_id)->first();
+                            @endphp
+                            @if($course)
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                    type="radio"
+                                    name="course_id"
+                                    value="{{ $course->id }}"
+                                    id="course_{{ $student->id }}_{{ $course->id }}">
+                                <label class="form-check-label" for="course_{{ $student->id }}_{{ $course->id }}">
+                                    {{ $course->course_name }}
+                                </label>
+                            </div>
+                            @endif
+                            @endforeach
+                        </div>
                     </div>
 
                     <input type="hidden" name="student_id" value="{{ $student->id }}">
