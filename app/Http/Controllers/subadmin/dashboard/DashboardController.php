@@ -116,7 +116,7 @@ class DashboardController extends Controller
     public function courseAssignAdd(Request $request)
     {
         try {
-            // validate
+
             $validator = Validator::make($request->all(), [
                 'student_id' => 'required|exists:students,id',
                 'assigned_course_id' => 'required|array|min:1',
@@ -131,22 +131,16 @@ class DashboardController extends Controller
 
             $student = Student::findOrFail($request->student_id);
 
-            // Optionally: ensure provided course IDs are valid (exists check done in validation)
             $courseIds = array_values($request->assigned_course_id);
 
-            // Save inside transaction
             DB::transaction(function () use ($student, $courseIds) {
-                // store the array into JSON column
+                
                 $student->assigned_course_id = $courseIds;
                 $student->save();
-
-                // If you also need to create pivot records (student_course), add that logic here
-                // e.g. $student->courses()->sync($courseIds);
             });
 
             return redirect()->back()->with('success', 'Courses assigned to student successfully.');
         } catch (\Exception $e) {
-            // log exception if you want: \Log::error($e);
             return redirect()->back()->with('error', 'Failed to assign courses: ' . $e->getMessage());
         }
     }
@@ -203,15 +197,13 @@ class DashboardController extends Controller
         $student = Student::findOrFail($request->student_id);
         $course = Course::findOrFail($request->course_id);
 
-        // Return a dynamic certificate view
         return view('subadmin.certificate.index', compact('student', 'course'));
     }
 
     public function generateIdCard(Request $request, $id)
     {
         $student = Student::findOrFail($id);
-
-        // Return a dynamic ID card view
+        
         return view('subadmin.idcard.index', compact('student'));
     }
 }
