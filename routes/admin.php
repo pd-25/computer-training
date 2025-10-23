@@ -49,6 +49,14 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::delete('/students/delete/{id}', [DashboardController::class, 'studentDelete'])->name('admin.students.delete');
 
 
+    // Franchise=======================================================================================================>
+    Route::get('/franchise', [DashboardController::class, 'franchiseView'])->name('admin.franchise');
+    Route::get('/franchise/{id}', [DashboardController::class, 'viewFranchiseDetails'])->name('admin.franchise.view');
+    Route::post('/franchise/accept/{id}', [DashboardController::class, 'acceptFranchise'])->name('admin.franchise.accept');
+    Route::post('/franchise/reject/{id}', [DashboardController::class, 'rejectFranchise'])->name('admin.franchise.reject');
+    Route::delete('/franchise/delete/{id}', [DashboardController::class, 'deleteFranchise'])->name('admin.franchise.delete');
+
+
 
 
 

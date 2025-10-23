@@ -21,6 +21,11 @@ class Student extends Model
         return $this->belongsTo(SubAdmin::class, 'created_by');
     }
 
+    public function marks()
+    {
+        return $this->hasMany(Mark::class);
+    }
+
     protected $casts = [
         'assigned_course_id' => 'array',
     ];

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\subadmin\dashboard;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\Mark;
 use App\Models\Student;
 use Exception;
 use Illuminate\Support\Facades\Validator;
@@ -197,7 +198,40 @@ class DashboardController extends Controller
         $student = Student::findOrFail($request->student_id);
         $course = Course::findOrFail($request->course_id);
 
-        return view('subadmin.certificate.index', compact('student', 'course'));
+
+        // Calculate marks obtained in percentage
+        $marksObtainedInPercent = 0;
+
+        $mark = Mark::where('student_id', $student->id)
+            ->where('course_id', $course->id)
+            ->first();
+
+        $course = Course::find($course->id);
+
+        if ($mark && $course) {
+            $subjects = json_decode($course->subjects, true);
+            $marks = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
+
+            $totalObtained = 0;
+            $totalMax = 0;
+
+            foreach ($subjects as $sub) {
+                $subName = $sub['subject_name'];
+                $maxMarks = isset($sub['max_marks']) ? (int)$sub['max_marks'] : 100;
+
+                $obtained = isset($marks[$subName]) ? (int)$marks[$subName] : 0;
+
+                $totalObtained += $obtained;
+                $totalMax += $maxMarks;
+            }
+
+            if ($totalMax > 0) {
+                $marksObtainedInPercent = round(($totalObtained / $totalMax) * 100, 2);
+            }
+        }
+
+
+        return view('subadmin.certificate.index', compact('student', 'course', 'marksObtainedInPercent'));
     }
 
 
@@ -212,5 +246,135 @@ class DashboardController extends Controller
         $course = Course::findOrFail($request->course_id);
 
         return view('subadmin.idcard.index', compact('student', 'course'));
+    }
+
+    public function giveMarks(Request $request)
+    {
+        $validated = $request->validate([
+            'student_id' => 'required|integer',
+            'course_id' => 'required|integer',
+            'marks' => 'required|array',
+        ]);
+
+        $mark = Mark::updateOrCreate(
+            [
+                'student_id' => $validated['student_id'],
+                'course_id' => $validated['course_id'],
+            ],
+            [
+                'marks' => $validated['marks'],
+            ]
+        );
+
+        return redirect()->route('subadmin.marksheet.get', [
+            'student_id' => $validated['student_id'],
+            'course_id' => $validated['course_id']
+        ])->with('success', 'Marks saved successfully!');
+    }
+
+    public function getSubjects($course_id)
+    {
+        $course = Course::find($course_id);
+
+        if (!$course || empty($course->subjects)) {
+            return response()->json([]);
+        }
+
+        return response()->json(json_decode($course->subjects, true));
+    }
+
+    public function getStudentMarks($student_id, $course_id)
+    {
+        $mark = Mark::where('student_id', $student_id)
+            ->where('course_id', $course_id)
+            ->first();
+
+        if (!$mark) return response()->json([]);
+
+        return response()->json($mark->marks);
+    }
+
+    public function getMarksheet($student_id, $course_id)
+    {
+        $student = Student::findOrFail($student_id);
+        $course = Course::findOrFail($course_id);
+
+        $mark = Mark::where('student_id', $student_id)
+            ->where('course_id', $course_id)
+            ->first();
+
+        if (!$mark) {
+            return redirect()->back()->with('error', 'No marks found for this student.');
+        }
+
+        // Get subjects from course
+        $subjects = json_decode($course->subjects, true);
+        $marksData = $mark->marks;
+
+        // Calculate subject-wise details
+        $subjectDetails = [];
+        $totalMarksObtained = 0;
+        $totalMaxMarks = 0;
+
+        foreach ($subjects as $subject) {
+            $subjectName = $subject['subject_name'];
+            $maxMarks = $subject['max_marks'];
+            $obtainedMarks = $marksData[$subjectName] ?? 0;
+
+            $percentage = ($maxMarks > 0) ? ($obtainedMarks / $maxMarks) * 100 : 0;
+
+            // Calculate grade
+            if ($percentage >= 90) {
+                $grade = 'A+';
+            } elseif ($percentage >= 80) {
+                $grade = 'A';
+            } elseif ($percentage >= 70) {
+                $grade = 'B';
+            } elseif ($percentage >= 60) {
+                $grade = 'C';
+            } elseif ($percentage >= 50) {
+                $grade = 'D';
+            } else {
+                $grade = 'F';
+            }
+
+            $subjectDetails[] = [
+                'name' => $subjectName,
+                'max_marks' => $maxMarks,
+                'obtained_marks' => $obtainedMarks,
+                'percentage' => round($percentage, 2),
+                'grade' => $grade
+            ];
+
+            $totalMarksObtained += $obtainedMarks;
+            $totalMaxMarks += $maxMarks;
+        }
+
+        // Calculate overall percentage and grade
+        $overallPercentage = ($totalMarksObtained / $totalMaxMarks) * 100;
+
+        if ($overallPercentage >= 90) {
+            $overallGrade = 'A+';
+        } elseif ($overallPercentage >= 80) {
+            $overallGrade = 'A';
+        } elseif ($overallPercentage >= 70) {
+            $overallGrade = 'B';
+        } elseif ($overallPercentage >= 60) {
+            $overallGrade = 'C';
+        } elseif ($overallPercentage >= 50) {
+            $overallGrade = 'D';
+        } else {
+            $overallGrade = 'F';
+        }
+
+        return view('subadmin.certificate.marksheet', compact(
+            'student',
+            'course',
+            'subjectDetails',
+            'totalMarksObtained',
+            'totalMaxMarks',
+            'overallPercentage',
+            'overallGrade'
+        ));
     }
 }

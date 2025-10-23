@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\FranchiseRequest;
 use App\Models\Student;
 use App\Models\SubAdmin as ModelsSubAdmin;
 use Illuminate\Support\Facades\Validator;
@@ -122,6 +123,10 @@ class DashboardController extends Controller
                 'description' => 'nullable|string',
                 'duration' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:3048',
+                'subjects' => 'required|array|min:1',
+                'subjects.*.subject_name' => 'required|string',
+                'subjects.*.min_marks' => 'required|numeric|min:0',
+                'subjects.*.max_marks' => 'required|numeric|min:0',
             ]);
 
             $course = new Course();
@@ -131,11 +136,14 @@ class DashboardController extends Controller
             $course->description = $request->description;
             $course->duration = $request->duration;
 
-            // Handle image upload
+            // Handle image
             if ($request->hasFile('image')) {
                 $path = $request->file('image')->store('courses', 'public');
                 $course->image = $path;
             }
+
+            // Save subjects as JSON
+            $course->subjects = json_encode($request->subjects);
 
             $course->save();
 
@@ -144,6 +152,7 @@ class DashboardController extends Controller
             return redirect()->back()->with('error', 'Failed to add course: ' . $e->getMessage());
         }
     }
+
 
     public function courseEdit(Request $request, $id)
     {
@@ -154,6 +163,10 @@ class DashboardController extends Controller
                 'description' => 'nullable|string',
                 'duration' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:3048',
+                'subjects' => 'required|array|min:1',
+                'subjects.*.subject_name' => 'required|string',
+                'subjects.*.min_marks' => 'required|numeric|min:0',
+                'subjects.*.max_marks' => 'required|numeric|min:0',
             ]);
 
             $course = Course::findOrFail($id);
@@ -163,16 +176,17 @@ class DashboardController extends Controller
             $course->description = $request->description;
             $course->duration = $request->duration;
 
-            // Handle image upload
+            // Image handling
             if ($request->hasFile('image')) {
-                // Delete old image if exists
                 if ($course->image && Storage::disk('public')->exists($course->image)) {
                     Storage::disk('public')->delete($course->image);
                 }
-
                 $path = $request->file('image')->store('courses', 'public');
                 $course->image = $path;
             }
+
+            // Update subjects
+            $course->subjects = json_encode($request->subjects);
 
             $course->save();
 
@@ -181,6 +195,7 @@ class DashboardController extends Controller
             return redirect()->back()->with('error', 'Failed to update course: ' . $e->getMessage());
         }
     }
+
 
     public function courseDelete($id)
     {
@@ -381,5 +396,76 @@ class DashboardController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to delete student: ' . $e->getMessage());
         }
+    }
+
+    public function franchiseView()
+    {
+        $franchises = FranchiseRequest::latest()->get();
+        return view('admin.franchise.index', compact('franchises'));
+    }
+
+    public function acceptFranchise($id)
+    {
+        try {
+            $franchise = FranchiseRequest::findOrFail($id);
+            $franchise->status = 'approved';
+            $franchise->save();
+
+            // Send acceptance email (optional)
+            /*
+            Mail::send('emails.franchise-accepted', ['data' => $franchise], function($message) use ($franchise) {
+                $message->to($franchise->email)
+                    ->subject('Franchise Application Approved');
+            });
+            */
+
+            return redirect()->back()->with('success', 'Franchise request approved successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to approve franchise request.');
+        }
+    }
+
+    public function rejectFranchise(Request $request, $id)
+    {
+        $request->validate([
+            'reject_reason' => 'nullable|string|max:500'
+        ]);
+
+        try {
+            $franchise = FranchiseRequest::findOrFail($id);
+            $franchise->status = 'rejected';
+            $franchise->reject_reason = $request->reject_reason;
+            $franchise->save();
+
+            // Send rejection email (optional)
+            /*
+            Mail::send('emails.franchise-rejected', ['data' => $franchise], function($message) use ($franchise) {
+                $message->to($franchise->email)
+                    ->subject('Franchise Application Update');
+            });
+            */
+
+            return redirect()->back()->with('success', 'Franchise request rejected.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to reject franchise request.');
+        }
+    }
+
+    public function deleteFranchise($id)
+    {
+        try {
+            $franchise = FranchiseRequest::findOrFail($id);
+            $franchise->delete();
+
+            return redirect()->back()->with('success', 'Franchise request deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to delete franchise request.');
+        }
+    }
+
+    public function viewFranchiseDetails($id)
+    {
+        $franchise = FranchiseRequest::findOrFail($id);
+        return view('admin.franchise.view', compact('franchise'));
     }
 }

@@ -37,5 +37,8 @@ Route::get('/wallet', [FrontendController::class, 'wallet'])->name('frontend.wal
 Route::get('/verification', [FrontendController::class, 'verification'])->name('frontend.verification');
 Route::get('/student-zone', [FrontendController::class, 'studentZone'])->name('frontend.student-zone');
 
+Route::get('/franchise', [FrontendController::class, 'franchise'])->name('frontend.franchise');
+Route::post('/franchise/submit', [FrontendController::class, 'franchiseSubmit'])->name('frontend.franchise.submit');
+
 require __DIR__ . '/admin.php';
 require __DIR__ . '/subadmin.php';

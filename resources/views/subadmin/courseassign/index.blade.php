@@ -149,6 +149,7 @@
 
 
                                         <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#generateIdCard{{ $student->id }}">Generate ID</button>
+                                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#generateIdMarks{{ $student->id }}">Marks</button>
                                         <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#generateCertificate{{ $student->id }}">Generate Certificate</button>
                                     </div>
                                 </td>
@@ -440,6 +441,70 @@
     @endforeach
 
 
+    <!-- Give Marks Modal -->
+    @foreach($students as $student)
+    <div class="modal fade" id="generateIdMarks{{ $student->id }}" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <form class="modal-content" action="{{ route('subadmin.marks.store') }}" method="POST">
+                @csrf
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Give Marks for {{ $student->name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Student Info -->
+                    <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                    <div class="mb-3">
+                        <label>Student Name</label>
+                        <input type="text" class="form-control" value="{{ $student->name }}" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Student Email</label>
+                        <input type="email" class="form-control" value="{{ $student->email }}" readonly>
+                    </div>
+
+                    <!-- Assigned Courses -->
+                    <div class="mb-3">
+                        <label>Select Course</label>
+                        <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+                            @foreach($student->assigned_course_id as $course_id)
+                            @php $course = $courses->where('id', $course_id)->first(); @endphp
+                            @if($course)
+                            <div class="form-check">
+                                <input class="form-check-input course-select"
+                                    type="radio"
+                                    name="course_id"
+                                    value="{{ $course->id }}"
+                                    id="course_{{ $student->id }}_{{ $course->id }}"
+                                    data-student="{{ $student->id }}">
+                                <label class="form-check-label" for="course_{{ $student->id }}_{{ $course->id }}">
+                                    {{ $course->course_name }}
+                                </label>
+                            </div>
+                            @endif
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Subjects & Marks -->
+                    <div id="subjectsContainer{{ $student->id }}" class="mt-3"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save & Continue</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endforeach
+
+
+
 
 
 
@@ -495,6 +560,72 @@
             }, 2500);
         });
     </script>
+
+
+    <!-- Assign Marks -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const subjectUrlTemplate = "{{ url('/subadmin/course-assign/marks/subjects/:id') }}";
+            const marksUrlTemplate = "{{ url('/subadmin/course-assign/marks/get/:student/:course') }}";
+
+            document.querySelectorAll('.course-select').forEach(radio => {
+                radio.addEventListener('change', async function() {
+                    const courseId = this.value;
+                    const studentId = this.dataset.student;
+                    const container = document.getElementById('subjectsContainer' + studentId);
+
+                    container.innerHTML = "<p class='text-muted'>Loading subjects...</p>";
+
+                    try {
+                        // Fetch subjects
+                        const subjectRes = await fetch(subjectUrlTemplate.replace(':id', courseId));
+                        if (!subjectRes.ok) throw new Error('Failed to fetch subjects');
+                        let subjects = await subjectRes.json();
+                        if (!Array.isArray(subjects)) subjects = Object.values(subjects);
+
+                        if (!subjects.length) {
+                            container.innerHTML = "<p class='text-danger'>No subjects found for this course.</p>";
+                            return;
+                        }
+
+                        // 2️⃣ Fetch existing marks for this student & course
+                        const marksRes = await fetch(marksUrlTemplate.replace(':student', studentId).replace(':course', courseId));
+                        let existingMarks = {};
+                        if (marksRes.ok) {
+                            existingMarks = await marksRes.json(); // { "Bengali": 80, "Geography": 90 }
+                        }
+
+                        // 3️⃣ Build HTML
+                        let html = '<label class="fw-bold mb-2">Enter Marks:</label>';
+                        subjects.forEach(sub => {
+                            const value = existingMarks[sub.subject_name] ?? '';
+                            html += `
+                        <div class="mb-2">
+                            <label>${sub.subject_name}</label>
+                            <input type="number" 
+                                   name="marks[${sub.subject_name}]" 
+                                   class="form-control" 
+                                   placeholder="Enter marks"
+                                   max="${sub.max_marks}" 
+                                   value="${value}" 
+                                   required>
+                        </div>`;
+                        });
+
+                        container.innerHTML = html;
+
+                    } catch (err) {
+                        container.innerHTML = "<p class='text-danger'>Error loading subjects or marks.</p>";
+                        console.error(err);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+
 
 
 

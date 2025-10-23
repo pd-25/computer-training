@@ -109,6 +109,7 @@
                                 <th scope="col">#</th>
                                 <th>Image</th>
                                 <th>Course Name</th>
+                                <th>Subjects</th>
                                 <th>Duration</th>
                                 <th scope="col">Category Name</th>
                                 <th>Description</th>
@@ -121,6 +122,22 @@
                                 <th scope="row">{{$loop->iteration}}</th>
                                 <td><img src="{{asset('storage/'.$course->image)}}" class="img-fluid" alt="" width="50px" height="50px"></td>
                                 <td>{{$course->course_name}}</td>
+                                <td>
+                                    @php
+                                    $subjects = json_decode($course->subjects, true);
+                                    @endphp
+
+                                    @if($subjects && count($subjects) > 0)
+                                    <ul class="m-0 p-0" style="list-style-type: none;">
+                                        @foreach($subjects as $subject)
+                                        <li>{{ $subject['subject_name'] }} ({{ $subject['min_marks'] }} - {{ $subject['max_marks'] }})</li>
+                                        @endforeach
+                                    </ul>
+                                    @else
+                                    <span class="text-muted">No subjects</span>
+                                    @endif
+                                </td>
+
                                 <td>{{$course->duration}}</td>
                                 <td>{{$course->category->name}}</td>
                                 <td>
@@ -216,6 +233,18 @@
                         </select>
                     </div>
 
+                    <div class="mb-3" id="subjects-section">
+                        <label class="form-label">Add Subjects<span class="text-danger">*</span></label>
+
+                        <div class="subject-group d-flex mb-2 gap-2">
+                            <input type="text" class="form-control" name="subjects[0][subject_name]" placeholder="Enter subject name" required>
+                            <input type="number" class="form-control" name="subjects[0][min_marks]" placeholder="Enter minimum marks" required>
+                            <input type="number" class="form-control" name="subjects[0][max_marks]" placeholder="Enter maximum marks" required>
+                            <button type="button" class="btn btn-success add-subject">+</button>
+                        </div>
+                    </div>
+
+
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
                         <textarea class="form-control" name="description" id="description" rows="3"></textarea>
@@ -274,6 +303,24 @@
                             </option>
                             @endforeach
                         </select>
+                    </div>
+
+                    <div class="mb-3" id="subjects-section-{{$course->id}}">
+                        <label class="form-label">Edit Subjects<span class="text-danger">*</span></label>
+
+                        @php
+                        $subjects = json_decode($course->subjects, true) ?? [];
+                        @endphp
+
+                        @foreach($subjects as $i => $subj)
+                        <div class="subject-group d-flex mb-2 gap-2">
+                            <input type="text" class="form-control" name="subjects[{{$i}}][subject_name]" value="{{ $subj['subject_name'] }}" required>
+                            <input type="number" class="form-control" name="subjects[{{$i}}][min_marks]" value="{{ $subj['min_marks'] }}" required>
+                            <input type="number" class="form-control" name="subjects[{{$i}}][max_marks]" value="{{ $subj['max_marks'] }}" required>
+                            <button type="button" class="btn btn-success add-subject">+</button>
+                            <button type="button" class="btn btn-danger remove-subject">x</button>
+                        </div>
+                        @endforeach
                     </div>
 
                     <div class="mb-3">
@@ -373,6 +420,67 @@
                     el.remove();
                 });
             }, 2500);
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let index = 1; // Start index for dynamic fields
+            const section = document.getElementById("subjects-section");
+
+            section.addEventListener("click", function(e) {
+                if (e.target.classList.contains("add-subject")) {
+                    e.preventDefault();
+
+                    const newRow = document.createElement("div");
+                    newRow.classList.add("subject-group", "d-flex", "mb-2", "gap-2");
+                    newRow.innerHTML = `
+                <input type="text" class="form-control" name="subjects[${index}][subject_name]" placeholder="Enter subject name" required>
+                <input type="number" class="form-control" name="subjects[${index}][min_marks]" placeholder="Enter minimum marks" required>
+                <input type="number" class="form-control" name="subjects[${index}][max_marks]" placeholder="Enter maximum marks" required>
+                <button type="button" class="btn btn-danger remove-subject">x</button>
+            `;
+                    section.appendChild(newRow);
+                    index++;
+                }
+
+                if (e.target.classList.contains("remove-subject")) {
+                    e.preventDefault();
+                    e.target.parentElement.remove();
+                }
+            });
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('[id^="subjects-section-"]').forEach(function(section) {
+                let index = section.querySelectorAll('.subject-group').length;
+
+                section.addEventListener("click", function(e) {
+                    if (e.target.classList.contains("add-subject")) {
+                        e.preventDefault();
+
+                        const newRow = document.createElement("div");
+                        newRow.classList.add("subject-group", "d-flex", "mb-2", "gap-2");
+                        newRow.innerHTML = `
+                    <input type="text" class="form-control" name="subjects[${index}][subject_name]" placeholder="Enter subject name" required>
+                    <input type="number" class="form-control" name="subjects[${index}][min_marks]" placeholder="Enter minimum marks" required>
+                    <input type="number" class="form-control" name="subjects[${index}][max_marks]" placeholder="Enter maximum marks" required>
+                    <button type="button" class="btn btn-danger remove-subject">x</button>
+                `;
+                        section.appendChild(newRow);
+                        index++;
+                    }
+
+                    if (e.target.classList.contains("remove-subject")) {
+                        e.preventDefault();
+                        e.target.parentElement.remove();
+                    }
+                });
+            });
         });
     </script>
 

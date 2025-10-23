@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificate of Completion</title>
+    <title>Marksheet</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500&display=swap');
 
@@ -297,6 +297,93 @@
             margin-top: 10px;
         }
 
+        /* Marksheet Table Styles */
+        .marks-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        .marks-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .marks-table th {
+            background: #1a237e;
+            color: #fff;
+            padding: 12px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .marks-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+            font-size: 15px;
+        }
+
+        .marks-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .marks-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .total-row {
+            background: #f5f5f5;
+            font-weight: 600;
+            border-top: 2px solid #1a237e;
+        }
+
+        .total-row td {
+            color: #1a237e;
+            font-size: 16px;
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* .grade-a-plus {
+            background: #4caf50;
+            color: white;
+        }
+
+        .grade-a {
+            background: #8bc34a;
+            color: white;
+        }
+
+        .grade-b {
+            background: #ffeb3b;
+            color: #333;
+        }
+
+        .grade-c {
+            background: #ff9800;
+            color: white;
+        }
+
+        .grade-d {
+            background: #ff5722;
+            color: white;
+        }
+
+        .grade-f {
+            background: #f44336;
+            color: white;
+        } */
+
         @media (max-width: 768px) {
             .certificate-container {
                 padding: 20px;
@@ -321,6 +408,15 @@
                 width: 50px;
                 height: 50px;
             }
+
+            .marks-table {
+                font-size: 12px;
+            }
+
+            .marks-table th,
+            .marks-table td {
+                padding: 8px;
+            }
         }
     </style>
 </head>
@@ -343,7 +439,7 @@
         </div>
 
         <div class="certificate-title">
-            <h1>Certificate of Completion</h1>
+            <h1>Marksheet</h1>
         </div>
 
         <div class="certificate-body">
@@ -354,15 +450,15 @@
             <div class="student-details">
                 <div class="detail-group">
                     <div class="detail-label">Father's Name</div>
-                    <div class="detail-value" style="text-transform: uppercase;">RAM BHADRA JHA</div>
+                    <div class="detail-value" style="text-transform: uppercase;">{{ $student->father_name ?? 'N/A' }}</div>
                 </div>
                 <div class="detail-group">
                     <div class="detail-label">Date of Birth</div>
-                    <div class="detail-value">15-07-1983</div>
+                    <div class="detail-value">{{ $student->dob ?? 'N/A' }}</div>
                 </div>
                 <div class="detail-group">
                     <div class="detail-label">Registration No.</div>
-                    <div class="detail-value">2425774015</div>
+                    <div class="detail-value">{{ $student->registration_no ?? $student->id }}</div>
                 </div>
             </div>
 
@@ -377,7 +473,7 @@
             <div class="student-details">
                 <div class="detail-group">
                     <div class="detail-label">Study Center</div>
-                    <div class="detail-value">SUBHADRA INFOTECH, MUZAFFARPUR</div>
+                    <div class="detail-value">{{ $student->study_center ?? 'SUBHADRA INFOTECH, MUZAFFARPUR' }}</div>
                 </div>
                 <div class="detail-group">
                     <div class="detail-label">Duration</div>
@@ -385,33 +481,49 @@
                 </div>
             </div>
 
-            <div class="student-details">
-                <div class="detail-group">
-                    <div class="detail-label">Marks Obtained</div>
-                    <div class="detail-value">{{$marksObtainedInPercent}}%</div>
-                </div>
-                <div class="detail-group">
-                    <div class="detail-label">Grade</div>
-                    <div class="detail-value">
-                        @if($marksObtainedInPercent >= 90)
-                        A+
-                        @elseif($marksObtainedInPercent >= 80)
-                        A
-                        @elseif($marksObtainedInPercent >= 70)
-                        B
-                        @elseif($marksObtainedInPercent >= 60)
-                        C
-                        @elseif($marksObtainedInPercent >= 50)
-                        D
-                        @else
-                        F
-                        @endif
-                    </div>
-                </div>
+            <!-- Marks Table -->
+            <div class="marks-table-container">
+                <table class="marks-table">
+                    <thead>
+                        <tr>
+                            <th>Subject Name</th>
+                            <th style="text-align: center;">Max Marks</th>
+                            <th style="text-align: center;">Marks Obtained</th>
+                            <th style="text-align: center;">Percentage</th>
+                            <th style="text-align: center;">Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($subjectDetails as $subject)
+                        <tr>
+                            <td>{{ $subject['name'] }}</td>
+                            <td style="text-align: center;">{{ $subject['max_marks'] }}</td>
+                            <td style="text-align: center;">{{ $subject['obtained_marks'] }}</td>
+                            <td style="text-align: center;">{{ $subject['percentage'] }}%</td>
+                            <td style="text-align: center;">
+                                <span class="grade-badge grade-{{ strtolower(str_replace('+', '-plus', $subject['grade'])) }}">
+                                    {{ $subject['grade'] }}
+                                </span>
+                            </td>
+                        </tr>
+                        @endforeach
+                        <tr class="total-row">
+                            <td><strong>TOTAL</strong></td>
+                            <td style="text-align: center;"><strong>{{ $totalMaxMarks }}</strong></td>
+                            <td style="text-align: center;"><strong>{{ $totalMarksObtained }}</strong></td>
+                            <td style="text-align: center;"><strong>{{ round($overallPercentage, 2) }}%</strong></td>
+                            <td style="text-align: center;">
+                                <span class="grade-badge grade-{{ strtolower(str_replace('+', '-plus', $overallGrade)) }}">
+                                    {{ $overallGrade }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <div class="performance-section">
-                During the course his performance was good and we wish him best of luck for future endeavors
+                During the course his/her performance was good and we wish him/her best of luck for future endeavors
             </div>
 
             <div class="signature-section">
@@ -423,7 +535,7 @@
 
                 <div class="date-section">
                     <div class="detail-label">Issue Date</div>
-                    <div class="issue-date">04-07-2024</div>
+                    <div class="issue-date">{{ date('d-m-Y') }}</div>
                 </div>
             </div>
         </div>

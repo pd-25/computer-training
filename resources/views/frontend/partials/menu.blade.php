@@ -50,6 +50,7 @@
             <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.wallet' ? 'active' : '' }}" href="{{ route('frontend.wallet') }}">Wallet</a></li>
             <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.verification' ? 'active' : '' }}" href="{{ route('frontend.verification') }}">verification</a></li>
             <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.student-zone' ? 'active' : '' }}" href="{{ route('frontend.student-zone') }}">Student Zone</a></li>
+            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.franchise' ? 'active' : '' }}" href="{{ route('frontend.franchise') }}">Get Franchise</a></li>
         </ul>
     </li>
     <li class="nav-item {{ Route::currentRouteName() == 'frontend.contact' ? 'active' : '@@contact' }}">
