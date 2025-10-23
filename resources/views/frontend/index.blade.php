@@ -1,6 +1,17 @@
 @extends('frontend.layouts.app')
 
 <style>
+  .overlay::before {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: transparent !important;
+    opacity: 0.8;
+  }
+
   .course-description {
     text-align: justify !important;
     display: -webkit-box !important;
@@ -64,42 +75,6 @@
     margin-bottom: 2rem;
     max-width: 600px;
   }
-
-  /* Professional Button */
-  /* .hero-slider-item .btn-primary {
-    padding: 15px 40px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    border-radius: 50px;
-    border: none;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-    transition: all 0.4s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-slider-item .btn-primary::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.6s ease;
-  }
-
-  .hero-slider-item .btn-primary:hover::before {
-    left: 100%;
-  }
-
-  .hero-slider-item .btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6);
-  } */
 
   /* Content Enhancement */
   .hero-content {
