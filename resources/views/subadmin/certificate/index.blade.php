@@ -431,6 +431,19 @@
         <div class="footer">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div class="footer-logo"><img src="{{asset('./logo.png')}}" width="90" alt=""></div>
+
+                <!-- here generate a qrcode of the show particular student certificate public url -->
+                <div style="text-align: center;">
+                    @if(isset($qrCodeBase64))
+                    <img src="data:image/png;base64,{{ $qrCodeBase64 }}"
+                        alt="Certificate QR Code"
+                        style="border: 2px solid #d4af37; padding: 5px; border-radius: 4px;">
+                    <div style="font-size: 10px; color: #666; margin-top: 5px;">
+                        Scan to Verify
+                    </div>
+                    @endif
+                </div>
+
                 <img src="{{asset('./iso9001.png')}}" width="120" alt="">
             </div>
             <div class="footer-details">

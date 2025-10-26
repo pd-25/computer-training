@@ -3,8 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth; // Add this line
 use App\Http\Controllers\FrontendController; // Add this line
-
-
+use App\Http\Controllers\subadmin\dashboard\DashboardController;
 
 Auth::routes();
 
@@ -39,6 +38,10 @@ Route::get('/student-zone', [FrontendController::class, 'studentZone'])->name('f
 
 Route::get('/franchise', [FrontendController::class, 'franchise'])->name('frontend.franchise');
 Route::post('/franchise/submit', [FrontendController::class, 'franchiseSubmit'])->name('frontend.franchise.submit');
+
+
+// Qr Code Routes fro Public
+Route::get('/certificate/view/{student_id}/{course_id}', [DashboardController::class, 'showPublicCertificate'])->name('certificate.public.show');
 
 require __DIR__ . '/admin.php';
 require __DIR__ . '/subadmin.php';

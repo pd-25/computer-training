@@ -11,6 +11,8 @@ use Exception;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 
 class DashboardController extends Controller
 {
@@ -188,6 +190,52 @@ class DashboardController extends Controller
         }
     }
 
+    // public function generateCertificate(Request $request)
+    // {
+    //     $request->validate([
+    //         'student_id' => 'required|exists:students,id',
+    //         'course_id' => 'required|exists:courses,id',
+    //     ]);
+
+    //     $student = Student::findOrFail($request->student_id);
+    //     $course = Course::findOrFail($request->course_id);
+
+
+    //     // Calculate marks obtained in percentage
+    //     $marksObtainedInPercent = 0;
+
+    //     $mark = Mark::where('student_id', $student->id)
+    //         ->where('course_id', $course->id)
+    //         ->first();
+
+    //     $course = Course::find($course->id);
+
+    //     if ($mark && $course) {
+    //         $subjects = json_decode($course->subjects, true);
+    //         $marks = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
+
+    //         $totalObtained = 0;
+    //         $totalMax = 0;
+
+    //         foreach ($subjects as $sub) {
+    //             $subName = $sub['subject_name'];
+    //             $maxMarks = isset($sub['max_marks']) ? (int)$sub['max_marks'] : 100;
+
+    //             $obtained = isset($marks[$subName]) ? (int)$marks[$subName] : 0;
+
+    //             $totalObtained += $obtained;
+    //             $totalMax += $maxMarks;
+    //         }
+
+    //         if ($totalMax > 0) {
+    //             $marksObtainedInPercent = round(($totalObtained / $totalMax) * 100, 2);
+    //         }
+    //     }
+
+
+    //     return view('subadmin.certificate.index', compact('student', 'course', 'marksObtainedInPercent'));
+    // }
+
     public function generateCertificate(Request $request)
     {
         $request->validate([
@@ -197,7 +245,6 @@ class DashboardController extends Controller
 
         $student = Student::findOrFail($request->student_id);
         $course = Course::findOrFail($request->course_id);
-
 
         // Calculate marks obtained in percentage
         $marksObtainedInPercent = 0;
@@ -230,8 +277,68 @@ class DashboardController extends Controller
             }
         }
 
+        $certificateUrl = route('certificate.public.show', [
+            'student_id' => $student->id,
+            'course_id' => $course->id
+        ]);
 
-        return view('subadmin.certificate.index', compact('student', 'course', 'marksObtainedInPercent'));
+        // Build QR Code (v6 correct syntax)
+        $result = (new Builder(
+            writer: new PngWriter(),
+            data: $certificateUrl,
+            size: 120,
+            margin: 10,
+        ))->build();
+
+        // Convert to Base64
+        $qrCodeBase64 = base64_encode($result->getString());
+
+        return view('subadmin.certificate.index', compact(
+            'student',
+            'course',
+            'marksObtainedInPercent',
+            'qrCodeBase64'
+        ));
+    }
+
+    public function showPublicCertificate($student_id, $course_id)
+    {
+        $student = Student::findOrFail($student_id);
+        $course = Course::findOrFail($course_id);
+
+        // Calculate marks obtained in percentage
+        $marksObtainedInPercent = 0;
+
+        $mark = Mark::where('student_id', $student_id)
+            ->where('course_id', $course_id)
+            ->first();
+
+        if ($mark && $course) {
+            $subjects = json_decode($course->subjects, true);
+            $marks = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
+
+            $totalObtained = 0;
+            $totalMax = 0;
+
+            foreach ($subjects as $sub) {
+                $subName = $sub['subject_name'];
+                $maxMarks = isset($sub['max_marks']) ? (int)$sub['max_marks'] : 100;
+
+                $obtained = isset($marks[$subName]) ? (int)$marks[$subName] : 0;
+
+                $totalObtained += $obtained;
+                $totalMax += $maxMarks;
+            }
+
+            if ($totalMax > 0) {
+                $marksObtainedInPercent = round(($totalObtained / $totalMax) * 100, 2);
+            }
+        }
+
+        // Don't generate QR code for public view (to avoid recursion)
+        $qrCode = null;
+
+        return view('subadmin.certificate.index', compact('student', 'course', 'marksObtainedInPercent', 'qrCode'));
     }
 
 
