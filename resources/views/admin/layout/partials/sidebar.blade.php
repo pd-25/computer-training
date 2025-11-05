@@ -30,17 +30,21 @@
             </a>
         </li>
 
-        <li class="nav-item {{ Route::is('admin.subadmins') ? 'active' : ''}}">
-            <a class="nav-link " href="{{route('admin.subadmins')}}">
-                <i class="bi bi-fingerprint"></i>
-                <span>Manage Subadmins</span>
-            </a>
-        </li>
+
 
         <li class="nav-item {{ Route::is('admin.franchise') ? 'active' : ''}}">
             <a class="nav-link " href="{{route('admin.franchise')}}">
                 <i class="bi bi-inbox-fill"></i>
                 <span>Franchise Requests</span>
+            </a>
+        </li>
+
+
+        
+        <li class="nav-item {{ Route::is('admin.subadmins') ? 'active' : ''}}">
+            <a class="nav-link " href="{{route('admin.subadmins')}}">
+                <i class="bi bi-fingerprint"></i>
+                <span>Manage Franchise</span>
             </a>
         </li>
 

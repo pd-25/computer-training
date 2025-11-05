@@ -132,7 +132,7 @@
         <!-- Profile Section -->
         <div class="profile-section">
             <div class="photo-box">
-                <img src="{{ asset('./assets/img/messages-3.jpg') }}" alt="Profile Photo" class="profile-photo">
+                <img src="{{ asset($student->image) }}" alt="Profile Photo" class="profile-photo">
             </div>
             <h2 class="name" style="text-transform: capitalize;">{{$student->name}}</h2>
             <p class="course" style="text-transform: uppercase;">{{ $course->course_name }}</p>
@@ -140,32 +140,32 @@
 
         <!-- Details -->
         <div class="details">
-            <p style="text-align: center;">SUBHADRA INFOTECH</p>
+            <p style="text-align: center; text-transform: uppercase;">{{ $student->org_name }}</p>
 
             <div>
                 <div style="display: grid; grid-template-columns: 4fr 8fr; gap:5px; justify-content: space-between; align-items: center;">
                     <p>Father's Name</p>
-                    <p>: Ram Bhadra Jha</p>
+                    <p>: {{ $student->father_name }}</p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 4fr 8fr; gap:5px; justify-content: space-between; align-items: center;">
                     <p>Date Of Birth</p>
-                    <p>: 15-07-1983</p>
+                    <p>: {{ $student->dob }}</p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 4fr 8fr; gap:5px; justify-content: space-between; align-items: center;">
                     <p>Mobile No</p>
-                    <p>: 9835050556</p>
+                    <p>: {{ $student->phone }}</p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 4fr 8fr; gap:5px; justify-content: space-between; align-items: center;">
                     <p>Admission Date</p>
-                    <p>: 01 May 2023</p>
+                    <p>: {{ $student->admission_date }}</p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 4fr 8fr; gap:5px; justify-content: space-between; align-items: center;">
                     <p>Enrollment No.</p>
-                    <p>: 2425774015</p>
+                    <p>: {{ $student->enrollment_no }}</p>
                 </div>
             </div>
         </div>

@@ -107,6 +107,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
+                                <th scope="col">Org/ Institute Name</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">email</th>
                                 <th scope="col">Action</th>
@@ -116,6 +117,7 @@
                             @foreach ($subAdmins as $subadmin)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
+                                <td>{{ $subadmin->org_name }}</td>
                                 <td>{{ $subadmin->name }}</td>
                                 <td>{{ $subadmin->email }}</td>
                                 <td>
@@ -149,10 +151,15 @@
                 @csrf
 
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Sub Admin</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Franchise</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="" class="form-label">Org/ Institute Name<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="Enter the org name" name="org_name" value="{{ old('org_name') }}" autocomplete="off">
+                    </div>
 
                     <div class="mb-3">
                         <label for="" class="form-label">Name<span class="text-danger">*</span></label>
@@ -193,10 +200,16 @@
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editSubAdminLabel{{ $subadmin->id }}">Edit Sub Admin</h5>
+                    <h5 class="modal-title" id="editSubAdminLabel{{ $subadmin->id }}">Edit Franchise</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label>Org/ Institute Name<span class="text-danger">*</span></label>
+                        <input type="text" name="org_name" class="form-control" value="{{ old('org_name', $subadmin->org_name) }}">
+                    </div>
+                    
                     <div class="mb-3">
                         <label>Name<span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control" value="{{ old('name', $subadmin->name) }}">
@@ -231,7 +244,7 @@
                 @csrf
                 @method('DELETE')
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteSubAdminLabel{{ $subadmin->id }}">Delete Sub Admin</h5>
+                    <h5 class="modal-title" id="deleteSubAdminLabel{{ $subadmin->id }}">Delete Franchise</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">

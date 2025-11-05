@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\FranchiseRequest;
+use App\Models\Mark;
+use App\Models\Student;
 use Illuminate\Support\Facades\Validator;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 
 class FrontendController extends Controller
@@ -116,9 +120,113 @@ class FrontendController extends Controller
 
     public function verification()
     {
-
-        return view('frontend.verification');
+        $courses = Course::all();
+        return view('frontend.verification', compact('courses'));
     }
+
+    public function verifyYourCertificate(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'enrollment_no' => 'required',
+            'course_id' => 'required|exists:courses,id',
+        ]);
+
+        $student = Student::where('email', $request->email)
+            ->where('enrollment_no', $request->enrollment_no)
+            ->first();
+
+        if (!$student) {
+            return back()->with('error', 'No student found with provided details.');
+        }
+
+        $assignedCourses = is_array($student->assigned_course_id)
+            ? $student->assigned_course_id
+            : json_decode($student->assigned_course_id, true);
+
+        if (empty($assignedCourses) || !in_array($request->course_id, $assignedCourses)) {
+            return back()->with('error', 'This course is not assigned to the student.');
+        }
+
+        $course = Course::find($request->course_id);
+
+        if (!$course) {
+            return back()->with('error', 'Course not found.');
+        }
+
+        // Redirect to the certificate generator
+        return redirect()->route('frontend.generate.certificate', [
+            'student_id' => $student->id,
+            'course_id' => $course->id,
+        ]);
+    }
+
+    public function generateCertificate(Request $request)
+    {
+        $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'course_id' => 'required|exists:courses,id',
+        ]);
+
+        $student = Student::findOrFail($request->student_id);
+        $course = Course::findOrFail($request->course_id);
+
+        // Calculate marks obtained in percentage
+        $marksObtainedInPercent = 0;
+
+        $mark = Mark::where('student_id', $student->id)
+            ->where('course_id', $course->id)
+            ->first();
+
+        $course = Course::find($course->id);
+
+        if ($mark && $course) {
+            $subjects = json_decode($course->subjects, true);
+            $marks = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
+
+            $totalObtained = 0;
+            $totalMax = 0;
+
+            foreach ($subjects as $sub) {
+                $subName = $sub['subject_name'];
+                $maxMarks = isset($sub['max_marks']) ? (int)$sub['max_marks'] : 100;
+
+                $obtained = isset($marks[$subName]) ? (int)$marks[$subName] : 0;
+
+                $totalObtained += $obtained;
+                $totalMax += $maxMarks;
+            }
+
+            if ($totalMax > 0) {
+                $marksObtainedInPercent = round(($totalObtained / $totalMax) * 100, 2);
+            }
+        }
+
+        $certificateUrl = route('certificate.public.show', [
+            'student_id' => $student->id,
+            'course_id' => $course->id
+        ]);
+
+        // Build QR Code (v6 correct syntax)
+        $result = (new Builder(
+            writer: new PngWriter(),
+            data: $certificateUrl,
+            size: 120,
+            margin: 10,
+        ))->build();
+
+        // Convert to Base64
+        $qrCodeBase64 = base64_encode($result->getString());
+
+        return view('subadmin.certificate.index', compact(
+            'student',
+            'course',
+            'marksObtainedInPercent',
+            'qrCodeBase64'
+        ));
+    }
+
+
 
     public function studentZone()
     {
@@ -191,5 +299,10 @@ class FrontendController extends Controller
                 ->withInput()
                 ->with('error', 'Something went wrong. Please try again later or contact us directly.');
         }
+    }
+
+    public function franchiseLoginView()
+    {
+        return view('frontend.franchise-login');
     }
 }

@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
+use Illuminate\Support\Str;
+
 
 class DashboardController extends Controller
 {
@@ -33,12 +35,41 @@ class DashboardController extends Controller
         return view('subadmin.student.index', compact('students'));
     }
 
+    // public function studentAdd(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'name' => 'required|string|max:255',
+    //         'email' => 'required|email|unique:students,email',
+    //         'phone' => 'required|string|max:15',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return redirect()->back()->with('error', $validator->errors()->first())->withInput();
+    //     }
+
+    //     try {
+    //         Student::create([
+    //             'name' => $request->name,
+    //             'email' => $request->email,
+    //             'phone' => $request->phone,
+    //             'created_by' => Auth::guard('subadmin')->id(),
+    //         ]);
+    //         return redirect()->back()->with('success', 'Student added successfully.');
+    //     } catch (\Exception $e) {
+    //         return redirect()->back()->with('error', 'Failed to add student: ' . $e->getMessage());
+    //     }
+    // }
+
     public function studentAdd(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:students,email',
             'phone' => 'required|string|max:15',
+            'father_name' => 'nullable|string|max:255',
+            'dob' => 'nullable|date',
+            'admission_date' => 'nullable|date',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:3048',
         ]);
 
         if ($validator->fails()) {
@@ -46,17 +77,51 @@ class DashboardController extends Controller
         }
 
         try {
+            // Handle image upload
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
+                $request->file('image')->move(public_path('uploads/students'), $imageName);
+                $imagePath = 'uploads/students/' . $imageName;
+            }
+
+            // Generate unique enrollment number (1st numbers, then letters; 6–15 chars)
+            do {
+                $numLength = rand(5, 10); // 5 to 10 digits first
+                $charLength = rand(1, 5); // 1 to 5 letters next
+                $numbers = '';
+                for ($i = 0; $i < $numLength; $i++) {
+                    $numbers .= rand(0, 9);
+                }
+
+                $letters = '';
+                for ($i = 0; $i < $charLength; $i++) {
+                    $letters .= chr(rand(65, 90)); // A–Z
+                }
+
+                $enrollmentNo = $numbers . $letters;
+            } while (Student::where('enrollment_no', $enrollmentNo)->exists());
+
+            // Create student record
             Student::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'father_name' => $request->father_name,
+                'dob' => $request->dob,
+                'admission_date' => $request->admission_date,
+                'org_name' => Auth::guard('subadmin')->user()->org_name,
+                'image' => $imagePath,
                 'created_by' => Auth::guard('subadmin')->id(),
+                'enrollment_no' => $enrollmentNo,
             ]);
+
             return redirect()->back()->with('success', 'Student added successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to add student: ' . $e->getMessage());
         }
     }
+
 
     public function studentEdit(Request $request, $id)
     {
@@ -64,6 +129,10 @@ class DashboardController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:students,email,' . $id,
             'phone' => 'required|string|max:15',
+            'father_name' => 'nullable|string|max:255',
+            'dob' => 'nullable|date',
+            'admission_date' => 'nullable|date',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:3048',
         ]);
 
         if ($validator->fails()) {
@@ -72,16 +141,36 @@ class DashboardController extends Controller
 
         try {
             $student = Student::findOrFail($id);
+
+            // Handle image upload if provided
+            $imagePath = $student->image;
+            if ($request->hasFile('image')) {
+                // Delete old image if exists
+                if ($student->image && file_exists(public_path($student->image))) {
+                    unlink(public_path($student->image));
+                }
+
+                $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
+                $request->file('image')->move(public_path('uploads/students'), $imageName);
+                $imagePath = 'uploads/students/' . $imageName;
+            }
+
             $student->update([
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'father_name' => $request->father_name,
+                'dob' => $request->dob,
+                'admission_date' => $request->admission_date,
+                'image' => $imagePath,
             ]);
+
             return redirect()->back()->with('success', 'Student updated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to update student: ' . $e->getMessage());
         }
     }
+
 
     public function studentDelete($id)
     {

@@ -53,6 +53,16 @@
             <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.franchise' ? 'active' : '' }}" href="{{ route('frontend.franchise') }}">Get Franchise</a></li>
         </ul>
     </li>
+    <li class="nav-item dropdown view">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Login
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="{{ route('admin.showlogin') }}">Admin Login</a></li>
+            <li><a class="dropdown-item" href="{{ route('frontend.franchise-login') }}">Franchise Login</a></li>
+        </ul>
+    </li>
     <li class="nav-item {{ Route::currentRouteName() == 'frontend.contact' ? 'active' : '@@contact' }}">
         <a class="nav-link" href="{{ route('frontend.contact') }}">CONTACT</a>
     </li>

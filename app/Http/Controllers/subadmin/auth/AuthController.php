@@ -35,6 +35,6 @@ class AuthController extends Controller
     public function adminLogout()
     {
         Auth::guard('subadmin')->logout();
-        return redirect()->route('subadmin.login')->with("msg", "Logged out successfully");
+        return redirect()->route('frontend.franchise-login')->with("msg", "Logged out successfully");
     }
 }

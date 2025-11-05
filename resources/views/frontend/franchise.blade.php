@@ -123,7 +123,7 @@
 
                     <div class="col-12">
                         <input type="text" name="experience" class="form-control mb-3 @error('experience') is-invalid @enderror"
-                            placeholder="Briefly describe your background and experience" value="{{ old('experience') }}">
+                            placeholder="Enter Your Organization or Institution Name*" value="{{ old('experience') }}">
                         @error('experience')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

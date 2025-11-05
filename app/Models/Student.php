@@ -12,6 +12,12 @@ class Student extends Model
         'name',
         'email',
         'phone',
+        'father_name',
+        'dob',
+        'admission_date',
+        'enrollment_no',
+        'image',
+        'org_name',
         'assigned_course_id',
         'created_by',
     ];

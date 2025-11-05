@@ -33,12 +33,21 @@ Route::get('/typing', [FrontendController::class, 'typing'])->name('frontend.typ
 Route::get('/certificate', [FrontendController::class, 'certificate'])->name('frontend.certificate');
 Route::get('/franchise-mode', [FrontendController::class, 'franchiseMode'])->name('frontend.franchise-mode');
 Route::get('/wallet', [FrontendController::class, 'wallet'])->name('frontend.wallet');
+
+
+// Certificate Verification
 Route::get('/verification', [FrontendController::class, 'verification'])->name('frontend.verification');
+Route::post('/verify-certificate', [FrontendController::class, 'verifyYourCertificate'])->name('frontend.verify.certificate');
+Route::get('/certificate/show', [FrontendController::class, 'generateCertificate'])->name('frontend.generate.certificate');
+
+
 Route::get('/student-zone', [FrontendController::class, 'studentZone'])->name('frontend.student-zone');
 
 Route::get('/franchise', [FrontendController::class, 'franchise'])->name('frontend.franchise');
 Route::post('/franchise/submit', [FrontendController::class, 'franchiseSubmit'])->name('frontend.franchise.submit');
 
+// Franchise Login
+Route::get('/franchise-login', [FrontendController::class, 'franchiseLoginView'])->name('frontend.franchise-login');
 
 // Qr Code Routes fro Public
 Route::get('/certificate/view/{student_id}/{course_id}', [DashboardController::class, 'showPublicCertificate'])->name('certificate.public.show');

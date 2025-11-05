@@ -103,13 +103,15 @@
 
                     </div>
 
-                    <table class="table table-bordered table-striped align-middle">
-                        <thead>
+                    <table class="table table-responsive table-bordered table-striped align-middle">
+                        <thead class="table-dark">
                             <tr>
                                 <th>#</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
+                                <th>Profile</th>
+                                <th>Student Details</th>
+                                <th>Father's Name</th>
+                                <th>Admission Date</th>
+                                <th>Organization</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -117,21 +119,44 @@
                             @forelse($students as $student)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $student->name }}</td>
-                                <td>{{ $student->email }}</td>
-                                <td>{{ $student->phone }}</td>
+
                                 <td>
-                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editStudent{{ $student->id }}"><i class="bi bi-pencil"></i></button>
-                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteStudent{{ $student->id }}"><i class="bi bi-trash"></i></button>
+                                    @if($student->image)
+                                    <img src="{{ asset($student->image) }}" alt="Profile" width="50" height="50" class="rounded-circle">
+                                    @else
+                                    <img src="{{ asset('assets/images/default-avatar.png') }}" alt="Default" width="50" height="50" class="rounded-circle">
+                                    @endif
+                                </td>
+
+                                <td>
+                                    <p class="m-0 badge bg-primary">Enrollment no: {{ $student->enrollment_no }}</p>
+                                    <p class="m-0">Student Name: {{ $student->name }}</p>
+                                    <p class="m-0">Email: {{ $student->email }}</p>
+                                    <p class="m-0">Mobile: {{ $student->phone }}</p>
+                                    <p class="m-0">DOB: {{ $student->dob ? \Carbon\Carbon::parse($student->dob)->format('d-m-Y') : '-' }}</p>
+                                </td>
+                                <td>{{ $student->father_name ?? '-' }}</td>
+                                <td>{{ $student->admission_date ? \Carbon\Carbon::parse($student->admission_date)->format('d-m-Y') : '-' }}</td>
+                                <td>{{ $student->org_name }}</td>
+
+                                <td>
+                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editStudent{{ $student->id }}">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+
+                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteStudent{{ $student->id }}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted">No students found.</td>
+                                <td colspan="11" class="text-center text-muted">No students found.</td>
                             </tr>
                             @endforelse
                         </tbody>
                     </table>
+
                 </div>
 
             </div>
@@ -146,28 +171,62 @@
 
     <!-- Add Modal -->
     <div class="modal fade" id="addStudentModal" tabindex="-1">
-        <div class="modal-dialog">
-            <form class="modal-content" action="{{ route('subadmin.students.add') }}" method="POST">
+        <div class="modal-dialog modal-lg">
+            <form class="modal-content" action="{{ route('subadmin.students.add') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Add Student</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label>Name<span class="text-danger">*</span></label>
-                        <input type="text" name="name" class="form-control" placeholder="Enter name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Email<span class="text-danger">*</span></label>
-                        <input type="email" name="email" class="form-control" placeholder="Enter email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Phone<span class="text-danger">*</span></label>
-                        <input type="text" name="phone" class="form-control" placeholder="Enter phone" required>
+                    <div class="row g-3"> <!-- g-3 adds spacing between columns -->
+
+                        <div class="col-md-4">
+                            <label class="form-label">Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control" placeholder="Enter name" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control" placeholder="Enter email" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Phone <span class="text-danger">*</span></label>
+                            <input type="text" name="phone" class="form-control" placeholder="Enter phone" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Father's Name</label>
+                            <input type="text" name="father_name" class="form-control" placeholder="Enter father's name">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" name="dob" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Admission Date</label>
+                            <input type="date" name="admission_date" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Organization Name</label>
+                            <input type="text" name="org_name" class="form-control"
+                                value="{{ Auth::guard('subadmin')->user()->org_name ?? '' }}" readonly>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Profile Image</label>
+                            <input type="file" name="image" class="form-control" accept="image/*">
+                        </div>
+
                     </div>
                 </div>
-                <div class="modal-footer">
+
+                <div class="modal-footer mt-3">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-success">Save</button>
                 </div>
@@ -175,32 +234,69 @@
         </div>
     </div>
 
-    <!-- {{-- Edit Modal --}} -->
+
+    <!-- Edit Modal -->
     @foreach($students as $student)
     <div class="modal fade" id="editStudent{{ $student->id }}" tabindex="-1">
-        <div class="modal-dialog">
-            <form class="modal-content" action="{{ route('subadmin.students.edit', $student->id) }}" method="POST">
+        <div class="modal-dialog modal-lg">
+            <form class="modal-content" action="{{ route('subadmin.students.edit', $student->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Student</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label>Name</label>
-                        <input type="text" name="name" class="form-control" value="{{ $student->name }}">
-                    </div>
-                    <div class="mb-3">
-                        <label>Email</label>
-                        <input type="email" name="email" class="form-control" value="{{ $student->email }}">
-                    </div>
-                    <div class="mb-3">
-                        <label>Phone</label>
-                        <input type="text" name="phone" class="form-control" value="{{ $student->phone }}">
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label">Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control" value="{{ $student->name }}" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control" value="{{ $student->email }}" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Phone <span class="text-danger">*</span></label>
+                            <input type="text" name="phone" class="form-control" value="{{ $student->phone }}" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Father's Name</label>
+                            <input type="text" name="father_name" class="form-control" value="{{ $student->father_name }}">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" name="dob" class="form-control" value="{{ $student->dob }}">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Admission Date</label>
+                            <input type="date" name="admission_date" class="form-control" value="{{ $student->admission_date }}">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Organization Name</label>
+                            <input type="text" class="form-control" value="{{ $student->org_name }}" readonly>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Profile Image</label>
+                            <input type="file" name="image" class="form-control" accept="image/*">
+                            @if($student->image)
+                            <img src="{{ asset($student->image) }}" class="mt-2 rounded" width="80">
+                            @endif
+                        </div>
+
                     </div>
                 </div>
-                <div class="modal-footer">
+
+                <div class="modal-footer mt-3">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-success">Update</button>
                 </div>
@@ -208,6 +304,7 @@
         </div>
     </div>
     @endforeach
+
 
     <!-- {{-- Delete Modal --}} -->
     @foreach($students as $student)

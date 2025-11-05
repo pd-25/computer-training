@@ -457,8 +457,8 @@
                     <div class="detail-value">{{ $student->dob ?? 'N/A' }}</div>
                 </div>
                 <div class="detail-group">
-                    <div class="detail-label">Registration No.</div>
-                    <div class="detail-value">{{ $student->registration_no ?? $student->id }}</div>
+                    <div class="detail-label">Enrollment No.</div>
+                    <div class="detail-value">{{ $student->enrollment_no ?? 'N/A' }}</div>
                 </div>
             </div>
 
@@ -473,7 +473,7 @@
             <div class="student-details">
                 <div class="detail-group">
                     <div class="detail-label">Study Center</div>
-                    <div class="detail-value">{{ $student->study_center ?? 'SUBHADRA INFOTECH, MUZAFFARPUR' }}</div>
+                    <div class="detail-value">{{ $student->org_name ?? 'N/A' }}</div>
                 </div>
                 <div class="detail-group">
                     <div class="detail-label">Duration</div>
@@ -535,7 +535,8 @@
 
                 <div class="date-section">
                     <div class="detail-label">Issue Date</div>
-                    <div class="issue-date">{{ date('d-m-Y') }}</div>
+                    <!-- <div class="issue-date">{{ date('d-m-Y') }}</div> -->
+                    <div class="issue-date" id="todayDate"></div>
                 </div>
             </div>
         </div>
@@ -553,5 +554,22 @@
         </div>
     </div>
 </body>
+
+
+<div class="issue-date" id="todayDate"></div>
+
+<script>
+    // Get today's date
+    const today = new Date();
+
+    // Format as dd-mm-yyyy
+    const formattedDate = today.getDate().toString().padStart(2, '0') + '-' +
+        (today.getMonth() + 1).toString().padStart(2, '0') + '-' +
+        today.getFullYear();
+
+    // Display in the div
+    document.getElementById('todayDate').textContent = formattedDate;
+</script>
+
 
 </html>

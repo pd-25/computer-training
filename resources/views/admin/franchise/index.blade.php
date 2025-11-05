@@ -129,7 +129,7 @@
                         <p><span class="badge bg-{{ $franchise->status_badge }}">{{ ucfirst($franchise->status) }}</span></p>
                     </div>
                     <div class="col-12 mb-3">
-                        <strong>Experience:</strong>
+                        <strong>Organization/ Institution Name:</strong>
                         <p>{{ $franchise->experience ?? 'N/A' }}</p>
                     </div>
                     <div class="col-12 mb-3">

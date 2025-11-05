@@ -21,7 +21,7 @@
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
                         <h6>{{auth()->guard("subadmin")->user()->name}}</h6>
-                        <span>Sub Admin</span>
+                        <span>Franchise</span>
                     </li>
                     <li>
                         <hr class="dropdown-divider">

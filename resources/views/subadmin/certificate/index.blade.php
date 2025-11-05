@@ -354,15 +354,15 @@
             <div class="student-details">
                 <div class="detail-group">
                     <div class="detail-label">Father's Name</div>
-                    <div class="detail-value" style="text-transform: uppercase;">RAM BHADRA JHA</div>
+                    <div class="detail-value" style="text-transform: uppercase;">{{ $student->father_name ?? 'N/A' }}</div>
                 </div>
                 <div class="detail-group">
                     <div class="detail-label">Date of Birth</div>
-                    <div class="detail-value">15-07-1983</div>
+                    <div class="detail-value">{{ $student->dob ?? 'N/A' }}</div>
                 </div>
                 <div class="detail-group">
-                    <div class="detail-label">Registration No.</div>
-                    <div class="detail-value">2425774015</div>
+                    <div class="detail-label">Enrollment No.</div>
+                    <div class="detail-value">{{ $student->enrollment_no ?? 'N/A' }}</div>
                 </div>
             </div>
 
@@ -377,7 +377,7 @@
             <div class="student-details">
                 <div class="detail-group">
                     <div class="detail-label">Study Center</div>
-                    <div class="detail-value">SUBHADRA INFOTECH, MUZAFFARPUR</div>
+                    <div class="detail-value">{{ $student->org_name ?? 'N/A' }}</div>
                 </div>
                 <div class="detail-group">
                     <div class="detail-label">Duration</div>

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -228,6 +229,7 @@ class DashboardController extends Controller
         // Validate input
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
+            'org_name' => 'required|string|max:255',
             'email' => 'required|email|unique:sub_admins,email',
             'password' => 'required|string|min:5|confirmed',
         ]);
@@ -241,13 +243,14 @@ class DashboardController extends Controller
         try {
             $subAdmin = ModelsSubAdmin::create([
                 'name' => $request->name,
+                'org_name' => $request->org_name,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
             ]);
 
-            return redirect()->back()->with('success', 'Sub Admin added successfully.');
+            return redirect()->back()->with('success', 'Franchise added successfully.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to add Sub Admin: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to add Franchise: ' . $e->getMessage());
         }
     }
 
@@ -257,6 +260,7 @@ class DashboardController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
+            'org_name' => 'required|string|max:255',
             'email' => 'required|email|unique:sub_admins,email,' . $subAdmin->id,
             'password' => 'nullable|string|min:5|confirmed',
         ]);
@@ -269,6 +273,7 @@ class DashboardController extends Controller
 
         try {
             $subAdmin->name = $request->name;
+            $subAdmin->org_name = $request->org_name;
             $subAdmin->email = $request->email;
 
             if (!empty($request->password)) {
@@ -277,9 +282,9 @@ class DashboardController extends Controller
 
             $subAdmin->save();
 
-            return redirect()->back()->with('success', 'Sub Admin updated successfully.');
+            return redirect()->back()->with('success', 'Franchise updated successfully.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to update Sub Admin: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update Franchise: ' . $e->getMessage());
         }
     }
 
@@ -289,9 +294,9 @@ class DashboardController extends Controller
             $subAdmin = ModelsSubAdmin::findOrFail($id);
             $subAdmin->delete();
 
-            return redirect()->back()->with('success', 'Sub Admin deleted successfully.');
+            return redirect()->back()->with('success', 'Franchise deleted successfully.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to delete Sub Admin: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete Franchise: ' . $e->getMessage());
         }
     }
 
@@ -404,6 +409,29 @@ class DashboardController extends Controller
         return view('admin.franchise.index', compact('franchises'));
     }
 
+    // public function acceptFranchise($id)
+    // {
+    //     try {
+    //         $franchise = FranchiseRequest::findOrFail($id);
+    //         $franchise->status = 'approved';
+    //         $franchise->save();
+
+    //         // Send acceptance email (optional)
+    //         /*
+    //         Mail::send('emails.franchise-accepted', ['data' => $franchise], function($message) use ($franchise) {
+    //             $message->to($franchise->email)
+    //                 ->subject('Franchise Application Approved');
+    //         });
+    //         */
+
+    //         return redirect()->back()->with('success', 'Franchise request approved successfully!');
+    //     } catch (\Exception $e) {
+    //         return redirect()->back()->with('error', 'Failed to approve franchise request.');
+    //     }
+    // }
+
+
+
     public function acceptFranchise($id)
     {
         try {
@@ -411,19 +439,33 @@ class DashboardController extends Controller
             $franchise->status = 'approved';
             $franchise->save();
 
-            // Send acceptance email (optional)
-            /*
-            Mail::send('emails.franchise-accepted', ['data' => $franchise], function($message) use ($franchise) {
-                $message->to($franchise->email)
-                    ->subject('Franchise Application Approved');
-            });
-            */
+            // Check if a SubAdmin with this email already exists
+            $existingSubAdmin = ModelsSubAdmin::where('email', $franchise->email)->first();
 
-            return redirect()->back()->with('success', 'Franchise request approved successfully!');
+            if (!$existingSubAdmin) {
+                // Create a new SubAdmin with default password
+                ModelsSubAdmin::create([
+                    'name' => $franchise->name,
+                    'email' => $franchise->email,
+                    'org_name' => $franchise->experience,
+                    'password' => Hash::make('12345678'),
+                ]);
+            }
+
+            // Optional: Send acceptance email
+            /*
+        Mail::send('emails.franchise-accepted', ['data' => $franchise], function($message) use ($franchise) {
+            $message->to($franchise->email)
+                ->subject('Franchise Application Approved');
+        });
+        */
+
+            return redirect()->back()->with('success', 'Franchise request approved and SubAdmin created successfully!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to approve franchise request.');
+            return redirect()->back()->with('error', 'Failed to approve franchise request. ' . $e->getMessage());
         }
     }
+
 
     public function rejectFranchise(Request $request, $id)
     {
