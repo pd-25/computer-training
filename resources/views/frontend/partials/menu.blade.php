@@ -45,10 +45,10 @@
             <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.paynow' ? 'active' : '' }}" href="{{ route('frontend.paynow') }}">Pay Now</a></li>
             <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.computer-marksheet' ? 'active' : '' }}" href="{{ route('frontend.computer-marksheet') }}">Computer Marksheet</a></li>
             <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.typing' ? 'active' : '' }}" href="{{ route('frontend.typing') }}">Typing</a></li>
-            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.certificate' ? 'active' : '' }}" href="{{ route('frontend.certificate') }}">Certificate</a></li>
+            <!-- <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.certificate' ? 'active' : '' }}" href="{{ route('frontend.certificate') }}">Certificate</a></li> -->
             <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.franchise-mode' ? 'active' : '' }}" href="{{ route('frontend.franchise-mode') }}">Franchise model</a></li>
             <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.wallet' ? 'active' : '' }}" href="{{ route('frontend.wallet') }}">Wallet</a></li>
-            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.verification' ? 'active' : '' }}" href="{{ route('frontend.verification') }}">verification</a></li>
+            <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.verification' ? 'active' : '' }}" href="{{ route('frontend.verification') }}">Certificate verification</a></li>
             <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.student-zone' ? 'active' : '' }}" href="{{ route('frontend.student-zone') }}">Student Zone</a></li>
             <li><a class="dropdown-item {{ Route::currentRouteName() == 'frontend.franchise' ? 'active' : '' }}" href="{{ route('frontend.franchise') }}">Get Franchise</a></li>
         </ul>
