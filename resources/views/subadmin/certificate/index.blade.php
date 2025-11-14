@@ -322,6 +322,96 @@
                 height: 50px;
             }
         }
+                /* ---------- PRINT OPTIMIZATION ---------- */
+        @media print {
+            body {
+                padding: 0;
+                zoom: 80%;
+                /* Reduce overall size to fit 1 page */
+            }
+
+            .certificate-container {
+                padding: 20px !important;
+                border-width: 6px !important;
+            }
+
+            .certificate-border {
+                border-width: 1px !important;
+            }
+
+            .certificate-border::before,
+            .certificate-border::after {
+                border-width: 1px !important;
+            }
+
+            /* Reduce Ornament size */
+            .ornament-top-left,
+            .ornament-top-right,
+            .ornament-bottom-left,
+            .ornament-bottom-right {
+                width: 45px !important;
+                height: 45px !important;
+                font-size: 14px !important;
+            }
+
+            /* Reduce text sizes */
+            .organization-name {
+                font-size: 20px !important;
+            }
+
+            .organization-subtitle {
+                font-size: 11px !important;
+            }
+
+            .certificate-title h1 {
+                font-size: 26px !important;
+            }
+
+            .certificate-text {
+                font-size: 14px !important;
+            }
+
+            .detail-value {
+                font-size: 14px !important;
+            }
+
+            /* Table shrink */
+            .marks-table th,
+            .marks-table td {
+                padding: 6px !important;
+                font-size: 12px !important;
+            }
+
+            .grade-badge {
+                font-size: 11px !important;
+                padding: 2px 6px !important;
+            }
+
+            .total-row td {
+                font-size: 14px !important;
+            }
+
+            .footer-details {
+                font-size: 11px !important;
+            }
+
+            .website {
+                font-size: 12px !important;
+            }
+
+            /* Remove extra page created by bottom margin */
+            @page {
+                margin: 10mm;
+            }
+        }
+
+        /* floating Print Button */
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        } 
     </style>
 </head>
 
@@ -454,5 +544,15 @@
         </div>
     </div>
 </body>
+
+<!-- print button -->
+<button class="print-button" onclick="printCertificate()">Print Marksheet</button>
+<script>
+    function printCertificate() {
+        var printButton = document.querySelector('.print-button');
+        printButton.style.display = 'none';
+        window.print();
+    }
+</script>
 
 </html>
