@@ -100,13 +100,22 @@
                 <div class="card-body">
                     <div class="d-flex justify-between align-items-center">
                         <h5 class="card-title w-100">All Courses</h5>
+                        
+                        <form action="{{ route('admin.courses') }}" method="GET" class="w-50 d-flex gap-2">
+                            <input type="text"
+                                name="search"
+                                value="{{ request('search') }}"
+                                class="form-control"
+                                placeholder="Search id & name...">
 
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </form>
                     </div>
 
                     <table class="table resposive">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
+                                <th scope="col">Course ID</th>
                                 <th>Image</th>
                                 <th>Course Name</th>
                                 <th>Subjects</th>
@@ -119,7 +128,10 @@
                         <tbody>
                             @foreach($courses as $course)
                             <tr>
-                                <th scope="row">{{$loop->iteration}}</th>
+                                <th scope="row">
+                                    {{ $course->course_unique_id ?? 'NITE000' . $course->id }}
+                                </th>
+
                                 <td><img src="{{asset('storage/'.$course->image)}}" class="img-fluid" alt="" width="50px" height="50px"></td>
                                 <td>{{$course->course_name}}</td>
                                 <td>

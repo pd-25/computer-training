@@ -31,7 +31,7 @@ class DashboardController extends Controller
     // Category======================================================================================================>
     public function categoryView()
     {
-        $categories = Category::orderBy('id', 'desc')->paginate(10);
+        $categories = Category::orderBy('id', 'desc')->paginate(1);
         return view('admin.category.index', compact('categories'));
     }
 
@@ -107,10 +107,24 @@ class DashboardController extends Controller
     }
 
     // Course======================================================================================================>
-    public function courseView()
+    public function courseView(Request $request)
     {
         $categories = Category::all();
-        $courses = Course::with('category')->orderBy('id', 'desc')->paginate(10);
+
+        // Get the search query from the request
+        $search = $request->input('search');
+
+        // Build the query with search functionality
+        $courses = Course::with('category')
+            ->when($search, function ($query, $search) {
+                return $query->where('course_name', 'like', '%' . $search . '%')
+                    ->orWhere('course_unique_id', 'like', '%' . $search . '%')
+                    ->orWhere('id', 'like', '%' . $search . '%');
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10)
+            ->appends(['search' => $search]);
+
         return view('admin.course.index', compact('categories', 'courses'));
     }
 
@@ -147,6 +161,14 @@ class DashboardController extends Controller
             $course->subjects = json_encode($request->subjects);
 
             $course->save();
+
+            // Course Unique ID generation
+            $prefix = "NITE000";
+            $uniqueId = $prefix . $course->id;
+
+            $course->update([
+                'course_unique_id' => $uniqueId
+            ]);
 
             return redirect()->back()->with('success', 'Course added successfully!');
         } catch (Exception $e) {
@@ -218,9 +240,24 @@ class DashboardController extends Controller
 
 
     // Sub admins===================================================================================================>
-    public function subadminView()
+    public function subadminView(Request $request)
     {
-        $subAdmins = ModelsSubAdmin::all();
+        // Get the search query from the request
+        $search = $request->input('search');
+
+        // Build the query with search functionality
+        $subAdmins = ModelsSubAdmin::query()
+            ->when($search, function ($query, $search) {
+                return $query->where('org_name', 'like', '%' . $search . '%')
+                    ->orWhere('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('subadmin_unique_id', 'like', '%' . $search . '%')
+                    ->orWhere('id', 'like', '%' . $search . '%');
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10)
+            ->appends(['search' => $search]); // Preserve search parameter in pagination
+
         return view('admin.subadmin.index', compact('subAdmins'));
     }
 
@@ -246,6 +283,14 @@ class DashboardController extends Controller
                 'org_name' => $request->org_name,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
+            ]);
+
+            // Generate unique course ID in format NITE-00 + id
+            $prefix = "NITE-00";
+            $uniqueId = $prefix . $subAdmin->id;
+
+            $subAdmin->update([
+                'subadmin_unique_id' => $uniqueId
             ]);
 
             return redirect()->back()->with('success', 'Franchise added successfully.');
@@ -332,10 +377,25 @@ class DashboardController extends Controller
 
 
     // Students===================================================================================================>
-    public function studentsView()
+    public function studentsView(Request $request)
     {
         $subadmins = ModelsSubAdmin::all();
-        $students = Student::with('subadmin')->orderBy('id', 'desc')->get();
+
+        // Get the search query from the request
+        $search = $request->input('search');
+
+        // Build the query with search functionality
+        $students = Student::with('subadmin')
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%')
+                    ->orWhere('id', 'like', '%' . $search . '%');
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10)
+            ->appends(['search' => $search]); // Preserve search parameter in pagination
+
         return view('admin.student.index', compact('subadmins', 'students'));
     }
 
@@ -409,28 +469,6 @@ class DashboardController extends Controller
         return view('admin.franchise.index', compact('franchises'));
     }
 
-    // public function acceptFranchise($id)
-    // {
-    //     try {
-    //         $franchise = FranchiseRequest::findOrFail($id);
-    //         $franchise->status = 'approved';
-    //         $franchise->save();
-
-    //         // Send acceptance email (optional)
-    //         /*
-    //         Mail::send('emails.franchise-accepted', ['data' => $franchise], function($message) use ($franchise) {
-    //             $message->to($franchise->email)
-    //                 ->subject('Franchise Application Approved');
-    //         });
-    //         */
-
-    //         return redirect()->back()->with('success', 'Franchise request approved successfully!');
-    //     } catch (\Exception $e) {
-    //         return redirect()->back()->with('error', 'Failed to approve franchise request.');
-    //     }
-    // }
-
-
 
     public function acceptFranchise($id)
     {
@@ -444,12 +482,20 @@ class DashboardController extends Controller
 
             if (!$existingSubAdmin) {
                 // Create a new SubAdmin with default password
-                ModelsSubAdmin::create([
+                $subadmin = ModelsSubAdmin::create([
                     'name' => $franchise->name,
                     'email' => $franchise->email,
                     'org_name' => $franchise->experience,
                     'password' => Hash::make('12345678'),
                 ]);
+
+                // Generate unique course ID in format NITE-00 + id
+                $prefix = "NITE-00";
+                $uniqueId = $prefix . $subadmin->id;
+
+                // Save unique ID to the subadmin record
+                $subadmin->subadmin_unique_id = $uniqueId;
+                $subadmin->save();
             }
 
             // Optional: Send acceptance email

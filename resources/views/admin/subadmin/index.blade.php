@@ -99,14 +99,22 @@
 
                 <div class="card-body">
                     <div class="d-flex justify-between align-items-center">
-                        <h5 class="card-title w-100">All Sub Admins</h5>
+                        <h5 class="card-title w-100">All Approved Franchise</h5>
+                        <form action="{{ route('admin.subadmins') }}" method="GET" class="w-50 d-flex gap-2">
+                            <input type="text"
+                                name="search"
+                                value="{{ request('search') }}"
+                                class="form-control"
+                                placeholder="Search id & name...">
 
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </form>
                     </div>
 
                     <table class="table resposive">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
+                                <th scope="col">Franchise ID</th>
                                 <th scope="col">Org/ Institute Name</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">email</th>
@@ -116,7 +124,10 @@
                         <tbody>
                             @foreach ($subAdmins as $subadmin)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <th scope="row">
+                                    {{ $subadmin->subadmin_unique_id ?? 'NITE-00' . $subadmin->id }}
+                                </th>
+
                                 <td>{{ $subadmin->org_name }}</td>
                                 <td>{{ $subadmin->name }}</td>
                                 <td>{{ $subadmin->email }}</td>
@@ -209,7 +220,7 @@
                         <label>Org/ Institute Name<span class="text-danger">*</span></label>
                         <input type="text" name="org_name" class="form-control" value="{{ old('org_name', $subadmin->org_name) }}">
                     </div>
-                    
+
                     <div class="mb-3">
                         <label>Name<span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control" value="{{ old('name', $subadmin->name) }}">

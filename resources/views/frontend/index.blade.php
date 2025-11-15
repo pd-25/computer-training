@@ -404,7 +404,7 @@
     <div class="row align-items-center">
       <div class="col-md-6 order-2 order-md-1">
         <h2 class="section-title">About Us</h2>
-        <p>Welcome to <strong>United Social Empowered Education (USEE)</strong> — an institution built on the belief that true learning inspires transformation. Our goal is to redefine education by empowering both individuals and communities through creative and impactful learning opportunities.</p>
+        <p>Welcome to <strong>National Institute of Technical Education</strong> — an institution built on the belief that true learning inspires transformation. Our goal is to redefine education by empowering both individuals and communities through creative and impactful learning opportunities.</p>
         <p>We go beyond traditional academics, combining excellence in education with a strong sense of social purpose. At USEE, we cultivate a culture of lifelong learning and encourage students to use their knowledge to bring meaningful change to the world around them.</p>
         <a href="{{ route('frontend.about') }}" class="btn btn-outline-primary">Learn more</a>
       </div>

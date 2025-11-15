@@ -101,6 +101,16 @@
                     <div class="d-flex justify-between align-items-center">
                         <h5 class="card-title w-100">All Students</h5>
 
+                        <form action="{{ route('subadmin.students') }}" method="GET" class="w-50 d-flex gap-2">
+                            <input type="text"
+                                name="search"
+                                value="{{ request('search') }}"
+                                class="form-control"
+                                placeholder="Search enrollment or email or name...">
+
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </form>
+
                     </div>
 
                     <table class="table table-responsive table-bordered table-striped align-middle">
@@ -129,7 +139,7 @@
                                 </td>
 
                                 <td>
-                                    <p class="m-0 badge bg-primary">Enrollment no: {{ $student->enrollment_no }}</p>
+                                    <p class="m-0 fs-6 fw-bold">Enrollment: {{ $student->enrollment_no }}</p>
                                     <p class="m-0">Student Name: {{ $student->name }}</p>
                                     <p class="m-0">Email: {{ $student->email }}</p>
                                     <p class="m-0">Mobile: {{ $student->phone }}</p>
@@ -155,6 +165,37 @@
                             </tr>
                             @endforelse
                         </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td colspan="6">
+                                    <div class="pagination-wrapper text-center py-3">
+                                        <form method="GET" action="" class="pagination-form d-inline-flex align-items-center justify-content-center gap-2">
+
+                                            <button type="submit" name="page" value="{{ $students->currentPage() - 1 }}"
+                                                class="btn btn-outline-primary"
+                                                {{ $students->onFirstPage() ? 'disabled' : '' }}>
+                                                Prev
+                                            </button>
+
+                                            <div class="d-flex align-items-center gap-1">
+                                                <input type="text" class="form-control text-center" value="{{ $students->currentPage() }}" readonly style="width: 60px;">
+                                                <span>/</span>
+                                                <input type="text" class="form-control text-center" value="{{ $students->lastPage() }}" readonly style="width: 60px;">
+                                            </div>
+
+                                            <button type="submit" name="page" value="{{ $students->currentPage() + 1 }}"
+                                                class="btn btn-outline-primary"
+                                                {{ !$students->hasMorePages() ? 'disabled' : '' }}>
+                                                Next
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+
+
                     </table>
 
                 </div>

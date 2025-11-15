@@ -28,10 +28,24 @@ class DashboardController extends Controller
 
 
     // Students=======================================================================================================>
-    public function studentsView()
+    public function studentsView(Request $request)
     {
+        $search = $request->input('search');
 
-        $students = Student::where('created_by', Auth::guard('subadmin')->id())->orderBy('id', 'desc')->get();
+        $students = Student::where('created_by', Auth::guard('subadmin')->id())
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('enrollment_no', 'like', '%' . $search . '%')
+                        ->orWhere('name', 'like', '%' . $search . '%')
+                        ->orWhere('email', 'like', '%' . $search . '%')
+                        ->orWhere('phone', 'like', '%' . $search . '%')
+                        ->orWhere('father_name', 'like', '%' . $search . '%');
+                });
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10)
+            ->appends(['search' => $search]);
+
         return view('subadmin.student.index', compact('students'));
     }
 
@@ -86,24 +100,10 @@ class DashboardController extends Controller
             }
 
             // Generate unique enrollment number (1st numbers, then letters; 6–15 chars)
-            do {
-                $numLength = rand(5, 10); // 5 to 10 digits first
-                $charLength = rand(1, 5); // 1 to 5 letters next
-                $numbers = '';
-                for ($i = 0; $i < $numLength; $i++) {
-                    $numbers .= rand(0, 9);
-                }
 
-                $letters = '';
-                for ($i = 0; $i < $charLength; $i++) {
-                    $letters .= chr(rand(65, 90)); // A–Z
-                }
-
-                $enrollmentNo = $numbers . $letters;
-            } while (Student::where('enrollment_no', $enrollmentNo)->exists());
 
             // Create student record
-            Student::create([
+            $student = Student::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
@@ -113,7 +113,13 @@ class DashboardController extends Controller
                 'org_name' => Auth::guard('subadmin')->user()->org_name,
                 'image' => $imagePath,
                 'created_by' => Auth::guard('subadmin')->id(),
-                'enrollment_no' => $enrollmentNo,
+            ]);
+
+            $prefix = "NITE000";
+            $enrollmentNo = $prefix . $student->id;
+
+            $student->update([
+                'enrollment_no' => $enrollmentNo
             ]);
 
             return redirect()->back()->with('success', 'Student added successfully.');
@@ -184,18 +190,53 @@ class DashboardController extends Controller
     }
 
     // Assaigned Courses===============================================================================================>
-    public function courseAssignView()
+    // public function courseAssignView()
+    // {
+    //     $courses = Course::all();
+    //     $sts = Student::where('created_by', Auth::guard('subadmin')->id())
+    //         ->orderBy('id', 'desc')
+    //         ->paginate(10);
+
+    //     $students = Student::where('created_by', Auth::guard('subadmin')->id())
+    //         ->whereNotNull('assigned_course_id')
+    //         ->whereRaw("JSON_LENGTH(assigned_course_id) > 0")
+    //         ->orderBy('id', 'desc')
+    //         ->paginate(10);
+
+    //     $assigned_courses = [];
+    //     foreach ($students as $student) {
+    //         $assigned_courses[$student->id] = $student->assigned_course_id;
+    //     }
+
+    //     return view('subadmin.courseassign.index', compact('courses', 'sts', 'students'));
+    // }
+
+    public function courseAssignView(Request $request)
     {
+        // Get the search query from the request
+        $search = $request->input('search');
+
         $courses = Course::all();
+
         $sts = Student::where('created_by', Auth::guard('subadmin')->id())
             ->orderBy('id', 'desc')
             ->paginate(10);
 
+        // Build the query with search functionality for assigned courses
         $students = Student::where('created_by', Auth::guard('subadmin')->id())
             ->whereNotNull('assigned_course_id')
             ->whereRaw("JSON_LENGTH(assigned_course_id) > 0")
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('enrollment_no', 'like', '%' . $search . '%')
+                        ->orWhere('name', 'like', '%' . $search . '%')
+                        ->orWhere('email', 'like', '%' . $search . '%')
+                        ->orWhere('phone', 'like', '%' . $search . '%');
+                });
+            })
             ->orderBy('id', 'desc')
-            ->paginate(10);
+            ->paginate(10)
+            ->appends(['search' => $search]); // Preserve search parameter in pagination
 
         $assigned_courses = [];
         foreach ($students as $student) {
@@ -203,6 +244,27 @@ class DashboardController extends Controller
         }
 
         return view('subadmin.courseassign.index', compact('courses', 'sts', 'students'));
+    }
+
+    public function searchStudent(Request $request)
+    {
+        $query = $request->query('query');
+
+        $student = Student::where('created_by', Auth::guard('subadmin')->id())
+            ->where(function ($q) use ($query) {
+                $q->where('email', 'LIKE', "%$query%")
+                    ->orWhere('enrollment_no', 'LIKE', "%$query%");
+            })
+            ->first();
+
+        if (!$student) {
+            return response()->json(['status' => 'not_found']);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'student' => $student
+        ]);
     }
 
     public function courseAssignAdd(Request $request)

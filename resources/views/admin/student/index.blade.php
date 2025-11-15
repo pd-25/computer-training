@@ -101,6 +101,16 @@
                     <div class="d-flex justify-between align-items-center">
                         <h5 class="card-title w-100">All Students</h5>
 
+                        <form action="{{ route('admin.students') }}" method="GET" class="w-50 d-flex gap-2">
+                            <input type="text"
+                                name="search"
+                                value="{{ request('search') }}"
+                                class="form-control"
+                                placeholder="Search id & name...">
+
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </form>
+
                     </div>
 
                     <table class="table table-bordered table-striped align-middle">

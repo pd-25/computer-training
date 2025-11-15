@@ -322,7 +322,8 @@
                 height: 50px;
             }
         }
-                /* ---------- PRINT OPTIMIZATION ---------- */
+
+        /* ---------- PRINT OPTIMIZATION ---------- */
         @media print {
             body {
                 padding: 0;
@@ -411,7 +412,7 @@
             top: 20px;
             right: 20px;
             z-index: 9999;
-        } 
+        }
     </style>
 </head>
 
@@ -509,6 +510,12 @@
                     <div class="signature-line"></div>
                     <div class="signature-name">Controller of Examination</div>
                     <div class="signature-title">National Institute of Technical Education</div>
+                </div>
+
+                <div class="signature">
+                    <div class="signature-line"></div>
+                    <div class="signature-name">Center Director Signature</div>
+                    <div class="signature-title">{{ $student->org_name ?? 'N/A' }}</div>
                 </div>
 
                 <div class="date-section">

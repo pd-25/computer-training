@@ -9,6 +9,7 @@ class Course extends Model
     protected $table = 'courses';
 
     protected $fillable = [
+        'course_unique_id',
         'category_id',
         'course_name',
         'subjects',

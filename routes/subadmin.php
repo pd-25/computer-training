@@ -22,6 +22,8 @@ Route::group(['prefix' => 'subadmin', 'middleware' => 'subadmin'], function () {
 
     // Assaigned Courses===============================================================================================>
     Route::get('/course-assign', [DashboardController::class, 'courseAssignView'])->name('subadmin.course-assign');
+    Route::get('subadmin/student-search', [DashboardController::class, 'searchStudent'])->name('subadmin.student.search');
+
     Route::post('/students/assign-course', [DashboardController::class, 'courseAssignAdd'])->name('subadmin.course-assign.add');
     Route::put('/course-assign/edit/{id}', [DashboardController::class, 'courseAssignEdit'])->name('subadmin.course-assign.edit');
     Route::delete('/course-assign/delete/{id}', [DashboardController::class, 'courseAssignDelete'])->name('subadmin.course-assign.delete');

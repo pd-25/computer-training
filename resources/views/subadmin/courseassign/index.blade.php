@@ -97,9 +97,19 @@
         <div class="col-xxl-12 col-md-12">
             <div class="card info-card sales-card">
 
-                <div class="card-body">
+<div class="card-body">
                     <div class="d-flex justify-between align-items-center">
                         <h5 class="card-title w-100">All Assigned Courses</h5>
+                        
+                        <form action="{{ route('subadmin.course-assign') }}" method="GET" class="w-50 d-flex gap-2">
+                            <input type="text"
+                                name="search"
+                                value="{{ request('search') }}"
+                                class="form-control"
+                                placeholder="Search enrollment or email or name...">
+
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </form>
 
                     </div>
 
@@ -114,11 +124,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($students as $key => $student)
+                            @forelse($students as $index => $student)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $students->firstItem() + $index }}</td>
                                 <td style="text-transform: capitalize;">{{ $student->name }}</td>
-                                <td>{{ $student->email }}</td>
+                                <td>
+                                    <p class="m-0 fw-bold">Enrollment: {{ $student->enrollment_no }}</p>
+                                    <p class="m-0">Email: {{ $student->email }}</p>
+                                </td>
                                 <td>
                                     @if(!empty($student->assigned_course_id))
                                     <ul class="mb-0">
@@ -146,15 +159,17 @@
                                             <i class="bi bi-trash"></i>
                                         </button>
 
-
-
                                         <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#generateIdCard{{ $student->id }}">Generate ID</button>
                                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#generateIdMarks{{ $student->id }}">Marks</button>
                                         <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#generateCertificate{{ $student->id }}">Generate Certificate</button>
                                     </div>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No students with assigned courses found.</td>
+                            </tr>
+                            @endforelse
                         </tbody>
 
                         <tfoot>
@@ -163,13 +178,13 @@
                                     <div class="d-flex justify-content-end">
                                         @if ($students->hasPages())
                                         <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
-                                            <!-- {{-- Prev Button --}} -->
-                                            <a href="{{ $students->previousPageUrl() ?? '#' }}"
+                                            <!-- Prev Button -->
+                                            <a href="{{ $students->appends(['search' => request('search')])->previousPageUrl() ?? '#' }}"
                                                 class="btn btn-outline-primary btn-sm {{ $students->onFirstPage() ? 'disabled' : '' }}">
                                                 Prev
                                             </a>
 
-                                            <!-- {{-- Current Page Input --}} -->
+                                            <!-- Current Page Input -->
                                             <input type="text"
                                                 class="form-control form-control-sm text-center"
                                                 value="{{ $students->currentPage() }}"
@@ -178,15 +193,15 @@
 
                                             <span>/</span>
 
-                                            <!-- {{-- Last Page Input --}} -->
+                                            <!-- Last Page Input -->
                                             <input type="text"
                                                 class="form-control form-control-sm text-center"
                                                 value="{{ $students->lastPage() }}"
                                                 readonly
                                                 style="width: 60px;">
 
-                                            <!-- {{-- Next Button --}} -->
-                                            <a href="{{ $students->nextPageUrl() ?? '#' }}"
+                                            <!-- Next Button -->
+                                            <a href="{{ $students->appends(['search' => request('search')])->nextPageUrl() ?? '#' }}"
                                                 class="btn btn-outline-primary btn-sm {{ !$students->hasMorePages() ? 'disabled' : '' }}">
                                                 Next
                                             </a>
@@ -223,13 +238,17 @@
 
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label>Choose Student<span class="text-danger">*</span></label>
-                        <select name="student_id" class="form-select" required>
-                            <option value="" selected disabled>Select Student</option>
-                            @foreach($sts as $st)
-                            <option value="{{ $st->id }}">{{ $st->name }} ({{ $st->email }})</option>
-                            @endforeach
-                        </select>
+                        <label>Search Student by Email / Enrollment No <span class="text-danger">*</span></label>
+                        <input type="text" id="studentSearch" class="form-control" placeholder="Enter Email or Enrollment No">
+                        <small class="text-muted">Type minimum 3 characters...</small>
+                    </div>
+
+                    <!-- Auto Display Result -->
+                    <div id="studentResult" class="p-2 border rounded mb-3" style="display:none;">
+                        <strong>Name:</strong> <span id="resName"></span><br>
+                        <strong>Email:</strong> <span id="resEmail"></span><br>
+                        <strong>Enrollment:</strong> <span id="resEnroll"></span>
+                        <input type="hidden" name="student_id" id="selectedStudentId">
                     </div>
 
                     <div class="mb-3">
@@ -622,6 +641,30 @@
             });
         });
     </script>
+
+    <!-- Search Student -->
+    <script>
+        document.getElementById('studentSearch').addEventListener('keyup', function() {
+            let query = this.value.trim();
+
+            if (query.length < 3) return;
+
+            fetch("{{ route('subadmin.student.search') }}?query=" + query)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        document.getElementById("studentResult").style.display = "block";
+                        document.getElementById("resName").innerText = data.student.name;
+                        document.getElementById("resEmail").innerText = data.student.email;
+                        document.getElementById("resEnroll").innerText = data.student.enrollment_no;
+                        document.getElementById("selectedStudentId").value = data.student.id;
+                    } else {
+                        document.getElementById("studentResult").style.display = "none";
+                    }
+                });
+        });
+    </script>
+
 
 
 

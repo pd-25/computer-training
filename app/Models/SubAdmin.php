@@ -17,6 +17,7 @@ class SubAdmin extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'subadmin_unique_id',
         'name',
         'org_name',
         'email',

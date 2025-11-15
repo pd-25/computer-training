@@ -194,29 +194,32 @@
 
     <script>
         document.getElementById("downloadBtn").addEventListener("click", function() {
-            const {
-                jsPDF
-            } = window.jspdf;
+
             const idCard = document.querySelector(".id-card");
 
             html2canvas(idCard, {
                 scale: 2,
-                useCORS: true, // fixes image not loading issue
+                useCORS: true,
                 logging: false
             }).then(canvas => {
-                const imgData = canvas.toDataURL("image/png");
-                const pdf = new jsPDF("p", "pt", [canvas.width, canvas.height]);
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = (canvas.height * pageWidth) / canvas.width;
 
-                pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight);
-                pdf.save("ID_Card_{{ $student->name ?? 'student' }}.pdf");
+                // PNG Data
+                const imgData = canvas.toDataURL("image/png");
+
+                // Create download link
+                const link = document.createElement("a");
+                link.href = imgData;
+                link.download = "ID_Card_{{ $student->name ?? 'student' }}.png";
+                link.click();
+
             }).catch(err => {
-                console.error("Error generating PDF:", err);
-                alert("❌ Something went wrong while generating the PDF.");
+                console.error("Error generating PNG:", err);
+                alert("❌ Something went wrong while generating the PNG.");
             });
+
         });
     </script>
+
 </body>
 
 </html>
