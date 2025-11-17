@@ -54,6 +54,7 @@
   /* Remove any background from slider items */
   .hero-slider-item {
     background: none !important;
+
   }
 
   /* Professional Typography */
@@ -183,12 +184,12 @@
 
 @section('content')
 <!-- hero slider -->
-<section class="hero-section overlay" id="hero-section" style="background-image: url('{{ asset('frontend/images/banner/banner-1.jpg') }}');">
+<section class="hero-section overlay" id="hero-section" style="background-image: url('{{ asset('frontend/images/banner/b1.png') }}');">
   <div class="container">
     <div class="hero-slider">
 
       <!-- 1 - Technical Education -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/banner-1.jpg') }}">
+      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/b1.png') }}">
         <div class="row">
           <div class="col-lg-8 col-md-10">
             <div class="hero-content">
@@ -204,7 +205,7 @@
       </div>
 
       <!-- 2 - Agriculture -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/2.png') }}">
+      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/b2.png') }}">
         <div class="row">
           <div class="col-lg-8 col-md-10">
             <div class="hero-content">
@@ -220,7 +221,7 @@
       </div>
 
       <!-- 3 - Fashion & Beauty -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/1.png') }}">
+      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/b3.png') }}">
         <div class="row">
           <div class="col-lg-8 col-md-10">
             <div class="hero-content">
@@ -236,7 +237,7 @@
       </div>
 
       <!-- 4 - Digital/Computer -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/3.png') }}">
+      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/b4.png') }}">
         <div class="row">
           <div class="col-lg-8 col-md-10">
             <div class="hero-content">

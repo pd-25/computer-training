@@ -178,8 +178,6 @@
             <div class="footer-info">
                 <strong>"NITE"</strong> House no. 113, Sankar Azan Path, Hatigaon, Bhetapara Road, Near Hatigaon police station,
                 P.O.- Hatigaon, Guwahati, Assam, 781038<br>
-                WARD NO-13, MUZAFFARPUR, BIHAR<br>
-                Ph: 9835050556 | E-mail:
             </div>
         </div>
     </div>
