@@ -180,6 +180,15 @@
       font-size: 1rem;
     }
   }
+
+  #marqueeText {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    /* background: #fff;  */
+    z-index: 9999;
+  }
 </style>
 
 @section('content')
@@ -814,6 +823,20 @@
   </div>
 </section>
 <!-- /blog -->
+
+<!-- Marquee Text -->
+<section class="section py-2 bg-primary" id="marqueeText">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <marquee behavior="scroll" direction="left" scrollamount="10" class="text-dark font-weight-bold" style="font-size: 18px;">
+          Welcome to National Institute of Technical Education (NITE) - Empowering Skills, Transforming Futures! - Join us for Diploma Courses in Technical, Agriculture, Fashion, Digital, Fire & Safety, Hospitality, Ayurveda, Interior Design, Electrical & More! - Admissions Open Now! - Apply Today and Shape Your Tomorrow with NITE! - <spna class="text-danger">NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE</spna>
+        </marquee>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /Marquee Text -->
 
 
 
