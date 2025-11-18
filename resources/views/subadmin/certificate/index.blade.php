@@ -36,6 +36,22 @@
             border: 12px solid transparent;
         }
 
+        .watermark {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.50;
+            background-repeat: repeat;
+            background-size: 140px 80px;
+            background-image: url("data:image/svg+xml;utf8,\
+        <svg xmlns='http://www.w3.org/2000/svg' width='140' height='80'>\
+            <text x='0' y='40' font-size='14' font-weight='700' fill='rgba(255,0,0,0.25)' transform='rotate(-25 0 0)'>NITE NITE NITE</text>\
+        </svg>");
+        }
+
+
+
         .certificate-border {
             position: absolute;
             top: 0;
@@ -417,13 +433,16 @@
 </head>
 
 <body>
-    <div class="certificate-container">
+    <div class="certificate-container" style="position: relative;">
+        <div class="watermark"></div>
+
         <div class="certificate-border"></div>
 
         <div class="ornament-top-left"></div>
         <div class="ornament-top-right"></div>
         <div class="ornament-bottom-left"></div>
         <div class="ornament-bottom-right"></div>
+
 
         <div class="header">
             <div class="organization-name">NATIONAL INSTITUTE OF TECHNICAL EDUCATION</div>
