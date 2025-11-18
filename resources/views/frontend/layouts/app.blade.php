@@ -31,9 +31,9 @@
   <style>
     .whatsapp-float {
       position: fixed;
-      width: 60px;
-      height: 60px;
-      bottom: 25px;
+      width: 40px;
+      height: 40px;
+      bottom: 40px;
       right: 25px;
       background-color: #25d366;
       color: #fff;
