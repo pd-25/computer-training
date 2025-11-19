@@ -199,7 +199,7 @@
 
       <!-- 1 - Technical Education -->
       <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/b1.png') }}">
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-lg-8 col-md-10">
             <div class="hero-content">
               <span class="hero-badge">Technical Excellence</span>
@@ -210,12 +210,12 @@
               <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <!-- 2 - Agriculture -->
       <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/b2.png') }}">
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-lg-8 col-md-10">
             <div class="hero-content">
               <span class="hero-badge">Sustainable Future</span>
@@ -226,12 +226,12 @@
               <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <!-- 3 - Fashion & Beauty -->
       <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/b3.png') }}">
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-lg-8 col-md-10">
             <div class="hero-content">
               <span class="hero-badge">Creative Arts</span>
@@ -242,12 +242,12 @@
               <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <!-- 4 - Digital/Computer -->
       <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/b4.png') }}">
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-lg-8 col-md-10">
             <div class="hero-content">
               <span class="hero-badge">Digital Innovation</span>
@@ -258,103 +258,7 @@
               <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- 5 - Fire & Safety -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/4.png') }}">
-        <div class="row">
-          <div class="col-lg-8 col-md-10">
-            <div class="hero-content">
-              <span class="hero-badge">Life Savers</span>
-              <h1 class="text-white">Safety First, Always</h1>
-              <p>
-                Gain expertise in fire and safety management — because saving lives is the ultimate responsibility.
-              </p>
-              <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 6 - Hospitality -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/3.png') }}">
-        <div class="row">
-          <div class="col-lg-8 col-md-10">
-            <div class="hero-content">
-              <span class="hero-badge">Service Excellence</span>
-              <h1 class="text-white">Hospitality with Heart</h1>
-              <p>
-                Train with our hotel and tourism management programs to deliver excellence in global hospitality and tourism.
-              </p>
-              <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 7 - Ayurveda -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/4.png') }}">
-        <div class="row">
-          <div class="col-lg-8 col-md-10">
-            <div class="hero-content">
-              <span class="hero-badge">Ancient Wisdom</span>
-              <h1 class="text-white">Ayurveda & Wellness Science</h1>
-              <p>
-                Discover ancient healing with modern touch — study Ayurveda, Panchakarma, and therapeutic massage techniques.
-              </p>
-              <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 8 - Interior Design -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/2.png') }}">
-        <div class="row">
-          <div class="col-lg-8 col-md-10">
-            <div class="hero-content">
-              <span class="hero-badge">Creative Spaces</span>
-              <h1 class="text-white">Design Spaces that Inspire</h1>
-              <p>
-                Learn interior and exterior design to create beautiful, functional environments that reflect creativity and balance.
-              </p>
-              <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 9 - Electrical -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/1.png') }}">
-        <div class="row">
-          <div class="col-lg-8 col-md-10">
-            <div class="hero-content">
-              <span class="hero-badge">Power & Energy</span>
-              <h1 class="text-white">Power Up Your Career</h1>
-              <p>
-                Become a skilled electrician, technician, or mobile expert — drive the world of modern electrical innovation.
-              </p>
-              <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 10 - General -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/3.png') }}">
-        <div class="row">
-          <div class="col-lg-8 col-md-10">
-            <div class="hero-content">
-              <span class="hero-badge">Endless Possibilities</span>
-              <h1 class="text-white">The Future Begins with Learning</h1>
-              <p>
-                From technology to traditional arts, our diverse diploma courses open endless doors to opportunity.
-              </p>
-              <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
-            </div>
-          </div>
-        </div>
+        </div> -->
       </div>
 
     </div>
