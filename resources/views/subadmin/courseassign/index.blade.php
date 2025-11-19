@@ -1,6 +1,8 @@
 @extends('subadmin.layout.main')
 @section('title', 'All Assigned Courses')
 
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 <style>
     .fixed-btn {
         position: fixed;
@@ -97,10 +99,10 @@
         <div class="col-xxl-12 col-md-12">
             <div class="card info-card sales-card">
 
-<div class="card-body">
+                <div class="card-body">
                     <div class="d-flex justify-between align-items-center">
                         <h5 class="card-title w-100">All Assigned Courses</h5>
-                        
+
                         <form action="{{ route('subadmin.course-assign') }}" method="GET" class="w-50 d-flex gap-2">
                             <input type="text"
                                 name="search"
@@ -140,7 +142,9 @@
                                         $course = $courses->firstWhere('id', $courseId);
                                         @endphp
                                         @if($course)
-                                        <li>{{ $course->course_name }}</li>
+                                        <li>Enrollment: <strong>{{ $course->course_unique_id }}</strong></li>
+                                        <li>Name: <strong>{{ $course->course_name }}</strong></li>
+                                        <li>Duration: <strong>{{ $course->duration }}</strong></li>
                                         @endif
                                         @endforeach
                                     </ul>
@@ -252,22 +256,21 @@
                     </div>
 
                     <div class="mb-3">
-                        <label>Assign Course <span class="text-danger">*</span></label>
-                        <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
-                            @foreach($courses as $course)
-                            <div class="form-check">
-                                <input
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    name="assigned_course_id[]"
-                                    value="{{ $course->id }}"
-                                    id="assigned_course_{{ $course->id }}">
-                                <label class="form-check-label" for="assigned_course_{{ $course->id }}">
-                                    {{ $course->course_name }}
-                                </label>
-                            </div>
+                        <label>Choose Course Category <span class="text-danger">*</span></label>
+                        <select name="category_id" id="categorySelect" class="form-control">
+                            <option value="">Select Category</option>
+                            @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
                             @endforeach
-                        </div>
+                        </select>
+                    </div>
+
+                    <!-- Use Select2 Dropdown -->
+                    <div class="mb-3">
+                        <label>Assign Course <span class="text-danger">*</span></label>
+                        <select name="assigned_course_id[]" id="courseSelect" class="form-control" multiple="multiple">
+                            <option value="">Select courses...</option>
+                        </select>
                     </div>
                 </div>
 
@@ -319,7 +322,7 @@
                                     id="edit_course_{{ $course->id }}"
                                     @if(in_array($course->id, $student->assigned_course_id ?? [])) checked @endif>
                                 <label class="form-check-label" for="edit_course_{{ $course->id }}">
-                                    {{ $course->course_name }}
+                                    {{ $course->course_name }} - {{ $course->category->name }}
                                 </label>
                             </div>
                             @endforeach
@@ -570,16 +573,63 @@
     </div>
 
 
+    <!-- Select2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+
+
+    <!-- Select2 Course Filter Script -->
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(() => {
-                document.querySelectorAll("#alert-container .alert").forEach(el => {
-                    el.remove();
-                });
-            }, 2500);
+        $(document).ready(function() {
+            // Initialize Select2 with search enabled
+            $('#courseSelect').select2({
+                placeholder: 'Select courses',
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $('#addStudentModal') // Important for modal
+            });
+
+            // Store all courses data
+            const allCourses = @json($courses);
+
+            // Load all courses initially
+            allCourses.forEach(course => {
+                $('#courseSelect').append(
+                    `<option value="${course.id}">${course.course_name}</option>`
+                );
+            });
+
+            // Filter courses when category changes
+            $('#categorySelect').on('change', function() {
+                const categoryId = $(this).val();
+
+                // Clear current options
+                $('#courseSelect').empty().trigger('change');
+
+                if (categoryId) {
+                    // Filter courses by selected category
+                    const filteredCourses = allCourses.filter(course => course.category_id == categoryId);
+
+                    // Add filtered courses to select
+                    filteredCourses.forEach(course => {
+                        const newOption = new Option(course.course_name, course.id, false, false);
+                        $('#courseSelect').append(newOption);
+                    });
+                } else {
+                    // If no category selected, show all courses
+                    allCourses.forEach(course => {
+                        const newOption = new Option(course.course_name, course.id, false, false);
+                        $('#courseSelect').append(newOption);
+                    });
+                }
+
+                // Refresh Select2 to show updated options
+                $('#courseSelect').trigger('change');
+            });
         });
     </script>
-
 
     <!-- Assign Marks -->
     <script>
@@ -665,9 +715,15 @@
         });
     </script>
 
-
-
-
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+                document.querySelectorAll("#alert-container .alert").forEach(el => {
+                    el.remove();
+                });
+            }, 2500);
+        });
+    </script>
 
 
 

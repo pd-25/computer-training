@@ -41,13 +41,10 @@
             inset: 0;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.50;
+            opacity: 0.08;
             background-repeat: repeat;
-            background-size: 140px 80px;
-            background-image: url("data:image/svg+xml;utf8,\
-        <svg xmlns='http://www.w3.org/2000/svg' width='140' height='80'>\
-            <text x='0' y='40' font-size='14' font-weight='700' fill='rgba(255,0,0,0.25)' transform='rotate(-25 0 0)'>NITE NITE NITE</text>\
-        </svg>");
+            background-size: 450px 50px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='450' height='50'%3E%3Ctext x='5' y='30' font-size='13' font-weight='600' fill='red'%3ENATIONAL INSTITUTE OF TECHNICAL EDUCATION%3C/text%3E%3C/svg%3E");
         }
 
 

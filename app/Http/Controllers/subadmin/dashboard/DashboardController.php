@@ -4,6 +4,7 @@ namespace App\Http\Controllers\subadmin\dashboard;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Course;
 use App\Models\Mark;
 use App\Models\Student;
@@ -190,32 +191,46 @@ class DashboardController extends Controller
     }
 
     // Assaigned Courses===============================================================================================>
-    // public function courseAssignView()
+    // public function courseAssignView(Request $request)
     // {
+    //     $search = $request->input('search');
+    //     $categories = Category::all();
     //     $courses = Course::all();
+
     //     $sts = Student::where('created_by', Auth::guard('subadmin')->id())
     //         ->orderBy('id', 'desc')
     //         ->paginate(10);
 
+    //     // Build the query with search functionality for assigned courses
     //     $students = Student::where('created_by', Auth::guard('subadmin')->id())
     //         ->whereNotNull('assigned_course_id')
     //         ->whereRaw("JSON_LENGTH(assigned_course_id) > 0")
+    //         ->when($search, function ($query, $search) {
+    //             return $query->where(function ($q) use ($search) {
+    //                 $q->where('enrollment_no', 'like', '%' . $search . '%')
+    //                     ->orWhere('name', 'like', '%' . $search . '%')
+    //                     ->orWhere('email', 'like', '%' . $search . '%')
+    //                     ->orWhere('phone', 'like', '%' . $search . '%');
+    //             });
+    //         })
     //         ->orderBy('id', 'desc')
-    //         ->paginate(10);
+    //         ->paginate(10)
+    //         ->appends(['search' => $search]); // Preserve search parameter in pagination
 
     //     $assigned_courses = [];
     //     foreach ($students as $student) {
     //         $assigned_courses[$student->id] = $student->assigned_course_id;
     //     }
 
-    //     return view('subadmin.courseassign.index', compact('courses', 'sts', 'students'));
+    //     return view('subadmin.courseassign.index', compact('courses', 'sts', 'students', 'categories'));
     // }
 
     public function courseAssignView(Request $request)
     {
-        // Get the search query from the request
         $search = $request->input('search');
+        $categories = Category::all();
 
+        // Get courses with their category_id
         $courses = Course::all();
 
         $sts = Student::where('created_by', Auth::guard('subadmin')->id())
@@ -236,14 +251,14 @@ class DashboardController extends Controller
             })
             ->orderBy('id', 'desc')
             ->paginate(10)
-            ->appends(['search' => $search]); // Preserve search parameter in pagination
+            ->appends(['search' => $search]);
 
         $assigned_courses = [];
         foreach ($students as $student) {
             $assigned_courses[$student->id] = $student->assigned_course_id;
         }
 
-        return view('subadmin.courseassign.index', compact('courses', 'sts', 'students'));
+        return view('subadmin.courseassign.index', compact('courses', 'sts', 'students', 'categories'));
     }
 
     public function searchStudent(Request $request)

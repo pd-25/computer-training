@@ -13,7 +13,8 @@
 
     <!-- Add the custom styles here -->
     <style>
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
             display: flex;
@@ -31,10 +32,14 @@
             position: relative;
             margin-top: auto;
         }
+
         #sidebar {
             background-color: #eee5e5
         }
     </style>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
 <body>
@@ -54,7 +59,7 @@
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>
-    
+
     <!-- Scripts -->
     <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

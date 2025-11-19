@@ -519,7 +519,7 @@
 <!-- /course categories -->
 
 <!-- cta -->
-<section class="section bg-primary">
+<section class="section" style="background-color: #182b45;">
   <div class="container">
     <div class="row">
       <div class="col-12 text-center">
@@ -825,11 +825,11 @@
 <!-- /blog -->
 
 <!-- Marquee Text -->
-<section class="section py-2 bg-primary" id="marqueeText">
+<section class="section py-2" id="marqueeText"  style="background-color: #182b45;">
   <div class="container">
     <div class="row">
       <div class="col-12">
-        <marquee behavior="scroll" direction="left" scrollamount="10" class="text-dark font-weight-bold" style="font-size: 16px;">
+        <marquee behavior="scroll" direction="left" scrollamount="10" class="text-white font-weight-bold" style="font-size: 16px;">
           Welcome to National Institute of Technical Education (NITE) - Empowering Skills, Transforming Futures! - Join us for Diploma Courses in Technical, Agriculture, Fashion, Digital, Fire & Safety, Hospitality, Ayurveda, Interior Design, Electrical & More! - Admissions Open Now! - Apply Today and Shape Your Tomorrow with NITE! - <spna class="text-danger">NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE NITE</spna>
         </marquee>
       </div>

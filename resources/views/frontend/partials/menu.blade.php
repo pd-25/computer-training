@@ -1,4 +1,4 @@
-<ul class="navbar-nav ml-auto text-center">
+<ul class="navbar-nav text-center w-100 justify-content-center" style="background-color: #182b45;">
     <li class="nav-item {{ Route::currentRouteName() == 'frontend.index' ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('frontend.index') }}">Home</a>
     </li>
