@@ -1,90 +1,124 @@
 @extends('frontend.layouts.app')
 
 <style>
+  /* ===== CAROUSEL CLEAN CSS ===== */
   .carousel-container {
     width: 100%;
+    /* height: 500px; */
     position: relative;
+    overflow: hidden;
   }
 
   .carousel-slides {
-    position: relative;
     width: 100%;
     height: 100%;
+    position: relative;
   }
 
   .carousel-image {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+    transition: opacity .5s ease-in-out;
   }
 
   .carousel-image.active {
     opacity: 1;
-    z-index: 1;
   }
 
-  /* Navigation Buttons */
+  /* Prev / Next Buttons */
   .carousel-btn {
     position: absolute;
     top: 50%;
+    /* Always vertically middle */
     transform: translateY(-50%);
     background: rgba(0, 0, 0, 0.5);
-    color: white;
+    color: #fff;
     border: none;
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
-    cursor: pointer;
     font-size: 24px;
-    z-index: 10;
-    transition: background 0.3s;
-  }
-
-  .carousel-btn:hover {
-    background: rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+    z-index: 20;
   }
 
   .prev-btn {
-    left: 20px;
+    left: 15px;
   }
 
   .next-btn {
-    right: 20px;
+    right: 15px;
   }
 
-  /* Indicators (Pills) */
-  .carousel-indicators {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    z-index: 10;
+  .carousel-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
   }
 
-  .indicator {
-    width: 40px;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.3s, width 0.3s;
+  /* ===== Responsive Fixes ===== */
+  @media (max-width: 768px) {
+    .carousel-container {
+      height: 260px;
+      /* Resize height for mobile */
+    }
+
+    .carousel-btn {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      top: 50%;
+      /* Ensure perfect vertical center */
+    }
+
+    .prev-btn {
+      left: 10px;
+    }
+
+    .next-btn {
+      right: 10px;
+    }
   }
 
-  .indicator.active {
-    background: rgba(255, 255, 255, 1);
-    width: 50px;
+  /* ===== HIDE BELOW-SECTION IMAGE ON MOBILE ===== */
+  @media (max-width: 567px) {
+    .remove-mobile-gap {
+      display: none !important;
+    }
+
+    .remove-mobile-gap {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .hero-section {
+      min-height: 80vh;
+    }
+
+    .hero-slider-item h1 {
+      font-size: 2.2rem;
+    }
+
+    .hero-slider-item p {
+      font-size: 1.1rem;
+    }
+
+    .hero-slider-item .btn-primary {
+      padding: 12px 30px;
+      font-size: 1rem;
+    }
+
+    .slick-prev {
+      left: 15px;
+    }
+
+    .slick-next {
+      right: 15px;
+    }
   }
 
-  .indicator:hover {
-    background: rgba(255, 255, 255, 0.8);
-  }
 
 
   .overlay::before {
@@ -229,33 +263,6 @@
     right: 30px;
   }
 
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .hero-section {
-      min-height: 80vh;
-    }
-
-    .hero-slider-item h1 {
-      font-size: 2.2rem;
-    }
-
-    .hero-slider-item p {
-      font-size: 1.1rem;
-    }
-
-    .hero-slider-item .btn-primary {
-      padding: 12px 30px;
-      font-size: 1rem;
-    }
-
-    .slick-prev {
-      left: 15px;
-    }
-
-    .slick-next {
-      right: 15px;
-    }
-  }
 
   @media (max-width: 576px) {
     .hero-slider-item h1 {
@@ -280,13 +287,13 @@
 @section('content')
 <!-- hero slider -->
 <section class="overlay position-relative m-0 p-0" id="hero-section" style="overflow: hidden;">
-  <div class="carousel-container position-relative" style="height: 500px;">
+  <div class="carousel-container position-relative">
     <!-- Images -->
     <div class="carousel-slides">
-      <img src="{{ asset('frontend/images/banner/b1.png') }}" class="carousel-image img-fluid active" alt="Banner 1">
+      <img src="{{ asset('frontend/images/banner/b1.png') }}" class="carousel-image img-fluid  active" alt="Banner 1">
       <img src="{{ asset('frontend/images/banner/b2.png') }}" class="carousel-image img-fluid" alt="Banner 2">
-      <img src="{{ asset('frontend/images/banner/b3.png') }}" class="carousel-image img-fluid" alt="Banner 3">
-      <img src="{{ asset('frontend/images/banner/b4.png') }}" class="carousel-image img-fluid" alt="Banner 4">
+      <img src="{{ asset('frontend/images/banner/b3.png') }}" class="carousel-image img-fluid " alt="Banner 3">
+      <img src="{{ asset('frontend/images/banner/b4.png') }}" class="carousel-image img-fluid " alt="Banner 4">
     </div>
 
     <!-- Previous Button -->
@@ -306,7 +313,7 @@
 <section class="bg-gray overflow-md-hidden">
   <div class="container-fluid p-0">
     <div class="row no-gutters">
-      <div class="col-xl-4 col-lg-5 align-self-end">
+      <div class="col-xl-4 col-lg-5 align-self-end remove-mobile-gap">
         <img class="img-fluid w-100" src="{{ asset('frontend/images/banner/banner-feature.png') }}" alt="banner-feature">
       </div>
       <div class="col-xl-8 col-lg-7">
@@ -345,7 +352,6 @@
     </div>
   </div>
 </section>
-
 <!-- /banner-feature -->
 
 <!-- about us -->
@@ -355,7 +361,7 @@
       <div class="col-md-6 order-2 order-md-1">
         <h2 class="section-title">About Us</h2>
         <p>Welcome to <strong>National Institute of Technical Education</strong> — an institution built on the belief that true learning inspires transformation. Our goal is to redefine education by empowering both individuals and communities through creative and impactful learning opportunities.</p>
-        <p>We go beyond traditional academics, combining excellence in education with a strong sense of social purpose. At USEE, we cultivate a culture of lifelong learning and encourage students to use their knowledge to bring meaningful change to the world around them.</p>
+        <p>We go beyond traditional academics, combining excellence in education with a strong sense of social purpose. At NITE, we cultivate a culture of lifelong learning and encourage students to use their knowledge to bring meaningful change to the world around them.</p>
         <a href="{{ route('frontend.about') }}" class="btn btn-outline-primary">Learn more</a>
       </div>
       <div class="col-md-6 order-1 order-md-2 mb-4 mb-md-0">
@@ -485,13 +491,13 @@
         <div class="bg-white p-5">
           <h2 class="section-title">Success Stories</h2>
           <p>
-            At <strong>United Social Empowered Education (USEE)</strong>, every success story begins with a dream — a dream to learn, grow, and create a better future. Over the years, we’ve helped thousands of learners turn their aspirations into achievements through quality education, skill development, and personal empowerment.
+            At <strong>National Institute of Technical Education (NITE)</strong>, every success story begins with a dream — a dream to learn, grow, and create a better future. Over the years, we’ve helped thousands of learners turn their aspirations into achievements through quality education, skill development, and personal empowerment.
           </p>
           <p>
             One inspiring example is <strong>Anita Das</strong>, a student from a small town who joined our <em>Diploma in Office Management</em> course. With dedicated mentorship and hands-on training, Anita not only secured a stable job but also became a mentor for other young women in her community. Her journey reflects the heart of our mission — transforming education into empowerment.
           </p>
           <p>
-            At USEE, we believe success is not just about individual growth, but about creating waves of positive change that uplift entire communities. Every student who walks through our doors carries the potential to become a beacon of hope, leadership, and progress.
+            At NITE, we believe success is not just about individual growth, but about creating waves of positive change that uplift entire communities. Every student who walks through our doors carries the potential to become a beacon of hope, leadership, and progress.
           </p>
         </div>
       </div>
@@ -833,7 +839,7 @@
   autoPlay();
 
   // Pause autoplay on hover
-  // document.querySelector('.carousel-container').addEventListener('mouseenter', () => {
+  // document.querySelector('.carousel-container').addEventListener('moNITEnter', () => {
   //   clearInterval(autoPlayInterval);
   // });
 

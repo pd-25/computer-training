@@ -25,7 +25,7 @@
         <img class="img-fluid w-100 mb-4" src="{{ asset('frontend/images/about/about-page.jpg') }}" alt="about image">
         <h2 class="section-title">ABOUT OUR JOURNY</h2>
         <p>Welcome to National Institute of Technical Education — an institution built on the belief that true learning inspires transformation. Our goal is to redefine education by empowering both individuals and communities through creative and impactful learning opportunities.</p>
-        <p>We go beyond traditional academics, combining excellence in education with a strong sense of social purpose. At USEE, we cultivate a culture of lifelong learning and encourage students to use their knowledge to bring meaningful change to the world around them.</p>
+        <p>We go beyond traditional academics, combining excellence in education with a strong sense of social purpose. At NITE, we cultivate a culture of lifelong learning and encourage students to use their knowledge to bring meaningful change to the world around them.</p>
       </div>
     </div>
   </div>
@@ -88,7 +88,7 @@
             One inspiring example is <strong>Anita Das</strong>, a student from a small town who joined our <em>Diploma in Office Management</em> course. With dedicated mentorship and hands-on training, Anita not only secured a stable job but also became a mentor for other young women in her community. Her journey reflects the heart of our mission — transforming education into empowerment.
           </p>
           <p>
-            At USEE, we believe success is not just about individual growth, but about creating waves of positive change that uplift entire communities. Every student who walks through our doors carries the potential to become a beacon of hope, leadership, and progress.
+            At NITE, we believe success is not just about individual growth, but about creating waves of positive change that uplift entire communities. Every student who walks through our doors carries the potential to become a beacon of hope, leadership, and progress.
           </p>
         </div>
       </div>
