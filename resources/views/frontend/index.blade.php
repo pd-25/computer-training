@@ -265,6 +265,9 @@
 
 
   @media (max-width: 576px) {
+    .logo-top{
+      width: 70px !important;
+    }
     .hero-slider-item h1 {
       font-size: 1.8rem;
     }
