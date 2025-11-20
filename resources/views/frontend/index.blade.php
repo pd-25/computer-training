@@ -1,6 +1,92 @@
 @extends('frontend.layouts.app')
 
 <style>
+  .carousel-container {
+    width: 100%;
+    position: relative;
+  }
+
+  .carousel-slides {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .carousel-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  .carousel-image.active {
+    opacity: 1;
+    z-index: 1;
+  }
+
+  /* Navigation Buttons */
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    z-index: 10;
+    transition: background 0.3s;
+  }
+
+  .carousel-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .prev-btn {
+    left: 20px;
+  }
+
+  .next-btn {
+    right: 20px;
+  }
+
+  /* Indicators (Pills) */
+  .carousel-indicators {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+  }
+
+  .indicator {
+    width: 40px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s, width 0.3s;
+  }
+
+  .indicator.active {
+    background: rgba(255, 255, 255, 1);
+    width: 50px;
+  }
+
+  .indicator:hover {
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+
   .overlay::before {
     position: absolute;
     content: "";
@@ -193,75 +279,25 @@
 
 @section('content')
 <!-- hero slider -->
-<section class="hero-section overlay" id="hero-section" style="background-image: url('{{ asset('frontend/images/banner/b1.png') }}');">
-  <div class="container">
-    <div class="hero-slider">
-
-      <!-- 1 - Technical Education -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/b1.png') }}">
-        <!-- <div class="row">
-          <div class="col-lg-8 col-md-10">
-            <div class="hero-content">
-              <span class="hero-badge">Technical Excellence</span>
-              <h1 class="text-white">Empower Your Skills with Technical Education</h1>
-              <p>
-                Learn in-demand trades like welding, printing, and electronics — build a career that stands strong in today's industrial world.
-              </p>
-              <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
-            </div>
-          </div>
-        </div> -->
-      </div>
-
-      <!-- 2 - Agriculture -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/b2.png') }}">
-        <!-- <div class="row">
-          <div class="col-lg-8 col-md-10">
-            <div class="hero-content">
-              <span class="hero-badge">Sustainable Future</span>
-              <h1 class="text-white">Agriculture – The Root of Growth</h1>
-              <p>
-                Master modern farming, horticulture, and agricultural technology to shape the future of sustainable food production.
-              </p>
-              <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
-            </div>
-          </div>
-        </div> -->
-      </div>
-
-      <!-- 3 - Fashion & Beauty -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/b3.png') }}">
-        <!-- <div class="row">
-          <div class="col-lg-8 col-md-10">
-            <div class="hero-content">
-              <span class="hero-badge">Creative Arts</span>
-              <h1 class="text-white">Turn Passion into Profession</h1>
-              <p>
-                From beauty therapy to fashion and textile design — explore creative career paths that inspire and empower.
-              </p>
-              <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
-            </div>
-          </div>
-        </div> -->
-      </div>
-
-      <!-- 4 - Digital/Computer -->
-      <div class="hero-slider-item" data-background="{{ asset('frontend/images/banner/b4.png') }}">
-        <!-- <div class="row">
-          <div class="col-lg-8 col-md-10">
-            <div class="hero-content">
-              <span class="hero-badge">Digital Innovation</span>
-              <h1 class="text-white">Step Into the Digital Era</h1>
-              <p>
-                Join our computer and office management programs to become the digital backbone of any organization.
-              </p>
-              <a href="{{ route('frontend.contact') }}" class="btn btn-primary">Apply Now</a>
-            </div>
-          </div>
-        </div> -->
-      </div>
-
+<section class="overlay position-relative m-0 p-0" id="hero-section" style="overflow: hidden;">
+  <div class="carousel-container position-relative" style="height: 500px;">
+    <!-- Images -->
+    <div class="carousel-slides">
+      <img src="{{ asset('frontend/images/banner/b1.png') }}" class="carousel-image img-fluid active" alt="Banner 1">
+      <img src="{{ asset('frontend/images/banner/b2.png') }}" class="carousel-image img-fluid" alt="Banner 2">
+      <img src="{{ asset('frontend/images/banner/b3.png') }}" class="carousel-image img-fluid" alt="Banner 3">
+      <img src="{{ asset('frontend/images/banner/b4.png') }}" class="carousel-image img-fluid" alt="Banner 4">
     </div>
+
+    <!-- Previous Button -->
+    <button class="carousel-btn prev-btn" onclick="changeSlide(-1)">
+      <span>&lt;</span>
+    </button>
+
+    <!-- Next Button -->
+    <button class="carousel-btn next-btn" onclick="changeSlide(1)">
+      <span>&gt;</span>
+    </button>
   </div>
 </section>
 <!-- /hero slider -->
@@ -274,7 +310,7 @@
         <img class="img-fluid w-100" src="{{ asset('frontend/images/banner/banner-feature.png') }}" alt="banner-feature">
       </div>
       <div class="col-xl-8 col-lg-7">
-        <div class="row feature-blocks bg-gray justify-content-between">
+        <div class="row feature-blocks bg-gray justify-content-between" style="margin-top: 0px;">
 
           <!-- 1 -->
           <div class="col-sm-6 col-xl-5 mb-xl-5 mb-lg-3 mb-4 text-center text-sm-left">
@@ -729,7 +765,7 @@
 <!-- /blog -->
 
 <!-- Marquee Text -->
-<section class="section py-2" id="marqueeText"  style="background-color: #182b45;">
+<section class="section py-2" id="marqueeText" style="background-color: #182b45;">
   <div class="container">
     <div class="row">
       <div class="col-12">
@@ -746,23 +782,64 @@
 
 
 <script>
-  // Change ONLY the section background when slide changes
-  document.addEventListener('DOMContentLoaded', function() {
-    const heroSection = document.getElementById('hero-section');
-    const sliderItems = document.querySelectorAll('.hero-slider-item');
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.carousel-image');
+  const indicators = document.querySelectorAll('.indicator');
+  const totalSlides = slides.length;
+  let autoPlayInterval;
 
-    // For Slick slider
-    if (typeof $.fn.slick !== 'undefined') {
-      $('.hero-slider').on('beforeChange', function(event, slick, currentSlide, nextSlide) {
-        const nextItem = sliderItems[nextSlide];
-        const bgImage = nextItem.getAttribute('data-background');
+  function showSlide(index) {
+    // Remove active class from all slides and indicators
+    slides.forEach(slide => slide.classList.remove('active'));
+    indicators.forEach(indicator => indicator.classList.remove('active'));
 
-        if (bgImage) {
-          heroSection.style.backgroundImage = `url('${bgImage}')`;
-        }
-      });
+    // Add active class to current slide and indicator
+    slides[index].classList.add('active');
+    indicators[index].classList.add('active');
+  }
+
+  function changeSlide(direction) {
+    currentSlide += direction;
+
+    // Loop around
+    if (currentSlide >= totalSlides) {
+      currentSlide = 0;
+    } else if (currentSlide < 0) {
+      currentSlide = totalSlides - 1;
     }
-  });
+
+    showSlide(currentSlide);
+    resetAutoPlay();
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    showSlide(currentSlide);
+    resetAutoPlay();
+  }
+
+  function autoPlay() {
+    autoPlayInterval = setInterval(() => {
+      changeSlide(1);
+    }, 2000); // Change slide every 5 seconds
+  }
+
+  function resetAutoPlay() {
+    clearInterval(autoPlayInterval);
+    autoPlay();
+  }
+
+  // Start autoplay when page loads
+  autoPlay();
+
+  // Pause autoplay on hover
+  // document.querySelector('.carousel-container').addEventListener('mouseenter', () => {
+  //   clearInterval(autoPlayInterval);
+  // });
+
+  // document.querySelector('.carousel-container').addEventListener('mouseleave', () => {
+  //   autoPlay();
+  // });
 </script>
 
 @endsection

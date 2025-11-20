@@ -70,7 +70,7 @@
 </style>
 <header class="header">
   <!-- Top section with social & quick links (optional - can be removed if not needed) -->
-  <div class="top-header py-2 bg-light border-bottom">
+  <!-- <div class="top-header py-2 bg-light border-bottom">
     <div class="container">
       <div class="row no-gutters align-items-center">
         <div class="col-lg-4 text-center text-lg-left">
@@ -91,15 +91,15 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Logo and Contact Info Bar -->
-  <div class="top-bar bg-white py-3 border-bottom">
+  <div class="top-bar bg-white border-bottom">
     <div class="container">
       <div class="row align-items-center">
         <div class="col-lg-6 col-md-6 text-center text-md-left mb-3 mb-md-0">
           <a href="{{ route('frontend.index') }}">
-            <img src="{{ asset('./logo.png') }}" alt="Global Education & Technoworld" style="max-height: 120px;">
+            <img src="{{ asset('./logo.png') }}" alt="Global Education & Technoworld" style="max-height: 100px;">
           </a>
         </div>
         <div class="col-lg-6 col-md-6 text-center text-md-right">
