@@ -99,7 +99,7 @@
       <div class="row align-items-center">
         <div class="col-lg-6 col-md-6 text-center text-md-left mb-3 mb-md-0">
           <a href="{{ route('frontend.index') }}">
-            <img src="{{ asset('./logo.png') }}" alt="Global Education & Technoworld" style="max-height: 100px;">
+            <img src="{{ asset('./logo.png') }}" alt="Global Education & Technoworld" class="logo-top" style="max-height: 100px;">
           </a>
         </div>
         <div class="col-lg-6 col-md-6 text-center text-md-right">
