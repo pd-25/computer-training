@@ -124,7 +124,7 @@
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            /* margin-bottom: 30px; */
             position: relative;
             padding-bottom: 15px;
         }
@@ -167,7 +167,7 @@
 
         .certificate-title {
             text-align: center;
-            margin: 30px 0;
+            /* margin: 30px 0; */
             position: relative;
         }
 
@@ -190,7 +190,7 @@
         }
 
         .certificate-body {
-            margin: 40px 0;
+            /* margin: 40px 0; */
         }
 
         .certificate-text {
@@ -514,7 +514,19 @@
         </div>
 
         <div class="certificate-title">
+            @if($year == 1)
+            <h1>First Year Marksheet</h1>
+            @elseif($year == 2)
+            <h1>Second Year Marksheet</h1>
+            @elseif($year == 3)
+            <h1>Third Year Marksheet</h1>
+            @elseif($year == 4)
+            <h1>Fourth Year Marksheet</h1>
+            @elseif($year == 5)
+            <h1>Fifth Year Marksheet</h1>
+            @else
             <h1>Marksheet</h1>
+            @endif
         </div>
 
         <div class="certificate-body">
@@ -537,6 +549,7 @@
                 </div>
             </div>
 
+
             <div class="certificate-text">
                 has successfully completed the course
             </div>
@@ -557,6 +570,9 @@
             </div>
 
             <!-- Marks Table -->
+            <!-- {{-- If SINGLE YEAR data exists --}} -->
+            @if(isset($subjectDetails))
+
             <div class="marks-table-container">
                 <table class="marks-table">
                     <thead>
@@ -568,6 +584,7 @@
                             <th style="text-align: center;">Grade</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @foreach($subjectDetails as $subject)
                         <tr>
@@ -576,19 +593,20 @@
                             <td style="text-align: center;">{{ $subject['obtained_marks'] }}</td>
                             <td style="text-align: center;">{{ $subject['percentage'] }}%</td>
                             <td style="text-align: center;">
-                                <span class="grade-badge grade-{{ strtolower(str_replace('+', '-plus', $subject['grade'])) }}">
+                                <span class="grade-badge grade-{{ strtolower(str_replace('+','-plus',$subject['grade'])) }}">
                                     {{ $subject['grade'] }}
                                 </span>
                             </td>
                         </tr>
                         @endforeach
+
                         <tr class="total-row">
                             <td><strong>TOTAL</strong></td>
                             <td style="text-align: center;"><strong>{{ $totalMaxMarks }}</strong></td>
                             <td style="text-align: center;"><strong>{{ $totalMarksObtained }}</strong></td>
                             <td style="text-align: center;"><strong>{{ round($overallPercentage, 2) }}%</strong></td>
                             <td style="text-align: center;">
-                                <span class="grade-badge grade-{{ strtolower(str_replace('+', '-plus', $overallGrade)) }}">
+                                <span class="grade-badge grade-{{ strtolower(str_replace('+','-plus',$overallGrade)) }}">
                                     {{ $overallGrade }}
                                 </span>
                             </td>
@@ -596,6 +614,80 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- {{-- ELSE: MULTI YEAR MARKSHEET --}} -->
+            @elseif(isset($allYearsData))
+
+            @foreach($allYearsData as $year => $yearData)
+            <h3>Year {{ $year }}</h3>
+
+            <div class="marks-table-container">
+                <table class="marks-table">
+                    <thead>
+                        <tr>
+                            <th>Subject Name</th>
+                            <th style="text-align: center;">Max Marks</th>
+                            <th style="text-align: center;">Marks Obtained</th>
+                            <th style="text-align: center;">Percentage</th>
+                            <th style="text-align: center;">Grade</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach($yearData['subjects'] as $subject)
+                        <tr>
+                            <td>{{ $subject['name'] }}</td>
+                            <td style="text-align: center;">{{ $subject['max_marks'] }}</td>
+                            <td style="text-align: center;">{{ $subject['obtained_marks'] }}</td>
+                            <td style="text-align: center;">{{ $subject['percentage'] }}%</td>
+                            <td style="text-align: center;">
+                                <span class="grade-badge grade-{{ strtolower(str_replace('+','-plus',$subject['grade'])) }}">
+                                    {{ $subject['grade'] }}
+                                </span>
+                            </td>
+                        </tr>
+                        @endforeach
+
+                        <tr class="total-row">
+                            <td><strong>Total (Year {{ $year }})</strong></td>
+                            <td style="text-align: center;"><strong>{{ $yearData['total_max'] }}</strong></td>
+                            <td style="text-align: center;"><strong>{{ $yearData['total_obtained'] }}</strong></td>
+                            <td style="text-align: center;"><strong>{{ round($yearData['percentage'], 2) }}%</strong></td>
+                            <td style="text-align: center;">
+                                <span class="grade-badge grade-{{ strtolower(str_replace('+','-plus',$yearData['grade'])) }}">
+                                    {{ $yearData['grade'] }}
+                                </span>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            @endforeach
+
+            <!-- {{-- Grand Total --}} -->
+            <h3>Grand Total</h3>
+
+            <div class="marks-table-container">
+                <table class="marks-table">
+                    <tr>
+                        <td><strong>Grand Total Marks</strong></td>
+                        <td style="text-align: center;"><strong>{{ $grandTotalMax }}</strong></td>
+                        <td style="text-align: center;"><strong>{{ $grandTotalObtained }}</strong></td>
+                        <td style="text-align: center;"><strong>{{ round($grandPercentage, 2) }}%</strong></td>
+                        <td style="text-align: center;">
+                            <span class="grade-badge grade-{{ strtolower(str_replace('+','-plus',$grandGrade)) }}">
+                                {{ $grandGrade }}
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            @endif
+
+
 
             <div class="performance-section">
                 During the course his/her performance was good and we wish him/her best of luck for future endeavors

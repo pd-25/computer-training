@@ -33,7 +33,7 @@ Route::group(['prefix' => 'subadmin', 'middleware' => 'subadmin'], function () {
     Route::post('/course-assign/marks/store', [DashboardController::class, 'giveMarks'])->name('subadmin.marks.store');
     Route::get('/course-assign/marks/subjects/{course_id}', [DashboardController::class, 'getSubjects'])->name('subadmin.marks.subjects');
     Route::get('/course-assign/marks/get/{student}/{course}', [DashboardController::class, 'getStudentMarks'])->name('subadmin.marks.get');
-    Route::get('/course-assign/marksheet/{student_id}/{course_id}', [DashboardController::class, 'getMarksheet'])->name('subadmin.marksheet.get');
+    Route::get('/course-assign/marksheet/{student_id}/{course_id}/{year?}', [DashboardController::class, 'getMarksheet'])->name('subadmin.marksheet.get');
 
 
 

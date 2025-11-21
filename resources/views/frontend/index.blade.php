@@ -265,9 +265,12 @@
 
 
   @media (max-width: 576px) {
-    .logo-top{
+    /* .logo-top{
       width: 70px !important;
-    }
+    } */
+      .wow{
+        margin-top: -32px !important;
+      }
     .hero-slider-item h1 {
       font-size: 1.8rem;
     }
@@ -313,7 +316,7 @@
 <!-- /hero slider -->
 
 <!-- banner-feature -->
-<section class="bg-gray overflow-md-hidden">
+<section class="bg-gray overflow-md-hidden wow">
   <div class="container-fluid p-0">
     <div class="row no-gutters">
       <div class="col-xl-4 col-lg-5 align-self-end remove-mobile-gap">

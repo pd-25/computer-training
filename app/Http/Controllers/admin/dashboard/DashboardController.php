@@ -139,9 +139,10 @@ class DashboardController extends Controller
                 'duration' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:3048',
                 'subjects' => 'required|array|min:1',
-                'subjects.*.subject_name' => 'required|string',
-                'subjects.*.min_marks' => 'required|numeric|min:0',
-                'subjects.*.max_marks' => 'required|numeric|min:0',
+                'subjects.*' => 'required|array',
+                'subjects.*.*.subject_name' => 'required|string',
+                'subjects.*.*.min_marks' => 'required|numeric|min:0',
+                'subjects.*.*.max_marks' => 'required|numeric|min:0',
             ]);
 
             $course = new Course();
@@ -187,28 +188,32 @@ class DashboardController extends Controller
                 'duration' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:3048',
                 'subjects' => 'required|array|min:1',
-                'subjects.*.subject_name' => 'required|string',
-                'subjects.*.min_marks' => 'required|numeric|min:0',
-                'subjects.*.max_marks' => 'required|numeric|min:0',
+                'subjects.*' => 'required|array',
+                'subjects.*.*.subject_name' => 'required|string',
+                'subjects.*.*.min_marks' => 'required|numeric|min:0',
+                'subjects.*.*.max_marks' => 'required|numeric|min:0',
             ]);
 
             $course = Course::findOrFail($id);
+
             $course->category_id = $request->category_id;
             $course->course_name = $request->course_name;
             $course->slug = Str::slug($request->course_name, '-');
             $course->description = $request->description;
             $course->duration = $request->duration;
 
-            // Image handling
+            // Handle image
             if ($request->hasFile('image')) {
+                // Delete old image if exists
                 if ($course->image && Storage::disk('public')->exists($course->image)) {
                     Storage::disk('public')->delete($course->image);
                 }
+
                 $path = $request->file('image')->store('courses', 'public');
                 $course->image = $path;
             }
 
-            // Update subjects
+            // Save subjects as JSON
             $course->subjects = json_encode($request->subjects);
 
             $course->save();

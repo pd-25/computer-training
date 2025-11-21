@@ -9,6 +9,7 @@ class Mark extends Model
     protected $fillable = [
         'student_id',
         'course_id',
+        'year',
         'marks',
     ];
 
