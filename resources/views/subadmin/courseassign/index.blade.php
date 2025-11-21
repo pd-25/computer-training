@@ -641,7 +641,16 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-
+    <!-- Alert -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+                document.querySelectorAll("#alert-container .alert").forEach(el => {
+                    el.remove();
+                });
+            }, 2500);
+        });
+    </script>
 
 
     <!-- Select2 Course Filter Script -->
@@ -696,121 +705,121 @@
     </script>
 
     <!-- Assign Marks -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-    // Laravel Named Route Templates
-    const subjectUrlTemplate = "{{ route('subadmin.marks.subjects', ['course_id' => ':id']) }}";
-    const marksUrlTemplate = "{{ route('subadmin.marks.get', ['student' => ':student', 'course' => ':course']) }}";
+            // Laravel Named Route Templates
+            const subjectUrlTemplate = "{{ route('subadmin.marks.subjects', ['course_id' => ':id']) }}";
+            const marksUrlTemplate = "{{ route('subadmin.marks.get', ['student' => ':student', 'course' => ':course']) }}";
 
-    // Handle Course Selection
-    document.querySelectorAll('.course-select').forEach(radio => {
-        radio.addEventListener('change', async function() {
-            const courseId = this.value;
-            const studentId = this.dataset.student;
+            // Handle Course Selection
+            document.querySelectorAll('.course-select').forEach(radio => {
+                radio.addEventListener('change', async function() {
+                    const courseId = this.value;
+                    const studentId = this.dataset.student;
 
-            const yearContainer = document.getElementById('yearContainer' + studentId);
-            const yearSelect = yearContainer.querySelector('.year-select');
-            const subjectsContainer = document.getElementById('subjectsContainer' + studentId);
+                    const yearContainer = document.getElementById('yearContainer' + studentId);
+                    const yearSelect = yearContainer.querySelector('.year-select');
+                    const subjectsContainer = document.getElementById('subjectsContainer' + studentId);
 
-            // Reset fields
-            yearSelect.innerHTML = '<option value="">Choose Year</option>';
-            subjectsContainer.innerHTML = '';
-            yearContainer.style.display = 'none';
+                    // Reset fields
+                    yearSelect.innerHTML = '<option value="">Choose Year</option>';
+                    subjectsContainer.innerHTML = '';
+                    yearContainer.style.display = 'none';
 
-            try {
-                // Fetch subjects by course ID
-                const fetchUrl = subjectUrlTemplate.replace(':id', courseId);
-                const subjectRes = await fetch(fetchUrl);
+                    try {
+                        // Fetch subjects by course ID
+                        const fetchUrl = subjectUrlTemplate.replace(':id', courseId);
+                        const subjectRes = await fetch(fetchUrl);
 
-                if (!subjectRes.ok) {
-                    throw new Error('Failed to fetch subjects');
-                }
+                        if (!subjectRes.ok) {
+                            throw new Error('Failed to fetch subjects');
+                        }
 
-                const subjects = await subjectRes.json();
+                        const subjects = await subjectRes.json();
 
-                if (!subjects || Object.keys(subjects).length === 0) {
-                    subjectsContainer.innerHTML = "<p class='text-danger'>No subjects found for this course.</p>";
-                    return;
-                }
+                        if (!subjects || Object.keys(subjects).length === 0) {
+                            subjectsContainer.innerHTML = "<p class='text-danger'>No subjects found for this course.</p>";
+                            return;
+                        }
 
-                // Populate years
-                Object.keys(subjects).forEach(year => {
-                    const option = document.createElement('option');
-                    option.value = year;
-                    option.textContent = `Year ${year}`;
-                    yearSelect.appendChild(option);
-                });
+                        // Populate years
+                        Object.keys(subjects).forEach(year => {
+                            const option = document.createElement('option');
+                            option.value = year;
+                            option.textContent = `Year ${year}`;
+                            yearSelect.appendChild(option);
+                        });
 
-                yearContainer.style.display = 'block';
+                        yearContainer.style.display = 'block';
 
-                // Save subjects in memory
-                yearSelect.dataset.subjects = JSON.stringify(subjects);
+                        // Save subjects in memory
+                        yearSelect.dataset.subjects = JSON.stringify(subjects);
 
-            } catch (err) {
-                subjectsContainer.innerHTML = "<p class='text-danger'>Error loading course data.</p>";
-                console.error(err);
-            }
-        });
-    });
-
-    // Handle Year Selection
-    document.querySelectorAll('.year-select').forEach(select => {
-        select.addEventListener('change', async function() {
-            const year = this.value;
-            const studentId = this.dataset.student;
-
-            const subjectsContainer = document.getElementById('subjectsContainer' + studentId);
-
-            if (!year) {
-                subjectsContainer.innerHTML = '';
-                return;
-            }
-
-            subjectsContainer.innerHTML = "<p class='text-muted'>Loading subjects...</p>";
-
-            try {
-                const allSubjects = JSON.parse(this.dataset.subjects);
-                const yearSubjects = allSubjects[year];
-
-                if (!yearSubjects || yearSubjects.length === 0) {
-                    subjectsContainer.innerHTML = `<p class='text-danger'>No subjects found for Year ${year}.</p>`;
-                    return;
-                }
-
-                // Selected course
-                const courseRadio = document.querySelector(`input[name="course_id"][data-student="${studentId}"]:checked`);
-                const courseId = courseRadio ? courseRadio.value : null;
-
-                // Fetch existing marks
-                let existingMarks = {};
-
-                if (courseId) {
-                    const marksFetchUrl = marksUrlTemplate
-                        .replace(':student', studentId)
-                        .replace(':course', courseId);
-
-                    const marksRes = await fetch(marksFetchUrl);
-
-                    if (marksRes.ok) {
-                        existingMarks = await marksRes.json();
+                    } catch (err) {
+                        subjectsContainer.innerHTML = "<p class='text-danger'>Error loading course data.</p>";
+                        console.error(err);
                     }
-                }
+                });
+            });
 
-                // Build subject inputs
-                let html = `
+            // Handle Year Selection
+            document.querySelectorAll('.year-select').forEach(select => {
+                select.addEventListener('change', async function() {
+                    const year = this.value;
+                    const studentId = this.dataset.student;
+
+                    const subjectsContainer = document.getElementById('subjectsContainer' + studentId);
+
+                    if (!year) {
+                        subjectsContainer.innerHTML = '';
+                        return;
+                    }
+
+                    subjectsContainer.innerHTML = "<p class='text-muted'>Loading subjects...</p>";
+
+                    try {
+                        const allSubjects = JSON.parse(this.dataset.subjects);
+                        const yearSubjects = Object.values(allSubjects[year] || {});
+
+                        if (!yearSubjects || yearSubjects.length === 0) {
+                            subjectsContainer.innerHTML = `<p class='text-danger'>No subjects found for Year ${year}.</p>`;
+                            return;
+                        }
+
+                        // Selected course
+                        const courseRadio = document.querySelector(`input[name="course_id"][data-student="${studentId}"]:checked`);
+                        const courseId = courseRadio ? courseRadio.value : null;
+
+                        // Fetch existing marks
+                        let existingMarks = {};
+
+                        if (courseId) {
+                            const marksFetchUrl = marksUrlTemplate
+                                .replace(':student', studentId)
+                                .replace(':course', courseId);
+
+                            const marksRes = await fetch(marksFetchUrl);
+
+                            if (marksRes.ok) {
+                                existingMarks = await marksRes.json();
+                            }
+                        }
+
+                        // Build subject inputs
+                        let html = `
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle"></i>
                         <strong>Year ${year}</strong> - Enter marks for all subjects
                     </div>
                 `;
 
-                html += '<div class="row">';
+                        html += '<div class="row">';
 
-                yearSubjects.forEach(sub => {
-                    const value = existingMarks[sub.subject_name] ?? '';
+                        yearSubjects.forEach(sub => {
+                            const value = existingMarks[sub.subject_name] ?? '';
 
-                    html += `
+                            html += `
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
                                 ${sub.subject_name}
@@ -824,32 +833,31 @@ document.addEventListener('DOMContentLoaded', function() {
                                    value="${value}"
                                    required>
                         </div>`;
+                        });
+
+                        html += '</div>';
+
+                        subjectsContainer.innerHTML = html;
+
+                    } catch (err) {
+                        subjectsContainer.innerHTML = "<p class='text-danger'>Error loading subjects or marks.</p>";
+                        console.error(err);
+                    }
                 });
+            });
 
-                html += '</div>';
+            // Reset modal on close
+            document.querySelectorAll('[id^="generateIdMarks"]').forEach(modal => {
+                modal.addEventListener('hidden.bs.modal', function() {
+                    const studentId = this.id.replace('generateIdMarks', '');
+                    document.getElementById('yearContainer' + studentId).style.display = 'none';
+                    document.getElementById('subjectsContainer' + studentId).innerHTML = '';
+                    this.querySelector('form').reset();
+                });
+            });
 
-                subjectsContainer.innerHTML = html;
-
-            } catch (err) {
-                subjectsContainer.innerHTML = "<p class='text-danger'>Error loading subjects or marks.</p>";
-                console.error(err);
-            }
         });
-    });
-
-    // Reset modal on close
-    document.querySelectorAll('[id^="generateIdMarks"]').forEach(modal => {
-        modal.addEventListener('hidden.bs.modal', function() {
-            const studentId = this.id.replace('generateIdMarks', '');
-            document.getElementById('yearContainer' + studentId).style.display = 'none';
-            document.getElementById('subjectsContainer' + studentId).innerHTML = '';
-            this.querySelector('form').reset();
-        });
-    });
-
-});
-</script>
-
+    </script>
 
     <!-- Search Student -->
     <script>
@@ -873,18 +881,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         });
     </script>
-
-    <!-- Alert -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(() => {
-                document.querySelectorAll("#alert-container .alert").forEach(el => {
-                    el.remove();
-                });
-            }, 2500);
-        });
-    </script>
-
 
     <!-- Yearwise marksheet show script -->
     <script>
