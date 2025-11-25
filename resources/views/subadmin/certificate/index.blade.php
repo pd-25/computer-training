@@ -430,7 +430,10 @@
 </head>
 
 <body>
-    <div class="certificate-container" style="position: relative;">
+    <div class="certificate-container" style="position: relative; background: linear-gradient(
+        rgba(255,255,255,0.9),
+        rgba(255,255,255,0.9)
+    ),url({{asset('logo.png')}}); background-repeat: no-repeat; background-position: center; background-size: contain; overflow: hidden;">
         <div class="watermark"></div>
 
         <div class="certificate-border"></div>

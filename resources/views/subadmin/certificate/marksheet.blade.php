@@ -495,7 +495,10 @@
 </head>
 
 <body>
-    <div class="certificate-container">
+    <div class="certificate-container" style="background: linear-gradient(
+        rgba(255,255,255,0.9),
+        rgba(255,255,255,0.9)
+    ),url({{asset('logo.png')}}); background-repeat: no-repeat; background-position: center; background-size: contain; overflow: hidden;">
         <div class="certificate-border"></div>
 
         <div class="watermark"></div>
@@ -527,6 +530,10 @@
             @else
             <h1>Marksheet</h1>
             @endif
+        </div>
+
+        <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+            <img src="{{ asset($student->image) }}" alt="" width="120px" style=" border: 1px solid #1a237e; padding: 5px;">
         </div>
 
         <div class="certificate-body">
