@@ -51,4 +51,19 @@ class SubAdmin extends Authenticatable
     {
         return $this->hasMany(Student::class);
     }
+
+    public function wallets()
+    {
+        return $this->hasMany(wallet::class);
+    }
+
+    public function topupRequests()
+    {
+        return $this->hasMany(TopupRequest::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

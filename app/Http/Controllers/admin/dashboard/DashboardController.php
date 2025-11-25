@@ -10,12 +10,15 @@ use App\Models\Course;
 use App\Models\FranchiseRequest;
 use App\Models\Student;
 use App\Models\SubAdmin as ModelsSubAdmin;
+use App\Models\TopupRequest;
+use App\Models\Wallet;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -560,5 +563,78 @@ class DashboardController extends Controller
     {
         $franchise = FranchiseRequest::findOrFail($id);
         return view('admin.franchise.view', compact('franchise'));
+    }
+
+
+
+    // Payments Requests===============================================================================================>
+    public function paymentsView()
+    {
+        $totalPayments = TopupRequest::with('subadmin')->orderBy('id', 'desc')->paginate(10);
+
+        return view('admin.payments.index', compact('totalPayments'));
+    }
+
+    public function paymentAccept(Request $request, $id)
+    {
+        $request->validate([
+            'subadmin_id' => 'required|exists:sub_admins,id',
+            'amount' => 'required|numeric|min:0',
+        ]);
+
+        try {
+
+            DB::beginTransaction();
+
+            // 1. Approve payment request
+            $paymentRequest = TopupRequest::findOrFail($id);
+            $paymentRequest->status = 'approved';
+            $paymentRequest->save();
+
+            // 2. Credit amount to wallet
+            $wallet = Wallet::firstOrCreate(
+                ['subadmin_id' => $request->subadmin_id],
+                ['amount' => 0]
+            );
+
+            // Add the amount
+            $wallet->amount += $request->amount;
+            $wallet->save();
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Payment request approved & wallet credited.');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()->back()
+                ->with('error', 'Failed to approve payment request: ' . $e->getMessage());
+        }
+    }
+
+    public function paymentRejected(Request $request, $id)
+    {
+        try {
+            $paymentRequest = TopupRequest::findOrFail($id);
+            $paymentRequest->status = 'rejected';
+            $paymentRequest->save();
+
+            return redirect()->back()->with('success', 'Payment request rejected.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to reject payment request: ' . $e->getMessage());
+        }
+    }
+
+    public function deletePaymentRequest($id)
+    {
+        try {
+            $paymentRequest = TopupRequest::findOrFail($id);
+            $paymentRequest->delete();
+
+            return redirect()->back()->with('success', 'Payment request deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to delete payment request.');
+        }
     }
 }

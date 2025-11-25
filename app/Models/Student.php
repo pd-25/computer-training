@@ -39,4 +39,9 @@ class Student extends Model
     protected $attributes = [
         'assigned_course_id' => '[]',
     ];
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

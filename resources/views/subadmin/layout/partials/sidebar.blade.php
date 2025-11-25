@@ -23,6 +23,13 @@
             </a>
         </li>
 
+        <li class="nav-item {{ Route::is('subadmin.wallet') ? 'active' : ''}}">
+            <a class="nav-link " href="{{route('subadmin.wallet')}}">
+                <i class="ri-wallet-fill"></i>
+                <span>My Wallet</span>
+            </a>
+        </li>
+
         <!-- <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.subadmins.return') }}">
                 <i class="bi bi-shield-lock"></i>

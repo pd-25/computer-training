@@ -56,6 +56,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::post('/franchise/reject/{id}', [DashboardController::class, 'rejectFranchise'])->name('admin.franchise.reject');
     Route::delete('/franchise/delete/{id}', [DashboardController::class, 'deleteFranchise'])->name('admin.franchise.delete');
 
+    // Payments Requests===============================================================================================>
+    Route::get('/payments', [DashboardController::class, 'paymentsView'])->name('admin.payments');
+    Route::post('/payments/accept/{id}', [DashboardController::class, 'paymentAccept'])->name('admin.payments.accept');
+    Route::post('/payments/reject/{id}', [DashboardController::class, 'paymentRejected'])->name('admin.payments.reject');
+    Route::delete('/payments/reject/{id}', [DashboardController::class, 'deletePaymentRequest'])->name('admin.payments.delete');
+
 
 
 

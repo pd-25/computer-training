@@ -8,6 +8,9 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Models\Mark;
 use App\Models\Student;
+use App\Models\TopupRequest;
+use App\Models\Transaction;
+use App\Models\Wallet;
 use Exception;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -56,6 +59,10 @@ class DashboardController extends Controller
     //         'name' => 'required|string|max:255',
     //         'email' => 'required|email|unique:students,email',
     //         'phone' => 'required|string|max:15',
+    //         'father_name' => 'nullable|string|max:255',
+    //         'dob' => 'nullable|date',
+    //         'admission_date' => 'nullable|date',
+    //         'image' => 'nullable|image|mimes:jpg,jpeg,png|max:3048',
     //     ]);
 
     //     if ($validator->fails()) {
@@ -63,12 +70,37 @@ class DashboardController extends Controller
     //     }
 
     //     try {
-    //         Student::create([
+    //         // Handle image upload
+    //         $imagePath = null;
+    //         if ($request->hasFile('image')) {
+    //             $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
+    //             $request->file('image')->move(public_path('uploads/students'), $imageName);
+    //             $imagePath = 'uploads/students/' . $imageName;
+    //         }
+
+    //         // Generate unique enrollment number (1st numbers, then letters; 6–15 chars)
+
+
+    //         // Create student record
+    //         $student = Student::create([
     //             'name' => $request->name,
     //             'email' => $request->email,
     //             'phone' => $request->phone,
+    //             'father_name' => $request->father_name,
+    //             'dob' => $request->dob,
+    //             'admission_date' => $request->admission_date,
+    //             'org_name' => Auth::guard('subadmin')->user()->org_name,
+    //             'image' => $imagePath,
     //             'created_by' => Auth::guard('subadmin')->id(),
     //         ]);
+
+    //         $prefix = "NITE000";
+    //         $enrollmentNo = $prefix . $student->id;
+
+    //         $student->update([
+    //             'enrollment_no' => $enrollmentNo
+    //         ]);
+
     //         return redirect()->back()->with('success', 'Student added successfully.');
     //     } catch (\Exception $e) {
     //         return redirect()->back()->with('error', 'Failed to add student: ' . $e->getMessage());
@@ -92,6 +124,35 @@ class DashboardController extends Controller
         }
 
         try {
+
+            DB::beginTransaction();
+
+            $subadminId = Auth::guard('subadmin')->id();
+
+            /** ------------------------------------------------------
+             * 1. CHECK WALLET BALANCE (Need minimum ₹10)
+             * ------------------------------------------------------ */
+            $wallet = Wallet::where('subadmin_id', $subadminId)->first();
+
+            // WALLET CHECK (Minimum ₹10 Required)
+            if (!$wallet || $wallet->amount < 10) {
+                return redirect()
+                    ->route('subadmin.wallet')   // redirect here
+                    ->with('error', 'Insufficient wallet balance! You need at least ₹10 to add a student.');
+            }
+
+            /** ------------------------------------------------------
+             * 2. DEDUCT ₹10 FROM WALLET
+             * ------------------------------------------------------ */
+            $wallet->amount -= 10;
+            $wallet->save();
+
+            $availableBalance = $wallet->amount; // after deduction
+
+            /** ------------------------------------------------------
+             * 3. CREATE STUDENT (only after wallet deduction)
+             * ------------------------------------------------------ */
+
             // Handle image upload
             $imagePath = null;
             if ($request->hasFile('image')) {
@@ -100,10 +161,6 @@ class DashboardController extends Controller
                 $imagePath = 'uploads/students/' . $imageName;
             }
 
-            // Generate unique enrollment number (1st numbers, then letters; 6–15 chars)
-
-
-            // Create student record
             $student = Student::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -113,9 +170,10 @@ class DashboardController extends Controller
                 'admission_date' => $request->admission_date,
                 'org_name' => Auth::guard('subadmin')->user()->org_name,
                 'image' => $imagePath,
-                'created_by' => Auth::guard('subadmin')->id(),
+                'created_by' => $subadminId,
             ]);
 
+            // Enrollment number: NITE000 + student.id
             $prefix = "NITE000";
             $enrollmentNo = $prefix . $student->id;
 
@@ -123,12 +181,26 @@ class DashboardController extends Controller
                 'enrollment_no' => $enrollmentNo
             ]);
 
+            /** ------------------------------------------------------
+             * 4. ADD ENTRY INTO TRANSACTIONS TABLE
+             * ------------------------------------------------------ */
+            Transaction::create([
+                'subadmin_id'   => $subadminId,
+                'student_id'    => $student->id,
+                'debit_balance' => 10,                 // deducted amount
+                'avl_balance'   => $availableBalance,  // after deduction
+            ]);
+
+            DB::commit();
+
             return redirect()->back()->with('success', 'Student added successfully.');
         } catch (\Exception $e) {
+
+            DB::rollBack();
+
             return redirect()->back()->with('error', 'Failed to add student: ' . $e->getMessage());
         }
     }
-
 
     public function studentEdit(Request $request, $id)
     {
@@ -749,5 +821,47 @@ class DashboardController extends Controller
         if ($percentage >= 60) return 'C';
         if ($percentage >= 50) return 'D';
         return 'F';
+    }
+
+
+
+    // Wallet
+    public function myWallet(Request $request)
+    {
+        $myWallet = Wallet::where('subadmin_id', Auth::guard('subadmin')->id())->first();
+        $transactions = Transaction::where('subadmin_id', Auth::guard('subadmin')->id())->orderBy('created_at', 'desc')->get();
+        $totalTransactionAmount = $transactions->sum('debit_balance');
+
+        return view('subadmin.wallet.index', compact('myWallet', 'transactions', 'totalTransactionAmount'));
+    }
+
+    public function topupRequest(Request $request)
+    {
+        try {
+            // Validate
+            $request->validate([
+                'subadmin_id' => 'required|exists:sub_admins,id',
+                'amount' => 'required|numeric|min:100',
+                'payment_reciept' => 'nullable|mimes:jpg,jpeg,png,pdf|max:4048'
+            ]);
+
+            // Upload receipt file
+            $receiptPath = null;
+            if ($request->hasFile('payment_reciept')) {
+                $receiptPath = $request->file('payment_reciept')->store('topup_receipts', 'public');
+            }
+
+            // Save Topup Request
+            TopupRequest::create([
+                'subadmin_id' => $request->subadmin_id,
+                'amount' => $request->amount,
+                'payment_reciept' => $receiptPath,
+                'status' => 'pending'
+            ]);
+
+            return redirect()->back()->with('success', 'Top-up request submitted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
     }
 }

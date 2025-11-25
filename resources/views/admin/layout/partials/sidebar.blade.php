@@ -49,6 +49,14 @@
         </li>
 
 
+        
+        <li class="nav-item {{ Route::is('admin.payments') ? 'active' : ''}}">
+            <a class="nav-link " href="{{route('admin.payments')}}">
+                <i class="bi bi-currency-rupee"></i>
+                <span>Payments Requests</span>
+            </a>
+        </li>
+
 
 
 

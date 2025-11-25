@@ -35,6 +35,10 @@ Route::group(['prefix' => 'subadmin', 'middleware' => 'subadmin'], function () {
     Route::get('/course-assign/marks/get/{student}/{course}', [DashboardController::class, 'getStudentMarks'])->name('subadmin.marks.get');
     Route::get('/course-assign/marksheet/{student_id}/{course_id}/{year?}', [DashboardController::class, 'getMarksheet'])->name('subadmin.marksheet.get');
 
+    // My Wallet=======================================================================================================>
+    Route::get('/wallet', [DashboardController::class, 'myWallet'])->name('subadmin.wallet');
+    Route::post('/wallet/topup', [DashboardController::class, 'topupRequest'])->name('subadmin.topup.request');
+
 
 
 
