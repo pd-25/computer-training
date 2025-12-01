@@ -53,60 +53,6 @@ class DashboardController extends Controller
         return view('subadmin.student.index', compact('students'));
     }
 
-    // public function studentAdd(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'name' => 'required|string|max:255',
-    //         'email' => 'required|email|unique:students,email',
-    //         'phone' => 'required|string|max:15',
-    //         'father_name' => 'nullable|string|max:255',
-    //         'dob' => 'nullable|date',
-    //         'admission_date' => 'nullable|date',
-    //         'image' => 'nullable|image|mimes:jpg,jpeg,png|max:3048',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return redirect()->back()->with('error', $validator->errors()->first())->withInput();
-    //     }
-
-    //     try {
-    //         // Handle image upload
-    //         $imagePath = null;
-    //         if ($request->hasFile('image')) {
-    //             $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
-    //             $request->file('image')->move(public_path('uploads/students'), $imageName);
-    //             $imagePath = 'uploads/students/' . $imageName;
-    //         }
-
-    //         // Generate unique enrollment number (1st numbers, then letters; 6–15 chars)
-
-
-    //         // Create student record
-    //         $student = Student::create([
-    //             'name' => $request->name,
-    //             'email' => $request->email,
-    //             'phone' => $request->phone,
-    //             'father_name' => $request->father_name,
-    //             'dob' => $request->dob,
-    //             'admission_date' => $request->admission_date,
-    //             'org_name' => Auth::guard('subadmin')->user()->org_name,
-    //             'image' => $imagePath,
-    //             'created_by' => Auth::guard('subadmin')->id(),
-    //         ]);
-
-    //         $prefix = "NITE000";
-    //         $enrollmentNo = $prefix . $student->id;
-
-    //         $student->update([
-    //             'enrollment_no' => $enrollmentNo
-    //         ]);
-
-    //         return redirect()->back()->with('success', 'Student added successfully.');
-    //     } catch (\Exception $e) {
-    //         return redirect()->back()->with('error', 'Failed to add student: ' . $e->getMessage());
-    //     }
-    // }
-
     public function studentAdd(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -124,35 +70,6 @@ class DashboardController extends Controller
         }
 
         try {
-
-            DB::beginTransaction();
-
-            $subadminId = Auth::guard('subadmin')->id();
-
-            /** ------------------------------------------------------
-             * 1. CHECK WALLET BALANCE (Need minimum ₹10)
-             * ------------------------------------------------------ */
-            $wallet = Wallet::where('subadmin_id', $subadminId)->first();
-
-            // WALLET CHECK (Minimum ₹10 Required)
-            if (!$wallet || $wallet->amount < 10) {
-                return redirect()
-                    ->route('subadmin.wallet')   // redirect here
-                    ->with('error', 'Insufficient wallet balance! You need at least ₹10 to add a student.');
-            }
-
-            /** ------------------------------------------------------
-             * 2. DEDUCT ₹10 FROM WALLET
-             * ------------------------------------------------------ */
-            $wallet->amount -= 10;
-            $wallet->save();
-
-            $availableBalance = $wallet->amount; // after deduction
-
-            /** ------------------------------------------------------
-             * 3. CREATE STUDENT (only after wallet deduction)
-             * ------------------------------------------------------ */
-
             // Handle image upload
             $imagePath = null;
             if ($request->hasFile('image')) {
@@ -161,6 +78,10 @@ class DashboardController extends Controller
                 $imagePath = 'uploads/students/' . $imageName;
             }
 
+            // Generate unique enrollment number (1st numbers, then letters; 6–15 chars)
+
+
+            // Create student record
             $student = Student::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -170,10 +91,9 @@ class DashboardController extends Controller
                 'admission_date' => $request->admission_date,
                 'org_name' => Auth::guard('subadmin')->user()->org_name,
                 'image' => $imagePath,
-                'created_by' => $subadminId,
+                'created_by' => Auth::guard('subadmin')->id(),
             ]);
 
-            // Enrollment number: NITE000 + student.id
             $prefix = "NITE000";
             $enrollmentNo = $prefix . $student->id;
 
@@ -181,26 +101,106 @@ class DashboardController extends Controller
                 'enrollment_no' => $enrollmentNo
             ]);
 
-            /** ------------------------------------------------------
-             * 4. ADD ENTRY INTO TRANSACTIONS TABLE
-             * ------------------------------------------------------ */
-            Transaction::create([
-                'subadmin_id'   => $subadminId,
-                'student_id'    => $student->id,
-                'debit_balance' => 10,                 // deducted amount
-                'avl_balance'   => $availableBalance,  // after deduction
-            ]);
-
-            DB::commit();
-
             return redirect()->back()->with('success', 'Student added successfully.');
         } catch (\Exception $e) {
-
-            DB::rollBack();
-
             return redirect()->back()->with('error', 'Failed to add student: ' . $e->getMessage());
         }
     }
+
+    // public function studentAdd(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'name' => 'required|string|max:255',
+    //         'email' => 'required|email|unique:students,email',
+    //         'phone' => 'required|string|max:15',
+    //         'father_name' => 'nullable|string|max:255',
+    //         'dob' => 'nullable|date',
+    //         'admission_date' => 'nullable|date',
+    //         'image' => 'nullable|image|mimes:jpg,jpeg,png|max:3048',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return redirect()->back()->with('error', $validator->errors()->first())->withInput();
+    //     }
+
+    //     try {
+
+    //         DB::beginTransaction();
+
+    //         $subadminId = Auth::guard('subadmin')->id();
+
+    //         /** ------------------------------------------------------
+    //          * 1. CHECK WALLET BALANCE (Need minimum ₹10)
+    //          * ------------------------------------------------------ */
+    //         $wallet = Wallet::where('subadmin_id', $subadminId)->first();
+
+    //         // WALLET CHECK (Minimum ₹10 Required)
+    //         if (!$wallet || $wallet->amount < 10) {
+    //             return redirect()
+    //                 ->route('subadmin.wallet')   // redirect here
+    //                 ->with('error', 'Insufficient wallet balance! You need at least ₹10 to add a student.');
+    //         }
+
+    //         /** ------------------------------------------------------
+    //          * 2. DEDUCT ₹10 FROM WALLET
+    //          * ------------------------------------------------------ */
+    //         $wallet->amount -= 10;
+    //         $wallet->save();
+
+    //         $availableBalance = $wallet->amount; // after deduction
+
+    //         /** ------------------------------------------------------
+    //          * 3. CREATE STUDENT (only after wallet deduction)
+    //          * ------------------------------------------------------ */
+
+    //         // Handle image upload
+    //         $imagePath = null;
+    //         if ($request->hasFile('image')) {
+    //             $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
+    //             $request->file('image')->move(public_path('uploads/students'), $imageName);
+    //             $imagePath = 'uploads/students/' . $imageName;
+    //         }
+
+    //         $student = Student::create([
+    //             'name' => $request->name,
+    //             'email' => $request->email,
+    //             'phone' => $request->phone,
+    //             'father_name' => $request->father_name,
+    //             'dob' => $request->dob,
+    //             'admission_date' => $request->admission_date,
+    //             'org_name' => Auth::guard('subadmin')->user()->org_name,
+    //             'image' => $imagePath,
+    //             'created_by' => $subadminId,
+    //         ]);
+
+    //         // Enrollment number: NITE000 + student.id
+    //         $prefix = "NITE000";
+    //         $enrollmentNo = $prefix . $student->id;
+
+    //         $student->update([
+    //             'enrollment_no' => $enrollmentNo
+    //         ]);
+
+    //         /** ------------------------------------------------------
+    //          * 4. ADD ENTRY INTO TRANSACTIONS TABLE
+    //          * ------------------------------------------------------ */
+    //         Transaction::create([
+    //             'subadmin_id'   => $subadminId,
+    //             'student_id'    => $student->id,
+    //             'debit_balance' => 10,                 // deducted amount
+    //             'avl_balance'   => $availableBalance,  // after deduction
+    //         ]);
+
+    //         DB::commit();
+
+    //         return redirect()->back()->with('success', 'Student added successfully.');
+    //     } catch (\Exception $e) {
+
+    //         DB::rollBack();
+
+    //         return redirect()->back()->with('error', 'Failed to add student: ' . $e->getMessage());
+    //     }
+    // }
 
     public function studentEdit(Request $request, $id)
     {
@@ -384,10 +384,41 @@ class DashboardController extends Controller
         ]);
     }
 
+    // public function courseAssignAdd(Request $request)
+    // {
+    //     try {
+
+    //         $validator = Validator::make($request->all(), [
+    //             'student_id' => 'required|exists:students,id',
+    //             'assigned_course_id' => 'required|array|min:1',
+    //             'assigned_course_id.*' => 'required|distinct|integer|exists:courses,id',
+    //         ]);
+
+    //         if ($validator->fails()) {
+    //             return redirect()->back()
+    //                 ->withErrors($validator)
+    //                 ->withInput();
+    //         }
+
+    //         $student = Student::findOrFail($request->student_id);
+
+    //         $courseIds = array_values($request->assigned_course_id);
+
+    //         DB::transaction(function () use ($student, $courseIds) {
+
+    //             $student->assigned_course_id = $courseIds;
+    //             $student->save();
+    //         });
+
+    //         return redirect()->back()->with('success', 'Courses assigned to student successfully.');
+    //     } catch (\Exception $e) {
+    //         return redirect()->back()->with('error', 'Failed to assign courses: ' . $e->getMessage());
+    //     }
+    // }
+
     public function courseAssignAdd(Request $request)
     {
         try {
-
             $validator = Validator::make($request->all(), [
                 'student_id' => 'required|exists:students,id',
                 'assigned_course_id' => 'required|array|min:1',
@@ -400,18 +431,59 @@ class DashboardController extends Controller
                     ->withInput();
             }
 
-            $student = Student::findOrFail($request->student_id);
+            DB::beginTransaction();
 
+            $subadminId = Auth::guard('subadmin')->id();
+            $student = Student::findOrFail($request->student_id);
             $courseIds = array_values($request->assigned_course_id);
 
-            DB::transaction(function () use ($student, $courseIds) {
+            /** ------------------------------------------------------
+             * 1. CALCULATE TOTAL COURSE PRICE
+             * ------------------------------------------------------ */
+            $courses = Course::whereIn('id', $courseIds)->get();
+            $totalPrice = $courses->sum('price');
 
-                $student->assigned_course_id = $courseIds;
-                $student->save();
-            });
+            /** ------------------------------------------------------
+             * 2. CHECK WALLET BALANCE
+             * ------------------------------------------------------ */
+            $wallet = Wallet::where('subadmin_id', $subadminId)->first();
+
+            if (!$wallet || $wallet->amount < $totalPrice) {
+                DB::rollBack();
+                return redirect()
+                    ->route('subadmin.wallet')
+                    ->with('error', "Insufficient wallet balance! You need at least ₹{$totalPrice} to assign these courses.");
+            }
+
+            /** ------------------------------------------------------
+             * 3. DEDUCT TOTAL PRICE FROM WALLET
+             * ------------------------------------------------------ */
+            $wallet->amount -= $totalPrice;
+            $wallet->save();
+
+            $availableBalance = $wallet->amount; // after deduction
+
+            /** ------------------------------------------------------
+             * 4. ASSIGN COURSES TO STUDENT
+             * ------------------------------------------------------ */
+            $student->assigned_course_id = $courseIds;
+            $student->save();
+
+            /** ------------------------------------------------------
+             * 5. ADD ENTRY INTO TRANSACTIONS TABLE
+             * ------------------------------------------------------ */
+            Transaction::create([
+                'subadmin_id'   => $subadminId,
+                'student_id'    => $student->id,
+                'debit_balance' => $totalPrice,           // total deducted amount
+                'avl_balance'   => $availableBalance,     // after deduction
+            ]);
+
+            DB::commit();
 
             return redirect()->back()->with('success', 'Courses assigned to student successfully.');
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()->with('error', 'Failed to assign courses: ' . $e->getMessage());
         }
     }
@@ -462,52 +534,6 @@ class DashboardController extends Controller
         }
     }
 
-    // public function generateCertificate(Request $request)
-    // {
-    //     $request->validate([
-    //         'student_id' => 'required|exists:students,id',
-    //         'course_id' => 'required|exists:courses,id',
-    //     ]);
-
-    //     $student = Student::findOrFail($request->student_id);
-    //     $course = Course::findOrFail($request->course_id);
-
-
-    //     // Calculate marks obtained in percentage
-    //     $marksObtainedInPercent = 0;
-
-    //     $mark = Mark::where('student_id', $student->id)
-    //         ->where('course_id', $course->id)
-    //         ->first();
-
-    //     $course = Course::find($course->id);
-
-    //     if ($mark && $course) {
-    //         $subjects = json_decode($course->subjects, true);
-    //         $marks = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
-
-    //         $totalObtained = 0;
-    //         $totalMax = 0;
-
-    //         foreach ($subjects as $sub) {
-    //             $subName = $sub['subject_name'];
-    //             $maxMarks = isset($sub['max_marks']) ? (int)$sub['max_marks'] : 100;
-
-    //             $obtained = isset($marks[$subName]) ? (int)$marks[$subName] : 0;
-
-    //             $totalObtained += $obtained;
-    //             $totalMax += $maxMarks;
-    //         }
-
-    //         if ($totalMax > 0) {
-    //             $marksObtainedInPercent = round(($totalObtained / $totalMax) * 100, 2);
-    //         }
-    //     }
-
-
-    //     return view('subadmin.certificate.index', compact('student', 'course', 'marksObtainedInPercent'));
-    // }
-
     public function generateCertificate(Request $request)
     {
         $request->validate([
@@ -518,43 +544,72 @@ class DashboardController extends Controller
         $student = Student::findOrFail($request->student_id);
         $course = Course::findOrFail($request->course_id);
 
-        // Calculate marks obtained in percentage
-        $marksObtainedInPercent = 0;
+        // Get all subjects for this course
+        $courseSubjects = json_decode($course->subjects, true);
 
-        $mark = Mark::where('student_id', $student->id)
-            ->where('course_id', $course->id)
-            ->first();
-
-        $course = Course::find($course->id);
-
-        if ($mark && $course) {
-            $subjects = json_decode($course->subjects, true);
-            $marks = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
-
-            $totalObtained = 0;
-            $totalMax = 0;
-
-            foreach ($subjects as $sub) {
-                $subName = $sub['subject_name'];
-                $maxMarks = isset($sub['max_marks']) ? (int)$sub['max_marks'] : 100;
-
-                $obtained = isset($marks[$subName]) ? (int)$marks[$subName] : 0;
-
-                $totalObtained += $obtained;
-                $totalMax += $maxMarks;
-            }
-
-            if ($totalMax > 0) {
-                $marksObtainedInPercent = round(($totalObtained / $totalMax) * 100, 2);
-            }
+        if (!$courseSubjects) {
+            return redirect()->back()->with('error', 'No subjects found for this course.');
         }
 
+        // Get ALL marks for this student and course (all years)
+        $allMarks = Mark::where('student_id', $student->id)
+            ->where('course_id', $course->id)
+            ->get();
+
+        if ($allMarks->isEmpty()) {
+            return redirect()->back()->with('error', 'No marks found for this student in this course.');
+        }
+
+        // Calculate total marks across ALL years
+        $grandTotalObtained = 0;
+        $grandTotalMax = 0;
+        $yearWiseData = [];
+
+        foreach ($allMarks as $mark) {
+            $year = $mark->year;
+            $subjects = $courseSubjects[$year] ?? [];
+
+            if (empty($subjects)) continue;
+
+            $marksData = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
+
+            $yearObtained = 0;
+            $yearMax = 0;
+
+            foreach ($subjects as $subject) {
+                $subName = $subject['subject_name'];
+                $maxMarks = isset($subject['max_marks']) ? (int)$subject['max_marks'] : 100;
+                $obtained = isset($marksData[$subName]) ? (int)$marksData[$subName] : 0;
+
+                $yearObtained += $obtained;
+                $yearMax += $maxMarks;
+            }
+
+            $grandTotalObtained += $yearObtained;
+            $grandTotalMax += $yearMax;
+
+            // Store year-wise breakdown
+            $yearWiseData[$year] = [
+                'obtained' => $yearObtained,
+                'max' => $yearMax,
+                'percentage' => ($yearMax > 0) ? round(($yearObtained / $yearMax) * 100, 2) : 0
+            ];
+        }
+
+        // Calculate overall percentage
+        $marksObtainedInPercent = ($grandTotalMax > 0)
+            ? round(($grandTotalObtained / $grandTotalMax) * 100, 2)
+            : 0;
+
+        // Calculate grade
+        $grade = $this->calculateGrade($marksObtainedInPercent);
+
+        // Generate QR Code for certificate verification
         $certificateUrl = route('certificate.public.show', [
             'student_id' => $student->id,
             'course_id' => $course->id
         ]);
 
-        // Build QR Code (v6 correct syntax)
         $result = (new Builder(
             writer: new PngWriter(),
             data: $certificateUrl,
@@ -562,13 +617,16 @@ class DashboardController extends Controller
             margin: 10,
         ))->build();
 
-        // Convert to Base64
         $qrCodeBase64 = base64_encode($result->getString());
 
         return view('subadmin.certificate.index', compact(
             'student',
             'course',
             'marksObtainedInPercent',
+            'grandTotalObtained',
+            'grandTotalMax',
+            'grade',
+            'yearWiseData',
             'qrCodeBase64'
         ));
     }
@@ -612,7 +670,6 @@ class DashboardController extends Controller
 
         return view('subadmin.certificate.index', compact('student', 'course', 'marksObtainedInPercent', 'qrCode'));
     }
-
 
     public function generateIdCard(Request $request)
     {
@@ -700,6 +757,11 @@ class DashboardController extends Controller
         $student = Student::findOrFail($student_id);
         $course = Course::findOrFail($course_id);
 
+        // Get year from query parameter if not in URL
+        if ($year === null && request()->has('year')) {
+            $year = request()->get('year');
+        }
+
         // Get subjects from course
         $courseSubjects = json_decode($course->subjects, true);
 
@@ -707,8 +769,8 @@ class DashboardController extends Controller
             return redirect()->back()->with('error', 'No subjects found for this course.');
         }
 
-        // If year is specified, show only that year
-        if ($year) {
+        // IF YEAR IS SPECIFIED - SHOW ONLY THAT YEAR
+        if ($year !== null && $year != '') {
             $mark = Mark::where('student_id', $student_id)
                 ->where('course_id', $course_id)
                 ->where('year', $year)
@@ -719,14 +781,19 @@ class DashboardController extends Controller
             }
 
             $subjects = $courseSubjects[$year] ?? [];
-            $marksData = $mark->marks;
 
+            if (empty($subjects)) {
+                return redirect()->back()->with('error', 'No subjects found for Year ' . $year);
+            }
+
+            $marksData = $mark->marks;
             $subjectDetails = $this->calculateSubjectDetails($subjects, $marksData);
             $totalMarksObtained = array_sum(array_column($subjectDetails, 'obtained_marks'));
             $totalMaxMarks = array_sum(array_column($subjectDetails, 'max_marks'));
             $overallPercentage = ($totalMaxMarks > 0) ? ($totalMarksObtained / $totalMaxMarks) * 100 : 0;
             $overallGrade = $this->calculateGrade($overallPercentage);
 
+            // Return SINGLE YEAR view
             return view('subadmin.certificate.marksheet', compact(
                 'student',
                 'course',
@@ -739,7 +806,7 @@ class DashboardController extends Controller
             ));
         }
 
-        // Show all years
+        // IF NO YEAR - SHOW ALL YEARS
         $allYearsData = [];
         $grandTotalObtained = 0;
         $grandTotalMax = 0;
@@ -774,6 +841,7 @@ class DashboardController extends Controller
         $grandPercentage = ($grandTotalMax > 0) ? ($grandTotalObtained / $grandTotalMax) * 100 : 0;
         $grandGrade = $this->calculateGrade($grandPercentage);
 
+        // Return ALL YEARS view
         return view('subadmin.certificate.marksheet', compact(
             'student',
             'course',
@@ -781,8 +849,7 @@ class DashboardController extends Controller
             'grandTotalObtained',
             'grandTotalMax',
             'grandPercentage',
-            'grandGrade',
-            'year'
+            'grandGrade'
         ));
     }
 
@@ -817,9 +884,11 @@ class DashboardController extends Controller
     {
         if ($percentage >= 90) return 'A+';
         if ($percentage >= 80) return 'A';
-        if ($percentage >= 70) return 'B';
-        if ($percentage >= 60) return 'C';
-        if ($percentage >= 50) return 'D';
+        if ($percentage >= 70) return 'B+';
+        if ($percentage >= 60) return 'B';
+        if ($percentage >= 50) return 'C+';
+        if ($percentage >= 40) return 'C';
+        if ($percentage >= 33) return 'D';
         return 'F';
     }
 

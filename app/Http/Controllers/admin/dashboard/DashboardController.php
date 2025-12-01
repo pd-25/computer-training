@@ -138,6 +138,7 @@ class DashboardController extends Controller
             $request->validate([
                 'category_id' => 'required|exists:categories,id',
                 'course_name' => 'required|string|unique:courses,course_name',
+                'price' => 'nullable|numeric|min:0',
                 'description' => 'nullable|string',
                 'duration' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:3048',
@@ -151,6 +152,7 @@ class DashboardController extends Controller
             $course = new Course();
             $course->category_id = $request->category_id;
             $course->course_name = $request->course_name;
+            $course->price = $request->price;
             $course->slug = Str::slug($request->course_name, '-');
             $course->description = $request->description;
             $course->duration = $request->duration;
@@ -187,6 +189,7 @@ class DashboardController extends Controller
             $request->validate([
                 'category_id' => 'required|exists:categories,id',
                 'course_name' => 'required|string|unique:courses,course_name,' . $id,
+                'price' => 'nullable|numeric|min:0',
                 'description' => 'nullable|string',
                 'duration' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:3048',
@@ -201,6 +204,7 @@ class DashboardController extends Controller
 
             $course->category_id = $request->category_id;
             $course->course_name = $request->course_name;
+            $course->price = $request->price;
             $course->slug = Str::slug($request->course_name, '-');
             $course->description = $request->description;
             $course->duration = $request->duration;

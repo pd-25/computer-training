@@ -12,6 +12,7 @@ class Course extends Model
         'course_unique_id',
         'category_id',
         'course_name',
+        'price',
         'subjects',
         'slug',
         'description',

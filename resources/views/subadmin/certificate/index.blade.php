@@ -32,7 +32,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             border-radius: 8px;
             overflow: hidden;
-            padding: 40px;
+            padding: 30px;
             border: 12px solid transparent;
         }
 
@@ -46,8 +46,6 @@
             background-size: 450px 50px;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='450' height='50'%3E%3Ctext x='5' y='30' font-size='13' font-weight='600' fill='red'%3ENATIONAL INSTITUTE OF TECHNICAL EDUCATION%3C/text%3E%3C/svg%3E");
         }
-
-
 
         .certificate-border {
             position: absolute;
@@ -125,9 +123,9 @@
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            /* margin-bottom: 30px; */
             position: relative;
-            padding-bottom: 15px;
+            padding-bottom: 10px;
         }
 
         .header::after {
@@ -225,7 +223,7 @@
             font-size: 18px;
             font-weight: 500;
             color: #1a237e;
-            padding-bottom: 8px;
+            padding-bottom: 5px;
             border-bottom: 1px dashed #ccc;
         }
 
@@ -279,7 +277,7 @@
             margin-top: 40px;
             text-align: center;
             border-top: 1px solid #eee;
-            padding-top: 20px;
+            padding-top: 10px;
         }
 
         .footer-logo {
@@ -294,8 +292,8 @@
             font-weight: bold;
             margin-bottom: 15px;
             border-radius: 4px;
-            padding-top: 40px !important;
-            padding-bottom: 40px !important;
+            padding-top: 30px !important;
+            padding-bottom: 30px !important;
         }
 
         .footer-details {
@@ -308,6 +306,17 @@
             color: #1a237e;
             font-weight: 500;
             margin-top: 10px;
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 22px;
+            background: #d4af37;
+            color: #1a237e;
+            border: 2px solid #1a237e;
         }
 
         @media (max-width: 768px) {
@@ -336,12 +345,10 @@
             }
         }
 
-        /* ---------- PRINT OPTIMIZATION ---------- */
         @media print {
             body {
                 padding: 0;
                 zoom: 80%;
-                /* Reduce overall size to fit 1 page */
             }
 
             .certificate-container {
@@ -358,7 +365,6 @@
                 border-width: 1px !important;
             }
 
-            /* Reduce Ornament size */
             .ornament-top-left,
             .ornament-top-right,
             .ornament-bottom-left,
@@ -368,7 +374,6 @@
                 font-size: 14px !important;
             }
 
-            /* Reduce text sizes */
             .organization-name {
                 font-size: 20px !important;
             }
@@ -389,22 +394,6 @@
                 font-size: 14px !important;
             }
 
-            /* Table shrink */
-            .marks-table th,
-            .marks-table td {
-                padding: 6px !important;
-                font-size: 12px !important;
-            }
-
-            .grade-badge {
-                font-size: 11px !important;
-                padding: 2px 6px !important;
-            }
-
-            .total-row td {
-                font-size: 14px !important;
-            }
-
             .footer-details {
                 font-size: 11px !important;
             }
@@ -413,18 +402,32 @@
                 font-size: 12px !important;
             }
 
-            /* Remove extra page created by bottom margin */
+            .print-button {
+                display: none !important;
+            }
+
             @page {
                 margin: 10mm;
             }
         }
 
-        /* floating Print Button */
         .print-button {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 9999;
+            background: #1a237e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .print-button:hover {
+            background: #0d1642;
         }
     </style>
 </head>
@@ -435,7 +438,6 @@
         rgba(255,255,255,0.9)
     ),url({{asset('logo.png')}}); background-repeat: no-repeat; background-position: center; background-size: contain; overflow: hidden;">
         <div class="watermark"></div>
-
         <div class="certificate-border"></div>
 
         <div class="ornament-top-left"></div>
@@ -443,11 +445,9 @@
         <div class="ornament-bottom-left"></div>
         <div class="ornament-bottom-right"></div>
 
-
         <div class="header">
             <div class="organization-name">NATIONAL INSTITUTE OF TECHNICAL EDUCATION</div>
-            <div class="organization-subtitle">An Autonomous Institution Registered Under Indian Trust Act 1882 (Govt.
-                of India)</div>
+            <div class="organization-subtitle">An Autonomous Institution Registered Under Indian Trust Act 1882 (Govt. of India)</div>
             <div class="organization-subtitle">Reg. No: 2024/16R039/4/13</div>
             <div class="iso-badge">ISO 9001:2015 Certified Organization</div>
         </div>
@@ -491,37 +491,29 @@
                 </div>
                 <div class="detail-group">
                     <div class="detail-label">Duration</div>
-                    <div class="detail-value">{{ $course->duration }}</div>
+                    <div class="detail-value">{{ $course->duration }} Months</div>
                 </div>
             </div>
 
             <div class="student-details">
                 <div class="detail-group">
-                    <div class="detail-label">Marks Obtained</div>
-                    <div class="detail-value">{{$marksObtainedInPercent}}%</div>
+                    <div class="detail-label">Total Marks</div>
+                    <div class="detail-value">{{ $grandTotalObtained }} / {{ $grandTotalMax }}</div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Percentage</div>
+                    <div class="detail-value">{{ $marksObtainedInPercent }}%</div>
                 </div>
                 <div class="detail-group">
                     <div class="detail-label">Grade</div>
                     <div class="detail-value">
-                        @if($marksObtainedInPercent >= 90)
-                        A+
-                        @elseif($marksObtainedInPercent >= 80)
-                        A
-                        @elseif($marksObtainedInPercent >= 70)
-                        B
-                        @elseif($marksObtainedInPercent >= 60)
-                        C
-                        @elseif($marksObtainedInPercent >= 50)
-                        D
-                        @else
-                        F
-                        @endif
+                        <span class="">{{ $grade }}</span>
                     </div>
                 </div>
             </div>
 
             <div class="performance-section">
-                During the course his performance was good and we wish him best of luck for future endeavors
+                During the course his/her performance was good and we wish him/her best of luck for future endeavors
             </div>
 
             <div class="signature-section">
@@ -533,13 +525,13 @@
 
                 <div class="signature">
                     <div class="signature-line"></div>
-                    <div class="signature-name">Center Director Signature</div>
+                    <div class="signature-name">Center Director</div>
                     <div class="signature-title">{{ $student->org_name ?? 'N/A' }}</div>
                 </div>
 
                 <div class="date-section">
                     <div class="detail-label">Issue Date</div>
-                    <div class="issue-date">04-07-2024</div>
+                    <div class="issue-date" id="todayDate"></div>
                 </div>
             </div>
         </div>
@@ -548,7 +540,6 @@
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div class="footer-logo"><img src="{{asset('./logo.png')}}" width="90" alt=""></div>
 
-                <!-- here generate a qrcode of the show particular student certificate public url -->
                 <div style="text-align: center;">
                     @if(isset($qrCodeBase64))
                     <img src="data:image/png;base64,{{ $qrCodeBase64 }}"
@@ -563,22 +554,26 @@
                 <img src="{{asset('./iso9001.png')}}" width="120" alt="">
             </div>
             <div class="footer-details">
-                Head office: Sankar Azan Path Hatiqaon Bhrtapara Road<br>
-                Near Hatiqaon Police Station (Guwahati, Assam)
+                Head office: House no. 113, Sankar Azan Path, Hatigaon, Bhetapara Road, <br> Near Hatigaon police station,Hatigaon, Guwahati, Assam, 781038
             </div>
             <div class="website">WEBSITE: WWW.NIOTE.IN | EMAIL: INFO@NIOTE.IN</div>
         </div>
     </div>
-</body>
 
-<!-- print button -->
-<button class="print-button" onclick="printCertificate()">Print Marksheet</button>
-<script>
-    function printCertificate() {
-        var printButton = document.querySelector('.print-button');
-        printButton.style.display = 'none';
-        window.print();
-    }
-</script>
+    <button class="print-button" onclick="printCertificate()">Print Certificate</button>
+
+    <script>
+        function printCertificate() {
+            window.print();
+        }
+
+        // Set today's date
+        const today = new Date();
+        const formattedDate = today.getDate().toString().padStart(2, '0') + '-' +
+            (today.getMonth() + 1).toString().padStart(2, '0') + '-' +
+            today.getFullYear();
+        document.getElementById('todayDate').textContent = formattedDate;
+    </script>
+</body>
 
 </html>

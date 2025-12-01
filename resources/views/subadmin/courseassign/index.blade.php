@@ -155,17 +155,21 @@
                                 <td>
                                     <div class="d-flex gap-2 flex-wrap">
 
-                                        <button class="btn btn-sm btn-primary btn-edit-student" data-bs-toggle="modal" data-bs-target="#editStudent{{ $student->id }}">
+                                        <!-- <button class="btn btn-sm btn-primary btn-edit-student" data-bs-toggle="modal" data-bs-target="#editStudent{{ $student->id }}">
                                             <i class="bi bi-pencil"></i>
-                                        </button>
+                                        </button> -->
 
                                         <button class="btn btn-sm btn-danger btn-delete-student" data-bs-toggle="modal" data-bs-target="#deleteStudent{{ $student->id }}">
                                             <i class="bi bi-trash"></i>
                                         </button>
 
                                         <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#generateIdCard{{ $student->id }}">Generate ID</button>
-                                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#generateIdMarks{{ $student->id }}">Marks</button>
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#downloadMarksheet{{ $student->id }}">Download Marksheet</button>
+                                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#generateIdMarks{{ $student->id }}">Give Marks</button>
+                                        <button class="btn btn-sm btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#downloadMarksheetIndividual{{ $student->id }}">
+    <i class="bi bi-download"></i> Marksheet
+</button>
                                         <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#generateCertificate{{ $student->id }}">Generate Certificate</button>
                                     </div>
                                 </td>
@@ -537,57 +541,87 @@
 
 
     <!-- Download Marksheet(actually view) -->
+    <!-- Download Marksheet (Individual Year Selection) -->
     @foreach($students as $student)
-    <div class="modal fade" id="downloadMarksheet{{ $student->id }}" tabindex="-1">
+    <div class="modal fade" id="downloadMarksheetIndividual{{ $student->id }}" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Download Marksheet - {{ $student->name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
 
-                <form id="marksheetForm{{ $student->id }}{{ $courseId }}"
-                    action="{{ route('subadmin.marksheet.get', [$student->id, $courseId]) }}"
-                    method="GET">
+                <div class="modal-body">
+                    @if(!empty($student->assigned_course_id))
+                    @foreach($student->assigned_course_id as $courseId)
+                    @php
+                    $course = $courses->firstWhere('id', $courseId);
+                    if (!$course) continue;
 
-                    <div class="modal-header">
-                        <h5 class="modal-title">Download Marksheet for {{ $student->name }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    $duration = (int)$course->duration;
+                    $years = floor($duration / 12);
+                    $remainingMonths = $duration % 12;
+
+                    // Get available marks for this student and course
+                    $availableMarks = \App\Models\Mark::where('student_id', $student->id)
+                    ->where('course_id', $courseId)
+                    ->pluck('year')
+                    ->toArray();
+                    @endphp
+
+                    @if(!empty($availableMarks))
+                    <div class="card mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <strong>{{ $course->course_name }}</strong>
+                            <small class="d-block">{{ $course->course_unique_id }} | Duration: {{ $course->duration }} Months</small>
+                        </div>
+                        <div class="card-body">
+                            <label class="form-label fw-bold">Select Year/Duration:</label>
+
+                            <div class="row">
+                                @foreach($availableMarks as $yr)
+                                @php
+                                $label = "";
+                                if ($duration < 12) {
+                                    $label=$duration . " Month" . ($duration> 1 ? "s" : "");
+                                    } else {
+                                    if ($yr <= $years) {
+                                        $label="Year " . $yr;
+                                        } else if ($yr> $years && $remainingMonths > 0) {
+                                        $label = $remainingMonths . " Month" . ($remainingMonths > 1 ? "s" : "");
+                                        }
+                                        }
+                                        @endphp
+
+                                        <div class="col-md-6 mb-2">
+                                            <button type="button"
+                                                class="btn btn-outline-primary w-100"
+                                                onclick="viewMarksheet({{ $student->id }}, {{ $courseId }}, {{ $yr }})">
+                                                <i class="bi bi-eye"></i> View {{ $label }} Marksheet
+                                            </button>
+                                        </div>
+                                        @endforeach
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="modal-body">
-
-                        <label>Choose Year <span class="text-danger">*</span></label><br>
-
-                        @if(isset($availableYears[$student->id][$courseId]) && !empty($availableYears[$student->id][$courseId]))
-
-                        @foreach($availableYears[$student->id][$courseId] as $yr)
-                        <input type="radio"
-                            name="year"
-                            value="{{ $yr }}"
-                            onclick="updateMarksheetRoute({{ $student->id }}, {{ $courseId }}, {{ $yr }})">
-
-                        {{ $yr == 1 ? 'First Year' : ($yr == 2 ? 'Second Year' : 'Year '.$yr) }}
-                        <br>
-                        @endforeach
-
-                        @else
-
-                        <p class="text-danger">No year data found</p>
-
-                        @endif
-
-
-
-                        @if(empty($availableYears[$student->id][$courseId]))
-                        <p class="text-danger mt-2">No marks available for this student.</p>
-                        @endif
-
+                    @else
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        No marks available for <strong>{{ $course->course_name }}</strong>
                     </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">View Marksheet</button>
+                    @endif
+                    @endforeach
+                    @else
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        No courses assigned to this student.
                     </div>
+                    @endif
+                </div>
 
-                </form>
-
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
@@ -706,118 +740,168 @@
 
     <!-- Assign Marks -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener("DOMContentLoaded", () => {
 
-            // Laravel Named Route Templates
+            // -----------------------------
+            // Laravel Route Templates
+            // -----------------------------
             const subjectUrlTemplate = "{{ route('subadmin.marks.subjects', ['course_id' => ':id']) }}";
             const marksUrlTemplate = "{{ route('subadmin.marks.get', ['student' => ':student', 'course' => ':course']) }}";
 
-            // Handle Course Selection
-            document.querySelectorAll('.course-select').forEach(radio => {
-                radio.addEventListener('change', async function() {
+            // -----------------------------
+            // COURSE SELECTION
+            // -----------------------------
+            document.querySelectorAll(".course-select").forEach(radio => {
+                radio.addEventListener("change", async function() {
+
                     const courseId = this.value;
                     const studentId = this.dataset.student;
 
-                    const yearContainer = document.getElementById('yearContainer' + studentId);
-                    const yearSelect = yearContainer.querySelector('.year-select');
-                    const subjectsContainer = document.getElementById('subjectsContainer' + studentId);
+                    const yearContainer = document.getElementById("yearContainer" + studentId);
+                    const yearSelect = yearContainer.querySelector(".year-select");
+                    const subjectsContainer = document.getElementById("subjectsContainer" + studentId);
 
-                    // Reset fields
-                    yearSelect.innerHTML = '<option value="">Choose Year</option>';
-                    subjectsContainer.innerHTML = '';
-                    yearContainer.style.display = 'none';
+                    // Reset UI
+                    yearSelect.innerHTML = '<option value="">Choose Year/Duration</option>';
+                    subjectsContainer.innerHTML = "";
+                    yearContainer.style.display = "none";
 
                     try {
-                        // Fetch subjects by course ID
+                        // Fetch subjects
                         const fetchUrl = subjectUrlTemplate.replace(':id', courseId);
                         const subjectRes = await fetch(fetchUrl);
 
-                        if (!subjectRes.ok) {
-                            throw new Error('Failed to fetch subjects');
-                        }
+                        if (!subjectRes.ok) throw new Error("Failed to fetch subjects");
 
-                        const subjects = await subjectRes.json();
+                        const data = await subjectRes.json();
+
+                        const subjects = data.subjects || data;
+                        const courseDuration = parseInt(data.duration ?? 0);
 
                         if (!subjects || Object.keys(subjects).length === 0) {
-                            subjectsContainer.innerHTML = "<p class='text-danger'>No subjects found for this course.</p>";
+                            subjectsContainer.innerHTML =
+                                "<p class='text-danger'>No subjects found for this course.</p>";
                             return;
                         }
 
-                        // Populate years
-                        Object.keys(subjects).forEach(year => {
-                            const option = document.createElement('option');
-                            option.value = year;
-                            option.textContent = `Year ${year}`;
+                        // -----------------------------
+                        // Duration Calculation
+                        // -----------------------------
+                        let durationInfo = null;
+
+                        if (courseDuration > 0) {
+                            durationInfo = {
+                                totalMonths: courseDuration,
+                                years: Math.floor(courseDuration / 12),
+                                remainingMonths: courseDuration % 12,
+                            };
+                        }
+
+                        // -----------------------------
+                        // Populate Year/Month Dropdown
+                        // -----------------------------
+                        Object.keys(subjects).forEach(key => {
+                            const option = document.createElement("option");
+                            option.value = key;
+
+                            let label = "";
+
+                            if (durationInfo) {
+                                if (durationInfo.totalMonths < 12) {
+                                    label = `${durationInfo.totalMonths} Month${durationInfo.totalMonths > 1 ? "s" : ""}`;
+                                } else {
+                                    const keyNum = parseInt(key);
+                                    if (keyNum <= durationInfo.years) {
+                                        label = `Year ${keyNum}`;
+                                    } else {
+                                        label = `${durationInfo.remainingMonths} Month${durationInfo.remainingMonths > 1 ? "s" : ""}`;
+                                    }
+                                }
+                            } else {
+                                label = `Year ${key}`;
+                            }
+
+                            option.textContent = label;
+                            option.dataset.durationLabel = label;
                             yearSelect.appendChild(option);
                         });
 
-                        yearContainer.style.display = 'block';
+                        yearContainer.style.display = "block";
 
-                        // Save subjects in memory
+                        // store data
                         yearSelect.dataset.subjects = JSON.stringify(subjects);
+                        yearSelect.dataset.durationInfo = JSON.stringify(durationInfo);
 
                     } catch (err) {
-                        subjectsContainer.innerHTML = "<p class='text-danger'>Error loading course data.</p>";
+                        subjectsContainer.innerHTML =
+                            "<p class='text-danger'>Error loading course data.</p>";
                         console.error(err);
                     }
                 });
             });
 
-            // Handle Year Selection
-            document.querySelectorAll('.year-select').forEach(select => {
-                select.addEventListener('change', async function() {
+            // -----------------------------
+            // YEAR/DURATION SELECTION
+            // -----------------------------
+            document.querySelectorAll(".year-select").forEach(select => {
+                select.addEventListener("change", async function() {
                     const year = this.value;
                     const studentId = this.dataset.student;
 
-                    const subjectsContainer = document.getElementById('subjectsContainer' + studentId);
+                    const subjectsContainer = document.getElementById("subjectsContainer" + studentId);
+                    subjectsContainer.innerHTML = "";
 
-                    if (!year) {
-                        subjectsContainer.innerHTML = '';
-                        return;
-                    }
+                    if (!year) return;
 
-                    subjectsContainer.innerHTML = "<p class='text-muted'>Loading subjects...</p>";
+                    subjectsContainer.innerHTML =
+                        "<p class='text-muted'>Loading subjects...</p>";
 
                     try {
                         const allSubjects = JSON.parse(this.dataset.subjects);
                         const yearSubjects = Object.values(allSubjects[year] || {});
 
-                        if (!yearSubjects || yearSubjects.length === 0) {
-                            subjectsContainer.innerHTML = `<p class='text-danger'>No subjects found for Year ${year}.</p>`;
+                        if (yearSubjects.length === 0) {
+                            subjectsContainer.innerHTML =
+                                `<p class="text-danger">No subjects found for this duration.</p>`;
                             return;
                         }
 
-                        // Selected course
-                        const courseRadio = document.querySelector(`input[name="course_id"][data-student="${studentId}"]:checked`);
+                        // Get selected course ID
+                        const courseRadio = document.querySelector(
+                            `input[name="course_id"][data-student="${studentId}"]:checked`
+                        );
                         const courseId = courseRadio ? courseRadio.value : null;
 
-                        // Fetch existing marks
                         let existingMarks = {};
 
+                        // Fetch existing marks
                         if (courseId) {
-                            const marksFetchUrl = marksUrlTemplate
-                                .replace(':student', studentId)
-                                .replace(':course', courseId);
+                            const marksUrl = marksUrlTemplate
+                                .replace(":student", studentId)
+                                .replace(":course", courseId) + `?year=${year}`;
 
-                            const marksRes = await fetch(marksFetchUrl);
-
-                            if (marksRes.ok) {
-                                existingMarks = await marksRes.json();
-                            }
+                            const marksRes = await fetch(marksUrl);
+                            if (marksRes.ok) existingMarks = await marksRes.json();
                         }
 
-                        // Build subject inputs
+                        // Get selected label
+                        const selectedLabel =
+                            this.options[this.selectedIndex].dataset.durationLabel ||
+                            `Year ${year}`;
+
+                        // -----------------------------
+                        // Build Subject Inputs
+                        // -----------------------------
                         let html = `
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle"></i>
-                        <strong>Year ${year}</strong> - Enter marks for all subjects
+                        <strong>${selectedLabel}</strong> - Enter marks for all subjects
                     </div>
+                    <div class="row">
                 `;
 
-                        html += '<div class="row">';
-
                         yearSubjects.forEach(sub => {
-                            const value = existingMarks[sub.subject_name] ?? '';
+                            const value = existingMarks[sub.subject_name] ?? "";
 
                             html += `
                         <div class="col-md-6 mb-3">
@@ -825,39 +909,46 @@
                                 ${sub.subject_name}
                                 <small class="text-muted">(Min: ${sub.min_marks}, Max: ${sub.max_marks})</small>
                             </label>
-                            <input type="number" 
-                                   name="marks[${sub.subject_name}]" 
+                            <input type="number"
+                                   name="marks[${sub.subject_name}]"
                                    class="form-control"
-                                   placeholder="Enter marks"
+                                   min="${sub.min_marks}"
                                    max="${sub.max_marks}"
                                    value="${value}"
+                                   placeholder="Enter marks"
                                    required>
-                        </div>`;
+                        </div>
+                    `;
                         });
 
-                        html += '</div>';
+                        html += "</div>";
 
                         subjectsContainer.innerHTML = html;
 
                     } catch (err) {
-                        subjectsContainer.innerHTML = "<p class='text-danger'>Error loading subjects or marks.</p>";
+                        subjectsContainer.innerHTML =
+                            "<p class='text-danger'>Error loading subjects or marks.</p>";
                         console.error(err);
                     }
                 });
             });
 
-            // Reset modal on close
+            // -----------------------------
+            // RESET MODAL ON CLOSE
+            // -----------------------------
             document.querySelectorAll('[id^="generateIdMarks"]').forEach(modal => {
-                modal.addEventListener('hidden.bs.modal', function() {
-                    const studentId = this.id.replace('generateIdMarks', '');
-                    document.getElementById('yearContainer' + studentId).style.display = 'none';
-                    document.getElementById('subjectsContainer' + studentId).innerHTML = '';
-                    this.querySelector('form').reset();
+                modal.addEventListener("hidden.bs.modal", function() {
+                    const studentId = this.id.replace("generateIdMarks", "");
+
+                    document.getElementById("yearContainer" + studentId).style.display = "none";
+                    document.getElementById("subjectsContainer" + studentId).innerHTML = "";
+                    this.querySelector("form").reset();
                 });
             });
 
         });
     </script>
+
 
     <!-- Search Student -->
     <script>
@@ -882,13 +973,15 @@
         });
     </script>
 
-    <!-- Yearwise marksheet show script -->
-    <script>
-        function updateMarksheetRoute(studentId, courseId, year) {
-            let form = document.getElementById("marksheetForm" + studentId + courseId);
-            form.action = "/subadmin/course-assign/marksheet/" + studentId + "/" + courseId + "/" + year;
-        }
-    </script>
+  <script>
+    function viewMarksheet(studentId, courseId, year) {
+        // Build the URL directly without using Laravel's route helper
+        const url = '/subadmin/course-assign/marksheet/' + studentId + '/' + courseId + '?year=' + year;
+        
+        // Open in new tab
+        window.open(url, '_blank');
+    }
+</script>
 
 
 

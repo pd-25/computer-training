@@ -32,7 +32,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             border-radius: 8px;
             overflow: hidden;
-            padding: 40px;
+            padding: 30px;
             border: 12px solid transparent;
         }
 
@@ -126,7 +126,7 @@
             text-align: center;
             /* margin-bottom: 30px; */
             position: relative;
-            padding-bottom: 15px;
+            padding-bottom: 10px;
         }
 
         .header::after {
@@ -224,7 +224,7 @@
             font-size: 18px;
             font-weight: 500;
             color: #1a237e;
-            padding-bottom: 8px;
+            padding-bottom: 5px;
             border-bottom: 1px dashed #ccc;
         }
 
@@ -278,7 +278,7 @@
             margin-top: 40px;
             text-align: center;
             border-top: 1px solid #eee;
-            padding-top: 20px;
+            padding-top: 10px;
         }
 
         .footer-logo {
@@ -293,8 +293,8 @@
             font-weight: bold;
             margin-bottom: 15px;
             border-radius: 4px;
-            padding-top: 40px !important;
-            padding-bottom: 40px !important;
+            padding-top: 30px !important;
+            padding-bottom: 30px !important;
         }
 
         .footer-details {
@@ -311,7 +311,7 @@
 
         /* Marksheet Table Styles */
         .marks-table-container {
-            margin: 30px 0;
+            margin: 20px 0;
             overflow-x: auto;
         }
 
@@ -368,7 +368,7 @@
 
         @media (max-width: 768px) {
             .certificate-container {
-                padding: 20px;
+                padding: 10px;
             }
 
             .organization-name {
@@ -517,19 +517,8 @@
         </div>
 
         <div class="certificate-title">
-            @if($year == 1)
-            <h1>First Year Marksheet</h1>
-            @elseif($year == 2)
-            <h1>Second Year Marksheet</h1>
-            @elseif($year == 3)
-            <h1>Third Year Marksheet</h1>
-            @elseif($year == 4)
-            <h1>Fourth Year Marksheet</h1>
-            @elseif($year == 5)
-            <h1>Fifth Year Marksheet</h1>
-            @else
+
             <h1>Marksheet</h1>
-            @endif
         </div>
 
         <div style="display: flex; justify-content: center; margin-bottom: 10px;">
@@ -563,6 +552,27 @@
 
             <div class="certificate-text" style="font-size: 22px; color: #1a237e; font-weight: 500; margin: 20px 0;">
                 {{ $course->course_name }}
+                @if(isset($year) && $year !== null)
+                @php
+                $duration = (int)$course->duration;
+                $years = floor($duration / 12);
+                $remainingMonths = $duration % 12;
+
+                $yearLabel = "";
+
+                if ($duration < 12) {
+                    $yearLabel="(" . $duration . " Month" . ($duration> 1 ? "s" : "") . ")";
+                    } else {
+                    if ($year <= $years) {
+                        $yearWords=['', 'First' , 'Second' , 'Third' , 'Fourth' , 'Fifth' , 'Sixth' , 'Seventh' , 'Eighth' ];
+                        $yearLabel="(" . ($yearWords[$year] ?? "Year $year" ) . " Year)" ;
+                        } else if ($year> $years && $remainingMonths > 0) {
+                        $yearLabel = "(" . $remainingMonths . " Month" . ($remainingMonths > 1 ? "s" : "") . ")";
+                        }
+                        }
+                        @endphp
+                        <span style="font-size: 18px; color: #666;">{{ $yearLabel }}</span>
+                        @endif
             </div>
 
             <div class="student-details">
@@ -578,6 +588,7 @@
 
             <!-- Marks Table -->
             <!-- {{-- If SINGLE YEAR data exists --}} -->
+
             @if(isset($subjectDetails))
 
             <div class="marks-table-container">
@@ -721,8 +732,7 @@
                 <img src="{{asset('./iso9001.png')}}" width="120" alt="">
             </div>
             <div class="footer-details">
-                Head office: Sankar Azan Path Hatiqaon Bhrtapara Road<br>
-                Near Hatiqaon Police Station (Guwahati, Assam)
+                Head office: House no. 113, Sankar Azan Path, Hatigaon, Bhetapara Road, <br> Near Hatigaon police station,Hatigaon, Guwahati, Assam, 781038
             </div>
             <div class="website">WEBSITE: WWW.NIOTE.IN | EMAIL: INFO@NIOTE.IN</div>
         </div>
