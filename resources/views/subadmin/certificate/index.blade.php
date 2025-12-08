@@ -485,7 +485,7 @@
                 has successfully completed the course
             </div>
 
-            <div class="certificate-text" style="font-size: 22px; color: #1a237e; font-weight: 500; margin: 20px 0;">
+            <div class="certificate-text" style="font-size: 22px; color: #1a237e; font-weight: 500; margin: 20px 0; text-transform: capitalize;">
                 {{ $course->course_name }}
             </div>
 
