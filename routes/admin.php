@@ -62,6 +62,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::post('/payments/reject/{id}', [DashboardController::class, 'paymentRejected'])->name('admin.payments.reject');
     Route::delete('/payments/reject/{id}', [DashboardController::class, 'deletePaymentRequest'])->name('admin.payments.delete');
 
+    // Students =========================================================================================================>
+    Route::get('/assigned-students', [DashboardController::class, 'courseAssignedAllStudentsShow'])->name('admin.student.assigned-students');
+    Route::get('/student/{student_id}/course/{course_id}/id-card', [DashboardController::class, 'showIdCard'])->name('admin.student.id-card');
+    Route::get('/student/{student_id}/course/{course_id}/marksheet', [DashboardController::class, 'showMarkSheet'])->name('admin.student.marksheet');
+    Route::get('/student/{student_id}/course/{course_id}/certificate', [DashboardController::class, 'showCertificate'])->name('admin.student.certificate');
+
 
 
 

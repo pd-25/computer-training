@@ -263,42 +263,6 @@ class DashboardController extends Controller
     }
 
     // Assaigned Courses===============================================================================================>
-    // public function courseAssignView(Request $request)
-    // {
-    //     $search = $request->input('search');
-    //     $categories = Category::all();
-
-    //     // Get courses with their category_id
-    //     $courses = Course::all();
-
-    //     $sts = Student::where('created_by', Auth::guard('subadmin')->id())
-    //         ->orderBy('id', 'desc')
-    //         ->paginate(10);
-
-    //     // Build the query with search functionality for assigned courses
-    //     $students = Student::where('created_by', Auth::guard('subadmin')->id())
-    //         ->whereNotNull('assigned_course_id')
-    //         ->whereRaw("JSON_LENGTH(assigned_course_id) > 0")
-    //         ->when($search, function ($query, $search) {
-    //             return $query->where(function ($q) use ($search) {
-    //                 $q->where('enrollment_no', 'like', '%' . $search . '%')
-    //                     ->orWhere('name', 'like', '%' . $search . '%')
-    //                     ->orWhere('email', 'like', '%' . $search . '%')
-    //                     ->orWhere('phone', 'like', '%' . $search . '%');
-    //             });
-    //         })
-    //         ->orderBy('id', 'desc')
-    //         ->paginate(10)
-    //         ->appends(['search' => $search]);
-
-    //     $assigned_courses = [];
-    //     foreach ($students as $student) {
-    //         $assigned_courses[$student->id] = $student->assigned_course_id;
-    //     }
-
-    //     return view('subadmin.courseassign.index', compact('courses', 'sts', 'students', 'categories'));
-    // }
-
     public function courseAssignView(Request $request)
     {
         $search = $request->input('search');
@@ -383,38 +347,6 @@ class DashboardController extends Controller
             'student' => $student
         ]);
     }
-
-    // public function courseAssignAdd(Request $request)
-    // {
-    //     try {
-
-    //         $validator = Validator::make($request->all(), [
-    //             'student_id' => 'required|exists:students,id',
-    //             'assigned_course_id' => 'required|array|min:1',
-    //             'assigned_course_id.*' => 'required|distinct|integer|exists:courses,id',
-    //         ]);
-
-    //         if ($validator->fails()) {
-    //             return redirect()->back()
-    //                 ->withErrors($validator)
-    //                 ->withInput();
-    //         }
-
-    //         $student = Student::findOrFail($request->student_id);
-
-    //         $courseIds = array_values($request->assigned_course_id);
-
-    //         DB::transaction(function () use ($student, $courseIds) {
-
-    //             $student->assigned_course_id = $courseIds;
-    //             $student->save();
-    //         });
-
-    //         return redirect()->back()->with('success', 'Courses assigned to student successfully.');
-    //     } catch (\Exception $e) {
-    //         return redirect()->back()->with('error', 'Failed to assign courses: ' . $e->getMessage());
-    //     }
-    // }
 
     public function courseAssignAdd(Request $request)
     {
@@ -636,39 +568,79 @@ class DashboardController extends Controller
         $student = Student::findOrFail($student_id);
         $course = Course::findOrFail($course_id);
 
-        // Calculate marks obtained in percentage
-        $marksObtainedInPercent = 0;
+        // Get all subjects for this course
+        $courseSubjects = json_decode($course->subjects, true);
 
-        $mark = Mark::where('student_id', $student_id)
-            ->where('course_id', $course_id)
-            ->first();
-
-        if ($mark && $course) {
-            $subjects = json_decode($course->subjects, true);
-            $marks = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
-
-            $totalObtained = 0;
-            $totalMax = 0;
-
-            foreach ($subjects as $sub) {
-                $subName = $sub['subject_name'];
-                $maxMarks = isset($sub['max_marks']) ? (int)$sub['max_marks'] : 100;
-
-                $obtained = isset($marks[$subName]) ? (int)$marks[$subName] : 0;
-
-                $totalObtained += $obtained;
-                $totalMax += $maxMarks;
-            }
-
-            if ($totalMax > 0) {
-                $marksObtainedInPercent = round(($totalObtained / $totalMax) * 100, 2);
-            }
+        if (!$courseSubjects) {
+            abort(404, 'No subjects found for this course.');
         }
 
-        // Don't generate QR code for public view (to avoid recursion)
-        $qrCode = null;
+        // Get ALL marks for this student and course (all years)
+        $allMarks = Mark::where('student_id', $student->id)
+            ->where('course_id', $course->id)
+            ->get();
 
-        return view('subadmin.certificate.index', compact('student', 'course', 'marksObtainedInPercent', 'qrCode'));
+        if ($allMarks->isEmpty()) {
+            abort(404, 'No marks found for this student in this course.');
+        }
+
+        // Calculate total marks across ALL years
+        $grandTotalObtained = 0;
+        $grandTotalMax = 0;
+        $yearWiseData = [];
+
+        foreach ($allMarks as $mark) {
+            $year = $mark->year;
+            $subjects = $courseSubjects[$year] ?? [];
+
+            if (empty($subjects)) continue;
+
+            $marksData = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
+
+            $yearObtained = 0;
+            $yearMax = 0;
+
+            foreach ($subjects as $subject) {
+                $subName = $subject['subject_name'];
+                $maxMarks = isset($subject['max_marks']) ? (int)$subject['max_marks'] : 100;
+                $obtained = isset($marksData[$subName]) ? (int)$marksData[$subName] : 0;
+
+                $yearObtained += $obtained;
+                $yearMax += $maxMarks;
+            }
+
+            $grandTotalObtained += $yearObtained;
+            $grandTotalMax += $yearMax;
+
+            // Store year-wise breakdown
+            $yearWiseData[$year] = [
+                'obtained' => $yearObtained,
+                'max' => $yearMax,
+                'percentage' => ($yearMax > 0) ? round(($yearObtained / $yearMax) * 100, 2) : 0
+            ];
+        }
+
+        // Calculate overall percentage
+        $marksObtainedInPercent = ($grandTotalMax > 0)
+            ? round(($grandTotalObtained / $grandTotalMax) * 100, 2)
+            : 0;
+
+        // Calculate grade
+        $grade = $this->calculateGrade($marksObtainedInPercent);
+
+        // Don't generate QR code for public view (to avoid recursion)
+        $qrCodeBase64 = null;
+
+        return view('subadmin.certificate.index', compact(
+            'student',
+            'course',
+            'marksObtainedInPercent',
+            'grandTotalObtained',
+            'grandTotalMax',
+            'grade',
+            'yearWiseData',
+            'qrCodeBase64'
+        ));
     }
 
     public function generateIdCard(Request $request)

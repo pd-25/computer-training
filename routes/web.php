@@ -37,12 +37,13 @@ Route::get('/wallet', [FrontendController::class, 'wallet'])->name('frontend.wal
 
 // Certificate Verification
 Route::get('/verification', [FrontendController::class, 'verification'])->name('frontend.verification');
-Route::post('/verify-certificate', [FrontendController::class, 'verifyYourCertificate'])->name('frontend.verify.certificate');
-Route::get('/certificate/show', [FrontendController::class, 'generateCertificate'])->name('frontend.generate.certificate');
+Route::post('/verify', [FrontendController::class, 'verifyYourCertificate'])->name('frontend.verify.certificate');
+Route::get('/certificate/{student_id}/{course_id}', [FrontendController::class, 'showCertificateIfAllMarksSubmitted'])->name('frontend.generate.certificate');
 
-
+// Student Zone
 Route::get('/student-zone', [FrontendController::class, 'studentZone'])->name('frontend.student-zone');
 
+// Franchise
 Route::get('/franchise', [FrontendController::class, 'franchise'])->name('frontend.franchise');
 Route::post('/franchise/submit', [FrontendController::class, 'franchiseSubmit'])->name('frontend.franchise.submit');
 

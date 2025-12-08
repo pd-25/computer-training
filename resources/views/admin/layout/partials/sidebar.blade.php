@@ -26,7 +26,14 @@
         <li class="nav-item {{ Route::is('admin.students') ? 'active' : ''}}">
             <a class="nav-link " href="{{route('admin.students')}}">
                 <i class="ri-group-fill"></i>
-                <span>Manage Students</span>
+                <span>All Students</span>
+            </a>
+        </li>
+
+        <li class="nav-item {{ Route::is('admin.student.assigned-students') ? 'active' : ''}}">
+            <a class="nav-link " href="{{route('admin.student.assigned-students')}}">
+                <i class="ri-group-fill"></i>
+                <span>Assigned Students</span>
             </a>
         </li>
 

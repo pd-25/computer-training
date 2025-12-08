@@ -108,13 +108,11 @@ class FrontendController extends Controller
 
     public function franchiseMode()
     {
-
         return view('frontend.franchise-mode');
     }
 
     public function wallet()
     {
-
         return view('frontend.wallet');
     }
 
@@ -161,82 +159,135 @@ class FrontendController extends Controller
         ]);
     }
 
-    public function generateCertificate(Request $request)
+    public function showCertificateIfAllMarksSubmitted($student_id, $course_id)
     {
-        $request->validate([
-            'student_id' => 'required|exists:students,id',
-            'course_id' => 'required|exists:courses,id',
-        ]);
+        $student = Student::findOrFail($student_id);
+        $course = Course::findOrFail($course_id);
 
-        $student = Student::findOrFail($request->student_id);
-        $course = Course::findOrFail($request->course_id);
+        // Get all subjects for this course
+        $courseSubjects = json_decode($course->subjects, true);
 
-        // Calculate marks obtained in percentage
-        $marksObtainedInPercent = 0;
-
-        $mark = Mark::where('student_id', $student->id)
-            ->where('course_id', $course->id)
-            ->first();
-
-        $course = Course::find($course->id);
-
-        if ($mark && $course) {
-            $subjects = json_decode($course->subjects, true);
-            $marks = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
-
-            $totalObtained = 0;
-            $totalMax = 0;
-
-            foreach ($subjects as $sub) {
-                $subName = $sub['subject_name'];
-                $maxMarks = isset($sub['max_marks']) ? (int)$sub['max_marks'] : 100;
-
-                $obtained = isset($marks[$subName]) ? (int)$marks[$subName] : 0;
-
-                $totalObtained += $obtained;
-                $totalMax += $maxMarks;
-            }
-
-            if ($totalMax > 0) {
-                $marksObtainedInPercent = round(($totalObtained / $totalMax) * 100, 2);
-            }
+        if (!$courseSubjects) {
+            return redirect()->route('frontend.verification')
+                ->with('error', 'No subjects found for this course.');
         }
 
-        $certificateUrl = route('certificate.public.show', [
+        // Calculate how many years/durations should have marks
+        $totalYearsExpected = count($courseSubjects);
+
+        // Get ALL marks for this student and course
+        $allMarks = Mark::where('student_id', $student->id)
+            ->where('course_id', $course->id)
+            ->get();
+
+        // Check if all years have marks submitted
+        if ($allMarks->count() < $totalYearsExpected) {
+            $submittedYears = $allMarks->pluck('year')->toArray();
+            $missingYears = array_diff(array_keys($courseSubjects), $submittedYears);
+
+            return redirect()->route('frontend.verification')
+                ->with('error', 'Marks not submitted for all years/durations. Missing: Year(s) ' . implode(', ', $missingYears));
+        }
+
+        if ($allMarks->isEmpty()) {
+            return redirect()->route('frontend.verification')
+                ->with('error', 'No marks found for this student in this course. Please contact your institute.');
+        }
+
+        // Calculate total marks across ALL years
+        $grandTotalObtained = 0;
+        $grandTotalMax = 0;
+        $yearWiseData = [];
+
+        foreach ($allMarks as $mark) {
+            $year = $mark->year;
+            $subjects = $courseSubjects[$year] ?? [];
+
+            if (empty($subjects)) continue;
+
+            $marksData = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
+
+            $yearObtained = 0;
+            $yearMax = 0;
+
+            foreach ($subjects as $subject) {
+                $subName = $subject['subject_name'];
+                $maxMarks = isset($subject['max_marks']) ? (int)$subject['max_marks'] : 100;
+                $obtained = isset($marksData[$subName]) ? (int)$marksData[$subName] : 0;
+
+                $yearObtained += $obtained;
+                $yearMax += $maxMarks;
+            }
+
+            $grandTotalObtained += $yearObtained;
+            $grandTotalMax += $yearMax;
+
+            $yearWiseData[$year] = [
+                'obtained' => $yearObtained,
+                'max' => $yearMax,
+                'percentage' => ($yearMax > 0) ? round(($yearObtained / $yearMax) * 100, 2) : 0
+            ];
+        }
+
+        // Calculate overall percentage
+        $marksObtainedInPercent = ($grandTotalMax > 0)
+            ? round(($grandTotalObtained / $grandTotalMax) * 100, 2)
+            : 0;
+
+        // Calculate grade
+        $grade = $this->calculateGrade($marksObtainedInPercent);
+
+        // Generate QR Code for certificate verification
+        $certificateUrl = route('frontend.generate.certificate', [
             'student_id' => $student->id,
             'course_id' => $course->id
         ]);
 
-        // Build QR Code (v6 correct syntax)
-        $result = (new Builder(
-            writer: new PngWriter(),
-            data: $certificateUrl,
-            size: 120,
-            margin: 10,
-        ))->build();
+        try {
+            $result = (new Builder(
+                writer: new PngWriter(),
+                data: $certificateUrl,
+                size: 120,
+                margin: 10,
+            ))->build();
 
-        // Convert to Base64
-        $qrCodeBase64 = base64_encode($result->getString());
+            $qrCodeBase64 = base64_encode($result->getString());
+        } catch (\Exception $e) {
+            $qrCodeBase64 = null;
+        }
 
         return view('subadmin.certificate.index', compact(
             'student',
             'course',
             'marksObtainedInPercent',
+            'grandTotalObtained',
+            'grandTotalMax',
+            'grade',
+            'yearWiseData',
             'qrCodeBase64'
         ));
     }
 
-
+    // Helper function to calculate grade
+    private function calculateGrade($percentage)
+    {
+        if ($percentage >= 90) return 'A+';
+        if ($percentage >= 80) return 'A';
+        if ($percentage >= 70) return 'B+';
+        if ($percentage >= 60) return 'B';
+        if ($percentage >= 50) return 'C+';
+        if ($percentage >= 40) return 'C';
+        if ($percentage >= 33) return 'D';
+        return 'F';
+    }
 
     public function studentZone()
     {
-
         return view('frontend.student-zone');
     }
 
     public function franchise()
     {
-
         return view('frontend.franchise');
     }
 

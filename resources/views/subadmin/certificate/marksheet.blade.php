@@ -561,7 +561,7 @@
                 $yearLabel = "";
 
                 if ($duration < 12) {
-                    $yearLabel="(" . $duration . " Month" . ($duration> 1 ? "s" : "") . ")";
+                    $yearLabel=" ";
                     } else {
                     if ($year <= $years) {
                         $yearWords=['', 'First' , 'Second' , 'Third' , 'Fourth' , 'Fifth' , 'Sixth' , 'Seventh' , 'Eighth' ];

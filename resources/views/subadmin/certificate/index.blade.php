@@ -423,7 +423,7 @@
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .print-button:hover {
@@ -457,8 +457,13 @@
         </div>
 
         <div class="certificate-body">
-            <div class="certificate-text">
-                This is to certify that <strong style="text-transform: capitalize;">{{ $student->name }}</strong>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="certificate-text">
+                    This is to certify that <strong style="text-transform: capitalize;">{{ $student->name }}</strong>
+                </div>
+
+                <img src="{{ asset($student->image) }}" alt="" width="120px" style=" border: 1px solid #1a237e; padding: 5px;">
+
             </div>
 
             <div class="student-details">
