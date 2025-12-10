@@ -560,19 +560,25 @@
 
                 $yearLabel = "";
 
-                if ($duration < 12) {
-                    $yearLabel=" ";
+                // If duration is 12 or less → show nothing
+                if ($duration <= 12) {
+                    $yearLabel="" ;
                     } else {
-                    if ($year <= $years) {
-                        $yearWords=['', 'First' , 'Second' , 'Third' , 'Fourth' , 'Fifth' , 'Sixth' , 'Seventh' , 'Eighth' ];
-                        $yearLabel="(" . ($yearWords[$year] ?? "Year $year" ) . " Year)" ;
-                        } else if ($year> $years && $remainingMonths > 0) {
-                        $yearLabel = "(" . $remainingMonths . " Month" . ($remainingMonths > 1 ? "s" : "") . ")";
-                        }
-                        }
-                        @endphp
-                        <span style="font-size: 18px; color: #666;">{{ $yearLabel }}</span>
-                        @endif
+                    if ($year <=$years) {
+                    $yearWords=['', 'First' , 'Second' , 'Third' , 'Fourth' , 'Fifth' , 'Sixth' , 'Seventh' , 'Eighth' ];
+                    $yearLabel="(" . ($yearWords[$year] ?? "Year $year" ) . " Year)" ;
+                    }
+                    else if ($year> $years && $remainingMonths > 0) {
+                    $yearLabel = "(" . $remainingMonths . " Month" . ($remainingMonths > 1 ? "s" : "") . ")";
+                    }
+                    }
+                    @endphp
+
+                    @if($yearLabel !== "")
+                    <span style="font-size: 18px; color: #666;">{{ $yearLabel }}</span>
+                    @endif
+                    @endif
+
             </div>
 
             <div class="student-details">
