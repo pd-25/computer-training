@@ -27,10 +27,13 @@
             padding: 40px;
             border: 10px solid #182b45;
             box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            background-image: url('{{ asset("assets/img/certificate-bg.png") }}'); /* Optional background */
+            /* Background image combination: BG + Repeated Text */
+            background-image: url('{{ asset("assets/img/certificate-bg.png") }}');
             background-size: cover;
             box-sizing: border-box;
+            overflow: hidden;
         }
+
         .corner {
             position: absolute;
             width: 100px;
@@ -121,6 +124,17 @@
             font-size: 16px;
         }
         
+            .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px; /* Adjust size as needed */
+            opacity: 0.1;
+            z-index: 0;
+            pointer-events: none;
+        }
+
         @media print {
             body { 
                 background: none; 
@@ -133,7 +147,6 @@
                 height: 100vh;
                 border: 5px solid #182b45;
             }
-             /* ensure background images/colors are printed */
         }
     </style>
 </head>
@@ -146,10 +159,14 @@
         <div class="corner bottom-left"></div>
         <div class="corner bottom-right"></div>
 
+
+        <!-- Watermark -->
+        <img src="{{ asset('logo.png') }}" class="watermark" alt="Watermark">
+
         <div class="header">
             <!-- Replace with your actual logo path -->
             <img src="{{ asset('logo.png') }}" alt="Logo" class="logo">
-            <br>
+            <h2 class="subtitle" style="color: #182b45; font-weight: bold; margin-top: 0; margin-bottom: 5px;">NATIONAL INSTITUTE OF TECHNICAL EDUCATION</h2>
             <h1 class="title">Certificate of Affiliation</h1>
         </div>
 
