@@ -30,7 +30,8 @@ class DashboardController extends Controller
     // Dashboard======================================================================================================>
     public function dashboard(Request $request)
     {
-        return view('admin.dashboard.dashboard');
+        $totalFranchise = ModelsSubAdmin::count();
+        return view('admin.dashboard.dashboard', compact('totalFranchise'));
     }
 
 
