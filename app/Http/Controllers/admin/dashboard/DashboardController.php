@@ -897,6 +897,19 @@ class DashboardController extends Controller
         ));
     }
 
+
+    public function giveAffiliation($id)
+    {
+        try {
+            $subAdmin = ModelsSubAdmin::findOrFail($id);
+            $subAdmin->affiliation = 1; 
+            $subAdmin->save();
+            return redirect()->back()->with('success', 'Affiliation granted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to grant affiliation: ' . $e->getMessage());
+        }
+    }
+
     // Helper function to calculate subject details
     private function calculateSubjectDetails($subjects, $marksData)
     {

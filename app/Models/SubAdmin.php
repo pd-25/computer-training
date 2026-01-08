@@ -22,6 +22,7 @@ class SubAdmin extends Authenticatable
         'org_name',
         'email',
         'password',
+        'affiliation',
     ];
 
     /**

@@ -35,6 +35,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::post('/subadmins', [DashboardController::class, 'addSubAdmin'])->name('admin.subadmins.add');
     Route::put('/subadmins/edit/{id}', [DashboardController::class, 'editSubAdmin'])->name('admin.subadmins.edit');
     Route::delete('/subadmins/delete/{id}', [DashboardController::class, 'deleteSubAdmin'])->name('admin.subadmins.delete');
+    Route::post('/subadmins/affiliation/{id}', [DashboardController::class, 'giveAffiliation'])->name('admin.subadmins.affiliation');
 
     // Auth
     Route::get('/subadmins/login-as/{id}', [DashboardController::class, 'loginAsSubAdmin'])->name('admin.subadmins.loginAs');

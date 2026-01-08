@@ -27,7 +27,8 @@ class DashboardController extends Controller
     // Dashboard======================================================================================================>
     public function dashboard(Request $request)
     {
-        return view('subadmin.dashboard.dashboard');
+        $totalStudents = Student::where('created_by', Auth::guard('subadmin')->id())->count();
+        return view('subadmin.dashboard.dashboard', compact('totalStudents'));
     }
 
 
@@ -904,5 +905,16 @@ class DashboardController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
+    }
+
+    public function showAffiliation()
+    {
+        $subadmin = Auth::guard('subadmin')->user();
+        
+        if ($subadmin->affiliation != 1) {
+            return redirect()->back()->with('error', 'Affiliation certificate is not available yet.');
+        }
+
+        return view('subadmin.certificate.affiliation', compact('subadmin'));
     }
 }

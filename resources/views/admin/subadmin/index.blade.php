@@ -1,5 +1,5 @@
 @extends('admin.layout.main')
-@section('title', 'All Subadmins')
+@section('title', 'All Franchise')
 
 <style>
     .fixed-btn {
@@ -135,6 +135,12 @@
                                     <a href="{{ route('admin.subadmins.loginAs', $subadmin->id) }}" class="btn btn-sm btn-primary"><i class="bi bi-power"></i></a>
                                     <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editSubAdminModal{{ $subadmin->id }}"><i class="bi bi-pencil"></i></button>
                                     <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteSubAdminModal{{ $subadmin->id }}"><i class="bi bi-trash"></i></button>
+                                    
+                                    @if ($subadmin->affiliation == 0)
+                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#giveAffiliationModal{{ $subadmin->id }}"><i class="bi bi-share"></i> Give Affiliation</button>
+                                    @else
+                                        <button class="btn btn-sm btn-success" disabled><i class="bi bi-check-circle"></i> Granted</button>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
@@ -264,6 +270,28 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endforeach
+
+    <!-- Give Affiliation Modal -->
+    @foreach ($subAdmins as $subadmin)
+    <div class="modal fade" id="giveAffiliationModal{{ $subadmin->id }}" tabindex="-1" aria-labelledby="giveAffiliationLabel{{ $subadmin->id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <form class="modal-content" action="{{ route('admin.subadmins.affiliation', $subadmin->id) }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="giveAffiliationLabel{{ $subadmin->id }}">Give Affiliation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to give affiliation to <strong>{{ $subadmin->name }}</strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Give Affiliation</button>
                 </div>
             </form>
         </div>
