@@ -64,6 +64,13 @@
             </a>
         </li>
 
+        <li class="nav-item {{ Route::is('admin.account.setting') ? 'active' : ''}}">
+            <a class="nav-link " href="{{route('admin.account.setting')}}">
+                <i class="bi bi-gear"></i>
+                <span>Account Setting</span>
+            </a>
+        </li>
+
 
 
 

@@ -93,6 +93,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
 
 
+
+    // Account Setting
+    Route::get('/account-setting', [AuthController::class, 'accountSetting'])->name('admin.account.setting');
+    Route::post('/account-setting', [AuthController::class, 'updateAccountSetting'])->name('admin.account.update');
+
     Route::get('log-out', [AuthController::class, 'adminLogout'])->name('admin.logout');
 });
 //these routes is common for both employee and admin
