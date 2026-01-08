@@ -154,9 +154,9 @@
                                         <i class="bi bi-pencil"></i>
                                     </button>
 
-                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteStudent{{ $student->id }}">
+                                    <!-- <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteStudent{{ $student->id }}">
                                         <i class="bi bi-trash"></i>
-                                    </button>
+                                    </button> -->
                                 </td>
                             </tr>
                             @empty

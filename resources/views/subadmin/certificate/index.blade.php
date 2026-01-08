@@ -565,7 +565,7 @@
         </div>
     </div>
 
-    <button class="print-button" onclick="printCertificate()">Print Certificate</button>
+    <!-- <button class="print-button" onclick="printCertificate()">Print Certificate</button> -->
 
     <script>
         function printCertificate() {

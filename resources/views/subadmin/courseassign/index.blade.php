@@ -159,18 +159,18 @@
                                             <i class="bi bi-pencil"></i>
                                         </button> -->
 
-                                        <button class="btn btn-sm btn-danger btn-delete-student" data-bs-toggle="modal" data-bs-target="#deleteStudent{{ $student->id }}">
+                                        <!-- <button class="btn btn-sm btn-danger btn-delete-student" data-bs-toggle="modal" data-bs-target="#deleteStudent{{ $student->id }}">
                                             <i class="bi bi-trash"></i>
-                                        </button>
+                                        </button> -->
 
                                         <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#generateIdCard{{ $student->id }}">Generate ID</button>
                                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#generateIdMarks{{ $student->id }}">Give Marks</button>
                                         <button class="btn btn-sm btn-primary"
         data-bs-toggle="modal"
         data-bs-target="#downloadMarksheetIndividual{{ $student->id }}">
-    <i class="bi bi-download"></i> Marksheet
+    <i class="bi bi-eye"></i> View Marksheets
 </button>
-                                        <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#generateCertificate{{ $student->id }}">Generate Certificate</button>
+                                        <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#generateCertificate{{ $student->id }}"><i class="bi bi-eye"></i> Generate Certificate</button>
                                     </div>
                                 </td>
                             </tr>
@@ -399,7 +399,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">Generate Certificate</button>
+                    <button type="submit" class="btn btn-success">Generate & View Certificate</button>
                 </div>
             </form>
         </div>
