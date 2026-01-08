@@ -565,7 +565,10 @@
         </div>
     </div>
 
-    <!-- <button class="print-button" onclick="printCertificate()">Print Certificate</button> -->
+    <!-- only show auth guard admin -->
+    @auth('admin')
+    <button class="print-button" onclick="printCertificate()">Print Certificate</button>
+    @endauth
 
     <script>
         function printCertificate() {

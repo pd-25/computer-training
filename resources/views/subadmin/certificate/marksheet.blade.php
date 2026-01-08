@@ -749,7 +749,10 @@
 <div class="issue-date" id="todayDate"></div>
 
 <!-- print button -->
-<!-- <button class="print-button" onclick="printCertificate()">Print Marksheet</button> -->
+@auth('admin')
+<button class="print-button" onclick="printCertificate()">Print Marksheet</button>
+@endauth
+
 <script>
     function printCertificate() {
         var printButton = document.querySelector('.print-button');
