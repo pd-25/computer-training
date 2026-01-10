@@ -305,7 +305,7 @@
             @foreach($transactions as $transaction)
             <div class="transaction-item">
                 <div class="transaction-details">
-                    <h5><strong>{{$transaction->student->enrollment_no}}</strong> <br> <span style="text-transform: capitalize;">{{$transaction->student->name}}</span></h5>
+                    <h5><strong>{{ $transaction->student?->enrollment_no ?? 'N/A' }}</strong> <br> <span style="text-transform: capitalize;">{{$transaction->student?->name ?? 'N/A'}}</span></h5>
                     <p>{{$transaction->created_at->format('M d, Y')}} • System</p>
                 </div>
                 <div class="transaction-amount negative">- ₹{{$transaction->debit_balance}}</div>
