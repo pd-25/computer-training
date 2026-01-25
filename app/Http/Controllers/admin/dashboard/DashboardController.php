@@ -885,17 +885,18 @@ class DashboardController extends Controller
         ))->build();
 
         $qrCodeBase64 = base64_encode($result->getString());
+        return view('subadmin.certificate.index_up');
 
-        return view('subadmin.certificate.index', compact(
-            'student',
-            'course',
-            'marksObtainedInPercent',
-            'grandTotalObtained',
-            'grandTotalMax',
-            'grade',
-            'yearWiseData',
-            'qrCodeBase64'
-        ));
+        // return view('subadmin.certificate.index', compact(
+        //     'student',
+        //     'course',
+        //     'marksObtainedInPercent',
+        //     'grandTotalObtained',
+        //     'grandTotalMax',
+        //     'grade',
+        //     'yearWiseData',
+        //     'qrCodeBase64'
+        // ));
     }
 
 
