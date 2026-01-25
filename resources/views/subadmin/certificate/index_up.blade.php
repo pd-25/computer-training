@@ -243,7 +243,7 @@
                         <img src={{asset("images/5.png")}} alt="">
                     </div>
                     <div class="userPhoto">
-                        <img src={{asset("images/6.jpg" )}}alt="">
+                        <img src={{asset("images/6.jpg")}} alt="">
                     </div>
                 </div>
             </div>

@@ -68,6 +68,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/student/{student_id}/course/{course_id}/id-card', [DashboardController::class, 'showIdCard'])->name('admin.student.id-card');
     Route::get('/student/{student_id}/course/{course_id}/marksheet', [DashboardController::class, 'showMarkSheet'])->name('admin.student.marksheet');
     Route::get('/student/{student_id}/course/{course_id}/certificate', [DashboardController::class, 'showCertificate'])->name('admin.student.certificate');
+    Route::get('/student/demo/certificate', [DashboardController::class, 'demoCerTest']);
 
 
 
