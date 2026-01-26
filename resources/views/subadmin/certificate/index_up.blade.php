@@ -43,7 +43,7 @@
 
 
         .certInner {
-            background-image: url(/images/4.png);
+            background-image: url("{{ asset('images/4.png') }}");
             /* background-size: cover; */
             background-position: center;
             background-repeat: repeat;
@@ -149,7 +149,7 @@
             margin-left: 10px;
             padding-bottom: 8px;
             /* border-bottom: 5px dashed #000000; */
-            background-image: url(/images/border.png);
+            background-image: url("{{ asset('images/border.png') }}");
             /* background-size: 100% 100%; */
             background-repeat: repeat-x;
             background-position: bottom;
