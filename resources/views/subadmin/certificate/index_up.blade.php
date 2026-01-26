@@ -122,7 +122,7 @@
         }
 
         .certificateInfoItem {
-            margin-bottom: 20pt;
+            margin-bottom: 18pt;
         }
 
         .certificateInfoItem .label {
