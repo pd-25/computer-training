@@ -139,6 +139,10 @@
             letter-spacing: 1px;
         }
 
+        .certificateInfoItem .label:not(:first-child) {
+            margin-left: 10px;
+        }
+
         .certificateInfoItem .value {
             height: 30px;
             flex-grow: 1;
