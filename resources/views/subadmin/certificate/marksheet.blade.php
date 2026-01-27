@@ -326,11 +326,11 @@
             </div>
             <div class="headerBarcodeInfo">
                 <div class="srNo">
-                    <p><span> Sr.</span>890001 </p>
-                    <p><span>Enroll. No.</span> 89000189</p>
+                    <p><span> Sr.</span>{{ $student->id }} </p>
+                    <!-- <p><span>Enroll. No.</span> {{ $student->enrollment_no }}</p> -->
                 </div>
                 <div class="rollNo">
-                    <p>Roll No. <span>890001</span></p>
+                    <p>Enroll. No. <span>{{ $student->enrollment_no }}</span></p>
                 </div>
             </div>
             <div class="topImage">
@@ -340,7 +340,7 @@
                         <img src="{{asset("images/5.png")}}" alt="">
                     </div>
                     <div class="userPhoto">
-                        <img src="{{asset("images/6.jpg")}}" alt="">
+                        <img src="{{ asset($student->image) }}" alt="">
                     </div>
                 </div>
             </div>
@@ -350,39 +350,39 @@
                         <tr>
                             <td>
                                 <span class="label">STUDENT NAME:</span>
-                                <span class="value">SUJIT KUMAR</span>
+                                <span class="value" style="text-transform: uppercase;">{{ $student->name }}</span>
                             </td>
                             <td>
-                                <span class="label">DURATION</span>
-                                <span class="value">3 MONTH</span>
+                                <span class="label">DURATION:</span>
+                                <span class="value">{{ $course->duration }} MONTHS</span>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <span class="label">FATHER NAME:</span>
-                                <span class="value">SUJIT KUMAR</span>
+                                <span class="value" style="text-transform: uppercase;">{{ $student->father_name }}</span>
                             </td>
-                            <td>
+                            <!-- <td>
                                 <span class="label">SESSION:</span>
-                                <span class="value"> 08-07-2023 TO 08-07-2024Z</span>
-                            </td>
+                                <span class="value"> {{ $student->session ?? 'N/A' }}</span>
+                            </td> -->
                         </tr>
                         <tr>
                             <td colspan="2">
                                 <span class="label">DATE OF BIRTH:</span>
-                                <span class="value"> 07-09-2000</span>
+                                <span class="value"> {{ $student->dob }}</span>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2">
                                 <span class="label">COURSE NAME:</span>
-                                <span class="value">CERTIFICATE IN COMPUTER BASED TYPING</span>
+                                <span class="value" style="text-transform: uppercase;">{{ $course->course_name }}</span>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2">
                                 <span class="label">STUDY CENTER: </span>
-                                <span class="value">SUBHADRA INFOTECH, WARD NO-13, MUZAFFARPUR, BIHAR</span>
+                                <span class="value" style="text-transform: uppercase;">{{ $student->org_name }}</span>
                             </td>
                         </tr>
                     </tbody>
@@ -392,40 +392,94 @@
                 <p>Design and Development By as Per Standards of National Institute of Technical Education</p>
             </div>
             <div class="marksTable">
+                <!-- If SINGLE YEAR data exists -->
+                @if(isset($subjectDetails))
                 <table style="width: 100%;">
                     <thead>
                         <tr>
-                            <th>LANGUAGE</th>
-                            <th>SPEED w.p.m</th>
-                            <th>accuracy</th>
+                            <th>Subject Name</th>
+                            <th>Max Marks</th>
+                            <th>Obtained Marks</th>
+                            <th>Percentage</th>
                             <th>Grade</th>
-                            <th>time taken</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($subjectDetails as $subject)
                         <tr>
-                            <td>Hindi Typing</td>
-                            <td>35 WPM</td>
-                            <td>88%</td>
-                            <td>A+</td>
-                            <td>10:00 M</td>
+                            <td>{{ $subject['name'] }}</td>
+                            <td>{{ $subject['max_marks'] }}</td>
+                            <td>{{ $subject['obtained_marks'] }}</td>
+                            <td>{{ $subject['percentage'] }}%</td>
+                            <td>{{ $subject['grade'] }}</td>
                         </tr>
+                        @endforeach
                         <tr>
-                            <td>English Typing</td>
-                            <td>38 WPM</td>
-                            <td>90%</td>
-                            <td>A+</td>
-                            <td>10:00 M</td>
+                            <td><strong>TOTAL</strong></td>
+                            <td><strong>{{ $totalMaxMarks }}</strong></td>
+                            <td><strong>{{ $totalMarksObtained }}</strong></td>
+                            <td><strong>{{ round($overallPercentage, 2) }}%</strong></td>
+                            <td><strong>{{ $overallGrade }}</strong></td>
                         </tr>
                     </tbody>
                 </table>
+                @elseif(isset($allYearsData))
+                <!-- Multi Year Data -->
+                @foreach($allYearsData as $year => $yearData)
+                <h4 style="text-align:center; font-family: 'Playball', cursive; margin: 10px 0;">Year {{ $year }}</h4>
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Subject Name</th>
+                            <th>Max Marks</th>
+                            <th>Obtained Marks</th>
+                            <th>Percentage</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($yearData['subjects'] as $subject)
+                        <tr>
+                            <td>{{ $subject['name'] }}</td>
+                            <td>{{ $subject['max_marks'] }}</td>
+                            <td>{{ $subject['obtained_marks'] }}</td>
+                            <td>{{ $subject['percentage'] }}%</td>
+                            <td>{{ $subject['grade'] }}</td>
+                        </tr>
+                        @endforeach
+                        <tr>
+                            <td><strong>Total (Year {{ $year }})</strong></td>
+                            <td><strong>{{ $yearData['total_max'] }}</strong></td>
+                            <td><strong>{{ $yearData['total_obtained'] }}</strong></td>
+                            <td><strong>{{ round($yearData['percentage'], 2) }}%</strong></td>
+                            <td><strong>{{ $yearData['grade'] }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                @endforeach
+                
+                <h4 style="text-align:center; font-family: 'Playball', cursive; margin: 10px 0;">Grand Total</h4>
+                <table style="width: 100%;">
+                     <tr>
+                        <td><strong>Grand Total Marks</strong></td>
+                        <td><strong>{{ $grandTotalMax }}</strong></td>
+                        <td><strong>{{ $grandTotalObtained }}</strong></td>
+                        <td><strong>{{ round($grandPercentage, 2) }}%</strong></td>
+                        <td><strong>{{ $grandGrade }}</strong></td>
+                    </tr>
+                </table>
+                @endif
             </div>
             <div class="issueDate">
-                <p>Date of Issue: <span>10/10/2020</span></p>
+                <p>Date of Issue: <span id="todayDate"></span></p>
             </div>
             <div class="bottoLogoHolder">
                 <div class="qrCode">
+                     @if(isset($qrCodeBase64))
+                    <img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="QR Code">
+                    @else
                     <img src="{{asset("images/qr-pic.png")}}" alt="">
+                    @endif
                 </div>
                 <div class="isoLogo">
                     <img src="{{asset("images/iso-logo.png")}}" alt="">
@@ -447,6 +501,14 @@
             </div>
         </div>
     </div>
+     <script>
+        // Set today's date
+        const today = new Date();
+        const formattedDate = today.getDate().toString().padStart(2, '0') + '-' +
+            (today.getMonth() + 1).toString().padStart(2, '0') + '-' +
+            today.getFullYear();
+        document.getElementById('todayDate').textContent = formattedDate;
+    </script>
 </body>
 
 </html>

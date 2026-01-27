@@ -231,7 +231,7 @@
             </div>
             <div class="headerBarcodeInfo">
                 <div class="barCodeImage">
-                    <img src={{asset("images/barcode.png")}} alt="">
+                    <!-- <img src={{asset("images/barcode.png")}} alt=""> -->
                 </div>
                 <div class="serialNumber">
                     <p>S.L NO. {{ $student->id }}</p>
