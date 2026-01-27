@@ -901,6 +901,7 @@ class DashboardController extends Controller
 
     public function demoCerTest(){
         return view('subadmin.certificate.index_up');
+        // return view('subadmin.certificate.index_marks');
     }
 
 
