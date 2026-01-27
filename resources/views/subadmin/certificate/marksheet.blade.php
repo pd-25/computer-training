@@ -474,12 +474,13 @@
                 <p>Date of Issue: <span id="todayDate"></span></p>
             </div>
             <div class="bottoLogoHolder">
-                <div class="qrCode">
-                     @if(isset($qrCodeBase64))
-                    <img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="QR Code">
+                <div class="qrCode" style="text-align: center;">
+                    <!-- @if(isset($qrCodeBase64))
+                    <img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="QR Code" style="border: 2px solid #d4af37; padding: 5px; border-radius: 4px; width: 100px; height: 100px;">
+                    <div style="font-size: 10px; color: #666; margin-top: 5px; font-family: 'Montserrat', sans-serif; font-weight: 600;">Scan to Verify</div>
                     @else
                     <img src="{{asset("images/qr-pic.png")}}" alt="">
-                    @endif
+                    @endif -->
                 </div>
                 <div class="isoLogo">
                     <img src="{{asset("images/iso-logo.png")}}" alt="">
