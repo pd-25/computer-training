@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{{ $student->name }} - {{ $course->course_name }} - Marksheet</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -313,6 +313,13 @@
             font-weight: 600;
             font-family: 'Times New Roman', Times, serif;
         }
+
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
     </style>
 </head>
 
@@ -502,6 +509,21 @@
             </div>
         </div>
     </div>
+
+    <!-- print button -->
+    @auth('admin')
+    <button class="print-button" onclick="printCertificate()">Print Marksheet</button>
+    @endauth
+
+    <script>
+        function printCertificate() {
+            var printButton = document.querySelector('.print-button');
+            printButton.style.display = 'none';
+            window.print();
+        }
+    </script>
+
+
      <script>
         // Set today's date
         const today = new Date();
