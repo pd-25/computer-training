@@ -232,7 +232,7 @@
             <div class="headerBarcodeInfo">
                 <div class="barCodeImage">
                     @if(isset($qrCodeBase64))
-                    <img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="QR Code" style="border: 2px solid #d4af37; padding: 5px; border-radius: 4px; width: 100px;">
+                    <!-- <img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="QR Code" style="border: 2px solid #d4af37; padding: 5px; border-radius: 4px; width: 100px;"> -->
                      <!-- <div style="font-size: 10px; color: #666; margin-top: 5px; text-align: center; background: rgba(255,255,255,0.8);">Scan to Verify</div> -->
                     @else
                     <!-- <img src={{asset("images/barcode.png")}} alt=""> -->
@@ -325,6 +325,14 @@
             </div>
             <div class="bottomImage">
                 <img src={{asset("images/bottom-image.png")}} alt="">
+            </div>
+            <div class="qrIsoContainer" style="position: absolute; bottom: 12%; left: 2%; display: flex; gap: 20px; align-items: center;">
+                 <div class="qrCode">
+                    @if(isset($qrCodeBase64))
+                    <img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="QR Code" style="border: 2px solid #d4af37; padding: 5px; border-radius: 4px; width: 100px;">
+                     <!-- <div style="font-size: 10px; color: #666; margin-top: 5px; text-align: center; background: rgba(255,255,255,0.8);">Scan to Verify</div> -->
+                    @endif
+                </div>
             </div>
             <div class="issueDate">
                 <p>Issue date: <span id="todayDate"></span></p>
