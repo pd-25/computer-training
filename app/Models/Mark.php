@@ -11,6 +11,10 @@ class Mark extends Model
         'course_id',
         'year',
         'marks',
+        'session_from',
+        'session_to',
+        'issue_date',
+        'issue_date_certificate'
     ];
 
     protected $casts = [

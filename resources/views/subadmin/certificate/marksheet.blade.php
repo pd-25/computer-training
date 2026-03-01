@@ -362,6 +362,9 @@
                             <td>
                                 <span class="label">DURATION:</span>
                                 <span class="value">{{ $course->duration }} MONTHS</span>
+                                <br>
+                                <span class="label">SESSION:</span>
+                                <span class="value">{{ \Carbon\Carbon::parse($mark->session_from)->format('d-m-Y') }} to {{ \Carbon\Carbon::parse($mark->session_to)->format('d-m-Y') }}</span>
                             </td>
                         </tr>
                         <tr>
@@ -478,7 +481,7 @@
                 @endif
             </div>
             <div class="issueDate">
-                <p>Date of Issue: <span id="todayDate"></span></p>
+                <p>Date of Issue: <span id="">{{ \Carbon\Carbon::parse($mark->issue_date)->format('d-m-Y') }}</span></p>
             </div>
             <div class="bottoLogoHolder">
                 <div class="qrCode" style="text-align: center;">
@@ -495,7 +498,7 @@
             </div>
 
             <div class="controlExamination">
-                <span>Signature</span>
+                <!-- <span>Signature</span> -->
                 <p>Controller of Examination</p>
             </div>
             <div class="directorSignature">

@@ -472,6 +472,7 @@ class DashboardController extends Controller
         $request->validate([
             'student_id' => 'required|exists:students,id',
             'course_id' => 'required|exists:courses,id',
+            'issue_date_certificate' => 'required|date',
         ]);
 
         $student = Student::findOrFail($request->student_id);
@@ -492,6 +493,11 @@ class DashboardController extends Controller
         if ($allMarks->isEmpty()) {
             return redirect()->back()->with('error', 'No marks found for this student in this course.');
         }
+
+        // Store issue_date_certificate
+        Mark::where('student_id', $student->id)
+            ->where('course_id', $course->id)
+            ->update(['issue_date_certificate' => $request->issue_date_certificate]);
 
         // Calculate total marks across ALL years
         $grandTotalObtained = 0;
@@ -560,7 +566,8 @@ class DashboardController extends Controller
             'grandTotalMax',
             'grade',
             'yearWiseData',
-            'qrCodeBase64'
+            'qrCodeBase64',
+            'mark'
         ));
     }
 
@@ -664,6 +671,9 @@ class DashboardController extends Controller
             'course_id' => 'required|integer',
             'year' => 'required|integer|min:1',
             'marks' => 'required|array',
+            'session_from' => 'required|date',
+            'session_to' => 'required|date|after:session_from',
+            'issue_date' => 'required|date',
         ]);
 
         $mark = Mark::updateOrCreate(
@@ -671,6 +681,9 @@ class DashboardController extends Controller
                 'student_id' => $validated['student_id'],
                 'course_id' => $validated['course_id'],
                 'year' => $validated['year'],
+                'session_from' => $validated['session_from'],
+                'session_to' => $validated['session_to'],
+                'issue_date' => $validated['issue_date'],
             ],
             [
                 'marks' => $validated['marks'],
@@ -680,7 +693,11 @@ class DashboardController extends Controller
         return redirect()->route('subadmin.marksheet.get', [
             'student_id' => $validated['student_id'],
             'course_id' => $validated['course_id'],
-            'year' => $validated['year']
+            'year' => $validated['year'],
+            'issue_date' => $validated['issue_date'],
+            'session_from' => $validated['session_from'],
+            'session_to' => $validated['session_to'],
+            
         ])->with('success', 'Marks saved successfully for Year ' . $validated['year'] . '!');
     }
 
@@ -775,7 +792,8 @@ class DashboardController extends Controller
                 'totalMaxMarks',
                 'overallPercentage',
                 'overallGrade',
-                'year'
+                'year',
+                'mark'
             ));
         }
 

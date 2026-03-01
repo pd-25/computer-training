@@ -342,10 +342,10 @@
                 </div>
             </div>
             <div class="issueDate">
-                <p>Issue date: <span id="todayDate"></span></p>
+                <p>Issue date: <span id="">{{ \Carbon\Carbon::parse($mark->issue_date_certificate)->format('d-m-Y') }}</span></p>
             </div>
             <div class="controlExamination">
-                <span>Signature</span>
+                <!-- <span>Signature</span> -->
                 <p>Controller of Examination</p>
             </div>
             <div class="directorSignature">

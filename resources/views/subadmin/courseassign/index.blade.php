@@ -166,10 +166,10 @@
                                         <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#generateIdCard{{ $student->id }}">Generate ID</button>
                                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#generateIdMarks{{ $student->id }}">Give Marks</button>
                                         <button class="btn btn-sm btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#downloadMarksheetIndividual{{ $student->id }}">
-    <i class="bi bi-eye"></i> View Marksheets
-</button>
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#downloadMarksheetIndividual{{ $student->id }}">
+                                            <i class="bi bi-eye"></i> View Marksheets
+                                        </button>
                                         <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#generateCertificate{{ $student->id }}"><i class="bi bi-eye"></i> Generate Certificate</button>
                                     </div>
                                 </td>
@@ -359,6 +359,11 @@
 
                 <div class="modal-body">
                     <!-- Student Name -->
+                     <div class="mb-3">
+                        <label>Date of Issue</label>
+                        <input type="date" class="form-control" name="issue_date_certificate" required>
+                    </div>
+
                     <div class="mb-3">
                         <label>Student Name</label>
                         <input type="text" class="form-control" value="{{ $student->name }}" readonly>
@@ -483,6 +488,23 @@
                 <div class="modal-body">
                     <!-- Student Info -->
                     <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                    <div class="mb-3 row">
+                        <div class="col-4">
+                            <label>Session From</label>
+                            <input type="date" class="form-control" value="" name="session_from" required>
+                        </div>
+                        <div class="col-4">
+                            <label>Session To</label>
+                            <input type="date" class="form-control" value="" name="session_to" required>
+                        </div>
+                        <div class="col-4">
+                            <label>Date of Issue</label>
+                            <input type="date" class="form-control" value="" name="issue_date">
+                        </div>
+                    </div>
+
+                    
 
                     <div class="mb-3">
                         <label>Student Name</label>
@@ -973,15 +995,15 @@
         });
     </script>
 
-  <script>
-    function viewMarksheet(studentId, courseId, year) {
-        // Build the URL directly without using Laravel's route helper
-        const url = '/subadmin/course-assign/marksheet/' + studentId + '/' + courseId + '?year=' + year;
-        
-        // Open in new tab
-        window.open(url, '_blank');
-    }
-</script>
+    <script>
+        function viewMarksheet(studentId, courseId, year) {
+            // Build the URL directly without using Laravel's route helper
+            const url = '/subadmin/course-assign/marksheet/' + studentId + '/' + courseId + '?year=' + year;
+
+            // Open in new tab
+            window.open(url, '_blank');
+        }
+    </script>
 
 
 
