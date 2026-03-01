@@ -711,193 +711,411 @@ class DashboardController extends Controller
         return view('subadmin.idcard.index', compact('student', 'course'));
     }
 
+    // public function showMarkSheet($student_id, $course_id)
+    // {
+    //     $student = Student::findOrFail($student_id);
+    //     $course = Course::findOrFail($course_id);
+
+    //     $year = request()->get('year');
+
+    //     // Get subjects from course
+    //     $courseSubjects = json_decode($course->subjects, true);
+
+    //     if (!$courseSubjects) {
+    //         return redirect()->back()->with('error', 'No subjects found for this course.');
+    //     }
+
+    //     // IF YEAR IS SPECIFIED - SHOW ONLY THAT YEAR
+    //     if ($year !== null && $year != '') {
+    //         $mark = Mark::where('student_id', $student_id)
+    //             ->where('course_id', $course_id)
+    //             ->where('year', $year)
+    //             ->first();
+
+    //         if (!$mark) {
+    //             return redirect()->back()->with('error', 'No marks found for Year ' . $year);
+    //         }
+
+    //         $subjects = $courseSubjects[$year] ?? [];
+
+    //         if (empty($subjects)) {
+    //             return redirect()->back()->with('error', 'No subjects found for Year ' . $year);
+    //         }
+
+    //         $marksData = $mark->marks;
+    //         $subjectDetails = $this->calculateSubjectDetails($subjects, $marksData);
+    //         $totalMarksObtained = array_sum(array_column($subjectDetails, 'obtained_marks'));
+    //         $totalMaxMarks = array_sum(array_column($subjectDetails, 'max_marks'));
+    //         $overallPercentage = ($totalMaxMarks > 0) ? ($totalMarksObtained / $totalMaxMarks) * 100 : 0;
+    //         $overallGrade = $this->calculateGrade($overallPercentage);
+
+    //         return view('subadmin.certificate.marksheet', compact(
+    //             'student',
+    //             'course',
+    //             'subjectDetails',
+    //             'totalMarksObtained',
+    //             'totalMaxMarks',
+    //             'overallPercentage',
+    //             'overallGrade',
+    //             'year',
+    //             'mark'
+    //         ));
+    //     }
+
+    //     // IF NO YEAR - SHOW ALL YEARS
+    //     $allYearsData = [];
+    //     $grandTotalObtained = 0;
+    //     $grandTotalMax = 0;
+
+    //     foreach ($courseSubjects as $yearNum => $subjects) {
+    //         $mark = Mark::where('student_id', $student_id)
+    //             ->where('course_id', $course_id)
+    //             ->where('year', $yearNum)
+    //             ->first();
+
+    //         if (!$mark) continue;
+
+    //         $marksData = $mark->marks;
+    //         $subjectDetails = $this->calculateSubjectDetails($subjects, $marksData);
+
+    //         $totalMarksObtained = array_sum(array_column($subjectDetails, 'obtained_marks'));
+    //         $totalMaxMarks = array_sum(array_column($subjectDetails, 'max_marks'));
+    //         $yearPercentage = ($totalMaxMarks > 0) ? ($totalMarksObtained / $totalMaxMarks) * 100 : 0;
+
+    //         $allYearsData[$yearNum] = [
+    //             'subjects' => $subjectDetails,
+    //             'total_obtained' => $totalMarksObtained,
+    //             'total_max' => $totalMaxMarks,
+    //             'percentage' => $yearPercentage,
+    //             'grade' => $this->calculateGrade($yearPercentage)
+    //         ];
+
+    //         $grandTotalObtained += $totalMarksObtained;
+    //         $grandTotalMax += $totalMaxMarks;
+    //     }
+
+    //     $grandPercentage = ($grandTotalMax > 0) ? ($grandTotalObtained / $grandTotalMax) * 100 : 0;
+    //     $grandGrade = $this->calculateGrade($grandPercentage);
+
+    //     return view('subadmin.certificate.marksheet', compact(
+    //         'student',
+    //         'course',
+    //         'allYearsData',
+    //         'grandTotalObtained',
+    //         'grandTotalMax',
+    //         'grandPercentage',
+    //         'grandGrade'
+    //     ));
+    // }
+
+    // public function showCertificate($student_id, $course_id)
+    // {
+    //     $student = Student::findOrFail($student_id);
+    //     $course = Course::findOrFail($course_id);
+
+    //     // Get all subjects for this course
+    //     $courseSubjects = json_decode($course->subjects, true);
+
+    //     if (!$courseSubjects) {
+    //         return redirect()->back()->with('error', 'No subjects found for this course.');
+    //     }
+
+    //     // Get ALL marks for this student and course (all years)
+    //     $allMarks = Mark::where('student_id', $student->id)
+    //         ->where('course_id', $course->id)
+    //         ->get();
+
+    //     if ($allMarks->isEmpty()) {
+    //         return redirect()->back()->with('error', 'No marks found for this student in this course.');
+    //     }
+
+    //     // Calculate total marks across ALL years
+    //     $grandTotalObtained = 0;
+    //     $grandTotalMax = 0;
+    //     $yearWiseData = [];
+
+    //     foreach ($allMarks as $mark) {
+    //         $year = $mark->year;
+    //         $subjects = $courseSubjects[$year] ?? [];
+
+    //         if (empty($subjects)) continue;
+
+    //         $marksData = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
+
+    //         $yearObtained = 0;
+    //         $yearMax = 0;
+
+    //         foreach ($subjects as $subject) {
+    //             $subName = $subject['subject_name'];
+    //             $maxMarks = isset($subject['max_marks']) ? (int)$subject['max_marks'] : 100;
+    //             $obtained = isset($marksData[$subName]) ? (int)$marksData[$subName] : 0;
+
+    //             $yearObtained += $obtained;
+    //             $yearMax += $maxMarks;
+    //         }
+
+    //         $grandTotalObtained += $yearObtained;
+    //         $grandTotalMax += $yearMax;
+
+    //         $yearWiseData[$year] = [
+    //             'obtained' => $yearObtained,
+    //             'max' => $yearMax,
+    //             'percentage' => ($yearMax > 0) ? round(($yearObtained / $yearMax) * 100, 2) : 0
+    //         ];
+    //     }
+
+    //     // Calculate overall percentage
+    //     $marksObtainedInPercent = ($grandTotalMax > 0)
+    //         ? round(($grandTotalObtained / $grandTotalMax) * 100, 2)
+    //         : 0;
+
+    //     // Calculate grade
+    //     $grade = $this->calculateGrade($marksObtainedInPercent);
+
+    //     // Generate QR Code for certificate verification
+    //     $certificateUrl = route('certificate.public.show', [
+    //         'student_id' => $student->id,
+    //         'course_id' => $course->id
+    //     ]);
+
+    //     $result = (new Builder(
+    //         writer: new PngWriter(),
+    //         data: $certificateUrl,
+    //         size: 120,
+    //         margin: 10,
+    //     ))->build();
+
+    //     $qrCodeBase64 = base64_encode($result->getString());
+        
+
+    //     return view('subadmin.certificate.index', compact(
+    //         'student',
+    //         'course',
+    //         'marksObtainedInPercent',
+    //         'grandTotalObtained',
+    //         'grandTotalMax',
+    //         'grade',
+    //         'yearWiseData',
+    //         'qrCodeBase64',
+    //         'mark'
+    //     ));
+    // }
+
     public function showMarkSheet($student_id, $course_id)
-    {
-        $student = Student::findOrFail($student_id);
-        $course = Course::findOrFail($course_id);
+{
+    $student = Student::findOrFail($student_id);
+    $course = Course::findOrFail($course_id);
 
-        $year = request()->get('year');
+    $year = request()->get('year');
 
-        // Get subjects from course
-        $courseSubjects = json_decode($course->subjects, true);
+    $courseSubjects = json_decode($course->subjects, true);
 
-        if (!$courseSubjects) {
-            return redirect()->back()->with('error', 'No subjects found for this course.');
+    if (!$courseSubjects) {
+        return redirect()->back()->with('error', 'No subjects found for this course.');
+    }
+
+    if ($year !== null && $year != '') {
+        $mark = Mark::where('student_id', $student_id)
+            ->where('course_id', $course_id)
+            ->where('year', $year)
+            ->first();
+
+        if (!$mark) {
+            return redirect()->back()->with('error', 'No marks found for Year ' . $year);
         }
 
-        // IF YEAR IS SPECIFIED - SHOW ONLY THAT YEAR
-        if ($year !== null && $year != '') {
-            $mark = Mark::where('student_id', $student_id)
-                ->where('course_id', $course_id)
-                ->where('year', $year)
-                ->first();
-
-            if (!$mark) {
-                return redirect()->back()->with('error', 'No marks found for Year ' . $year);
-            }
-
-            $subjects = $courseSubjects[$year] ?? [];
-
-            if (empty($subjects)) {
-                return redirect()->back()->with('error', 'No subjects found for Year ' . $year);
-            }
-
-            $marksData = $mark->marks;
-            $subjectDetails = $this->calculateSubjectDetails($subjects, $marksData);
-            $totalMarksObtained = array_sum(array_column($subjectDetails, 'obtained_marks'));
-            $totalMaxMarks = array_sum(array_column($subjectDetails, 'max_marks'));
-            $overallPercentage = ($totalMaxMarks > 0) ? ($totalMarksObtained / $totalMaxMarks) * 100 : 0;
-            $overallGrade = $this->calculateGrade($overallPercentage);
-
-            return view('subadmin.certificate.marksheet', compact(
-                'student',
-                'course',
-                'subjectDetails',
-                'totalMarksObtained',
-                'totalMaxMarks',
-                'overallPercentage',
-                'overallGrade',
-                'year'
-            ));
+        // ← save dates from query string if provided
+        if (request()->has('session_from')) {
+            $mark->update([
+                'session_from' => request()->get('session_from'),
+                'session_to'   => request()->get('session_to'),
+                'issue_date'   => request()->get('issue_date'),
+            ]);
+            $mark->refresh();
         }
 
-        // IF NO YEAR - SHOW ALL YEARS
-        $allYearsData = [];
-        $grandTotalObtained = 0;
-        $grandTotalMax = 0;
+        $subjects = $courseSubjects[$year] ?? [];
 
-        foreach ($courseSubjects as $yearNum => $subjects) {
-            $mark = Mark::where('student_id', $student_id)
-                ->where('course_id', $course_id)
-                ->where('year', $yearNum)
-                ->first();
-
-            if (!$mark) continue;
-
-            $marksData = $mark->marks;
-            $subjectDetails = $this->calculateSubjectDetails($subjects, $marksData);
-
-            $totalMarksObtained = array_sum(array_column($subjectDetails, 'obtained_marks'));
-            $totalMaxMarks = array_sum(array_column($subjectDetails, 'max_marks'));
-            $yearPercentage = ($totalMaxMarks > 0) ? ($totalMarksObtained / $totalMaxMarks) * 100 : 0;
-
-            $allYearsData[$yearNum] = [
-                'subjects' => $subjectDetails,
-                'total_obtained' => $totalMarksObtained,
-                'total_max' => $totalMaxMarks,
-                'percentage' => $yearPercentage,
-                'grade' => $this->calculateGrade($yearPercentage)
-            ];
-
-            $grandTotalObtained += $totalMarksObtained;
-            $grandTotalMax += $totalMaxMarks;
+        if (empty($subjects)) {
+            return redirect()->back()->with('error', 'No subjects found for Year ' . $year);
         }
 
-        $grandPercentage = ($grandTotalMax > 0) ? ($grandTotalObtained / $grandTotalMax) * 100 : 0;
-        $grandGrade = $this->calculateGrade($grandPercentage);
+        $marksData = $mark->marks;
+        $subjectDetails = $this->calculateSubjectDetails($subjects, $marksData);
+        $totalMarksObtained = array_sum(array_column($subjectDetails, 'obtained_marks'));
+        $totalMaxMarks = array_sum(array_column($subjectDetails, 'max_marks'));
+        $overallPercentage = ($totalMaxMarks > 0) ? ($totalMarksObtained / $totalMaxMarks) * 100 : 0;
+        $overallGrade = $this->calculateGrade($overallPercentage);
+
+        $session_from = $mark->session_from;
+        $session_to   = $mark->session_to;
+        $issue_date   = $mark->issue_date;
 
         return view('subadmin.certificate.marksheet', compact(
             'student',
             'course',
-            'allYearsData',
-            'grandTotalObtained',
-            'grandTotalMax',
-            'grandPercentage',
-            'grandGrade'
+            'subjectDetails',
+            'totalMarksObtained',
+            'totalMaxMarks',
+            'overallPercentage',
+            'overallGrade',
+            'year',
+            'mark',
+            'session_from',
+            'session_to',
+            'issue_date'
         ));
     }
 
-    public function showCertificate($student_id, $course_id)
-    {
-        $student = Student::findOrFail($student_id);
-        $course = Course::findOrFail($course_id);
+    // IF NO YEAR - SHOW ALL YEARS
+    $allYearsData = [];
+    $grandTotalObtained = 0;
+    $grandTotalMax = 0;
 
-        // Get all subjects for this course
-        $courseSubjects = json_decode($course->subjects, true);
+    foreach ($courseSubjects as $yearNum => $subjects) {
+        $mark = Mark::where('student_id', $student_id)
+            ->where('course_id', $course_id)
+            ->where('year', $yearNum)
+            ->first();
 
-        if (!$courseSubjects) {
-            return redirect()->back()->with('error', 'No subjects found for this course.');
-        }
+        if (!$mark) continue;
 
-        // Get ALL marks for this student and course (all years)
-        $allMarks = Mark::where('student_id', $student->id)
+        $marksData = $mark->marks;
+        $subjectDetails = $this->calculateSubjectDetails($subjects, $marksData);
+
+        $totalMarksObtained = array_sum(array_column($subjectDetails, 'obtained_marks'));
+        $totalMaxMarks = array_sum(array_column($subjectDetails, 'max_marks'));
+        $yearPercentage = ($totalMaxMarks > 0) ? ($totalMarksObtained / $totalMaxMarks) * 100 : 0;
+
+        $allYearsData[$yearNum] = [
+            'subjects'       => $subjectDetails,
+            'total_obtained' => $totalMarksObtained,
+            'total_max'      => $totalMaxMarks,
+            'percentage'     => $yearPercentage,
+            'grade'          => $this->calculateGrade($yearPercentage),
+            'session_from'   => $mark->session_from,
+            'session_to'     => $mark->session_to,
+            'issue_date'     => $mark->issue_date,
+        ];
+
+        $grandTotalObtained += $totalMarksObtained;
+        $grandTotalMax += $totalMaxMarks;
+    }
+
+    $grandPercentage = ($grandTotalMax > 0) ? ($grandTotalObtained / $grandTotalMax) * 100 : 0;
+    $grandGrade = $this->calculateGrade($grandPercentage);
+
+    return view('subadmin.certificate.marksheet', compact(
+        'student',
+        'course',
+        'allYearsData',
+        'grandTotalObtained',
+        'grandTotalMax',
+        'grandPercentage',
+        'grandGrade'
+    ));
+}
+
+public function showCertificate($student_id, $course_id)
+{
+    $student = Student::findOrFail($student_id);
+    $course = Course::findOrFail($course_id);
+
+    $courseSubjects = json_decode($course->subjects, true);
+
+    if (!$courseSubjects) {
+        return redirect()->back()->with('error', 'No subjects found for this course.');
+    }
+
+    $allMarks = Mark::where('student_id', $student->id)
+        ->where('course_id', $course->id)
+        ->get();
+
+    if ($allMarks->isEmpty()) {
+        return redirect()->back()->with('error', 'No marks found for this student in this course.');
+    }
+
+    // ← save issue_date_certificate from query string if provided
+    if (request()->has('issue_date_certificate')) {
+        Mark::where('student_id', $student->id)
             ->where('course_id', $course->id)
-            ->get();
+            ->update(['issue_date_certificate' => request()->get('issue_date_certificate')]);
 
-        if ($allMarks->isEmpty()) {
-            return redirect()->back()->with('error', 'No marks found for this student in this course.');
-        }
-
-        // Calculate total marks across ALL years
-        $grandTotalObtained = 0;
-        $grandTotalMax = 0;
-        $yearWiseData = [];
-
-        foreach ($allMarks as $mark) {
-            $year = $mark->year;
-            $subjects = $courseSubjects[$year] ?? [];
-
-            if (empty($subjects)) continue;
-
-            $marksData = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
-
-            $yearObtained = 0;
-            $yearMax = 0;
-
-            foreach ($subjects as $subject) {
-                $subName = $subject['subject_name'];
-                $maxMarks = isset($subject['max_marks']) ? (int)$subject['max_marks'] : 100;
-                $obtained = isset($marksData[$subName]) ? (int)$marksData[$subName] : 0;
-
-                $yearObtained += $obtained;
-                $yearMax += $maxMarks;
-            }
-
-            $grandTotalObtained += $yearObtained;
-            $grandTotalMax += $yearMax;
-
-            $yearWiseData[$year] = [
-                'obtained' => $yearObtained,
-                'max' => $yearMax,
-                'percentage' => ($yearMax > 0) ? round(($yearObtained / $yearMax) * 100, 2) : 0
-            ];
-        }
-
-        // Calculate overall percentage
-        $marksObtainedInPercent = ($grandTotalMax > 0)
-            ? round(($grandTotalObtained / $grandTotalMax) * 100, 2)
-            : 0;
-
-        // Calculate grade
-        $grade = $this->calculateGrade($marksObtainedInPercent);
-
-        // Generate QR Code for certificate verification
-        $certificateUrl = route('certificate.public.show', [
-            'student_id' => $student->id,
-            'course_id' => $course->id
-        ]);
-
-        $result = (new Builder(
-            writer: new PngWriter(),
-            data: $certificateUrl,
-            size: 120,
-            margin: 10,
-        ))->build();
-
-        $qrCodeBase64 = base64_encode($result->getString());
-        
-
-        return view('subadmin.certificate.index', compact(
-            'student',
-            'course',
-            'marksObtainedInPercent',
-            'grandTotalObtained',
-            'grandTotalMax',
-            'grade',
-            'yearWiseData',
-            'qrCodeBase64'
-        ));
+        $allMarks = $allMarks->map(function ($mark) {
+            $mark->issue_date_certificate = request()->get('issue_date_certificate');
+            return $mark;
+        });
     }
+
+    $grandTotalObtained = 0;
+    $grandTotalMax = 0;
+    $yearWiseData = [];
+
+    foreach ($allMarks as $mark) {
+        $year = $mark->year;
+        $subjects = $courseSubjects[$year] ?? [];
+
+        if (empty($subjects)) continue;
+
+        $marksData = is_array($mark->marks) ? $mark->marks : json_decode($mark->marks, true);
+
+        $yearObtained = 0;
+        $yearMax = 0;
+
+        foreach ($subjects as $subject) {
+            $subName  = $subject['subject_name'];
+            $maxMarks = isset($subject['max_marks']) ? (int)$subject['max_marks'] : 100;
+            $obtained = isset($marksData[$subName]) ? (int)$marksData[$subName] : 0;
+
+            $yearObtained += $obtained;
+            $yearMax += $maxMarks;
+        }
+
+        $grandTotalObtained += $yearObtained;
+        $grandTotalMax += $yearMax;
+
+        $yearWiseData[$year] = [
+            'obtained'   => $yearObtained,
+            'max'        => $yearMax,
+            'percentage' => ($yearMax > 0) ? round(($yearObtained / $yearMax) * 100, 2) : 0
+        ];
+    }
+
+    $marksObtainedInPercent = ($grandTotalMax > 0)
+        ? round(($grandTotalObtained / $grandTotalMax) * 100, 2)
+        : 0;
+
+    $grade = $this->calculateGrade($marksObtainedInPercent);
+
+    $issue_date_certificate = $allMarks->first()->issue_date_certificate;
+
+    $certificateUrl = route('certificate.public.show', [
+        'student_id' => $student->id,
+        'course_id'  => $course->id
+    ]);
+
+    $result = (new Builder(
+        writer: new PngWriter(),
+        data: $certificateUrl,
+        size: 120,
+        margin: 10,
+    ))->build();
+
+    $qrCodeBase64 = base64_encode($result->getString());
+
+    return view('subadmin.certificate.index', compact(
+        'student',
+        'course',
+        'marksObtainedInPercent',
+        'grandTotalObtained',
+        'grandTotalMax',
+        'grade',
+        'yearWiseData',
+        'qrCodeBase64',
+        'issue_date_certificate',
+        'mark'
+    ));
+}
 
     public function demoCerTest(){
         return view('subadmin.certificate.index_up');

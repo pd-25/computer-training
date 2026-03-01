@@ -267,7 +267,7 @@
     </div>
     @endforeach
 
-    <!-- View Marksheet Modal -->
+<!-- View Marksheet Modal -->
     @foreach($students as $student)
     <div class="modal fade" id="viewMarksheet{{ $student->id }}" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -288,7 +288,6 @@
                     $years = floor($duration / 12);
                     $remainingMonths = $duration % 12;
 
-                    // Get available marks for this student and course
                     $availableMarks = \App\Models\Mark::where('student_id', $student->id)
                         ->where('course_id', $courseId)
                         ->pluck('year')
@@ -319,10 +318,30 @@
                                 }
                                 @endphp
 
-                                <div class="col-md-6 mb-2">
+                                <div class="col-md-12 mb-3 border rounded p-3">
+                                    <p class="fw-bold mb-2">{{ $label }} Marksheet</p>
+
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-md-4">
+                                            <label class="form-label small">Session From</label>
+                                            <input type="date" class="form-control form-control-sm"
+                                                id="session_from_{{ $student->id }}_{{ $courseId }}_{{ $yr }}">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label small">Session To</label>
+                                            <input type="date" class="form-control form-control-sm"
+                                                id="session_to_{{ $student->id }}_{{ $courseId }}_{{ $yr }}">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label small">Issue Date</label>
+                                            <input type="date" class="form-control form-control-sm"
+                                                id="issue_date_{{ $student->id }}_{{ $courseId }}_{{ $yr }}">
+                                        </div>
+                                    </div>
+
                                     <button type="button"
                                         class="btn btn-outline-primary w-100"
-                                        onclick="window.open('{{ route('admin.student.marksheet', ['student_id' => $student->id, 'course_id' => $courseId]) }}?year={{ $yr }}', '_blank')">
+                                        onclick="openMarksheet({{ $student->id }}, {{ $courseId }}, {{ $yr }}, '{{ route('admin.student.marksheet', ['student_id' => $student->id, 'course_id' => $courseId]) }}')">
                                         <i class="bi bi-eye"></i> View {{ $label }} Marksheet
                                     </button>
                                 </div>
@@ -370,7 +389,6 @@
                     $course = $courses->firstWhere('id', $courseId);
                     if (!$course) continue;
 
-                    // Check if marks exist for this course
                     $hasMarks = \App\Models\Mark::where('student_id', $student->id)
                         ->where('course_id', $courseId)
                         ->exists();
@@ -383,9 +401,14 @@
                             <small class="d-block">{{ $course->course_unique_id }} | Duration: {{ $course->duration }} Months</small>
                         </div>
                         <div class="card-body">
+                            <div class="mb-2">
+                                <label class="form-label small">Issue Date Certificate</label>
+                                <input type="date" class="form-control form-control-sm"
+                                    id="issue_date_cert_{{ $student->id }}_{{ $courseId }}">
+                            </div>
                             <button type="button"
                                 class="btn btn-primary w-100"
-                                onclick="window.open('{{ route('admin.student.certificate', ['student_id' => $student->id, 'course_id' => $courseId]) }}', '_blank')">
+                                onclick="openCertificate({{ $student->id }}, {{ $courseId }}, '{{ route('admin.student.certificate', ['student_id' => $student->id, 'course_id' => $courseId]) }}')">
                                 <i class="bi bi-eye"></i> View Certificate
                             </button>
                         </div>
@@ -412,6 +435,34 @@
         </div>
     </div>
     @endforeach
+
+    <script>
+        function openMarksheet(studentId, courseId, year, baseUrl) {
+            const sessionFrom = document.getElementById(`session_from_${studentId}_${courseId}_${year}`).value;
+            const sessionTo   = document.getElementById(`session_to_${studentId}_${courseId}_${year}`).value;
+            const issueDate   = document.getElementById(`issue_date_${studentId}_${courseId}_${year}`).value;
+
+            if (!sessionFrom || !sessionTo || !issueDate) {
+                alert('Please fill Session From, Session To, and Issue Date.');
+                return;
+            }
+
+            const url = `${baseUrl}?year=${year}&session_from=${sessionFrom}&session_to=${sessionTo}&issue_date=${issueDate}`;
+            window.open(url, '_blank');
+        }
+
+        function openCertificate(studentId, courseId, baseUrl) {
+            const issueDateCert = document.getElementById(`issue_date_cert_${studentId}_${courseId}`).value;
+
+            if (!issueDateCert) {
+                alert('Please fill Issue Date Certificate.');
+                return;
+            }
+
+            const url = `${baseUrl}?issue_date_certificate=${issueDateCert}`;
+            window.open(url, '_blank');
+        }
+    </script>
 
     <!-- Alerts -->
     <div id="alert-container">
