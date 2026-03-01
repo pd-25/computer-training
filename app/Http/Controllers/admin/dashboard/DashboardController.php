@@ -699,7 +699,7 @@ class DashboardController extends Controller
             'students',
             'courses',
             'categories',
-            'availableYears'
+            'availableYears',
         ));
     }
 

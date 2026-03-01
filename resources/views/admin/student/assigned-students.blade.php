@@ -117,11 +117,11 @@
                                 </td>
                                 <td>
                                     @if($student->subadmin)
-                                        <p class="m-0"><strong style="text-transform: capitalize;">{{ $student->subadmin->org_name }}</strong></p>
-                                        <p class="m-0"><strong style="text-transform: capitalize;">{{ $student->subadmin->name }}</strong></p>
-                                        <small class="text-muted">{{ $student->subadmin->email }}</small>
+                                    <p class="m-0"><strong style="text-transform: capitalize;">{{ $student->subadmin->org_name }}</strong></p>
+                                    <p class="m-0"><strong style="text-transform: capitalize;">{{ $student->subadmin->name }}</strong></p>
+                                    <small class="text-muted">{{ $student->subadmin->email }}</small>
                                     @else
-                                        <span class="text-muted">No Subadmin</span>
+                                    <span class="text-muted">No Subadmin</span>
                                     @endif
                                 </td>
                                 <td>
@@ -145,20 +145,20 @@
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2 flex-wrap">
-                                        <button class="btn btn-sm btn-success" 
-                                            data-bs-toggle="modal" 
+                                        <button class="btn btn-sm btn-success"
+                                            data-bs-toggle="modal"
                                             data-bs-target="#viewIdCard{{ $student->id }}">
                                             <i class="bi bi-credit-card"></i> View ID
                                         </button>
-                                        
+
                                         <button class="btn btn-sm btn-primary"
                                             data-bs-toggle="modal"
                                             data-bs-target="#viewMarksheet{{ $student->id }}">
                                             <i class="bi bi-file-earmark-text"></i> Marksheet
                                         </button>
-                                        
-                                        <button class="btn btn-sm btn-info" 
-                                            data-bs-toggle="modal" 
+
+                                        <button class="btn btn-sm btn-info"
+                                            data-bs-toggle="modal"
                                             data-bs-target="#viewCertificate{{ $student->id }}">
                                             <i class="bi bi-award"></i> Certificate
                                         </button>
@@ -267,7 +267,7 @@
     </div>
     @endforeach
 
-<!-- View Marksheet Modal -->
+    <!-- View Marksheet Modal -->
     @foreach($students as $student)
     <div class="modal fade" id="viewMarksheet{{ $student->id }}" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -289,9 +289,9 @@
                     $remainingMonths = $duration % 12;
 
                     $availableMarks = \App\Models\Mark::where('student_id', $student->id)
-                        ->where('course_id', $courseId)
-                        ->pluck('year')
-                        ->toArray();
+                    ->where('course_id', $courseId)
+                    ->pluck('year')
+                    ->toArray();
                     @endphp
 
                     @if(!empty($availableMarks))
@@ -308,44 +308,49 @@
                                 @php
                                 $label = "";
                                 if ($duration < 12) {
-                                    $label = $duration . " Month" . ($duration > 1 ? "s" : "");
-                                } else {
+                                    $label=$duration . " Month" . ($duration> 1 ? "s" : "");
+                                    } else {
                                     if ($yr <= $years) {
-                                        $label = "Year " . $yr;
-                                    } else if ($yr > $years && $remainingMonths > 0) {
+                                        $label="Year " . $yr;
+                                        } else if ($yr> $years && $remainingMonths > 0) {
                                         $label = $remainingMonths . " Month" . ($remainingMonths > 1 ? "s" : "");
-                                    }
-                                }
-                                @endphp
+                                        }
+                                        }
 
-                                <div class="col-md-12 mb-3 border rounded p-3">
-                                    <p class="fw-bold mb-2">{{ $label }} Marksheet</p>
+                                        $markRecord = \App\Models\Mark::where('student_id', $student->id) // ← fetch per year
+                                        ->where('course_id', $courseId)
+                                        ->where('year', $yr)
+                                        ->first();
+                                        @endphp
 
-                                    <div class="row g-2 mb-2">
-                                        <div class="col-md-4">
-                                            <label class="form-label small">Session From</label>
-                                            <input type="date" class="form-control form-control-sm"
-                                                id="session_from_{{ $student->id }}_{{ $courseId }}_{{ $yr }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label class="form-label small">Session To</label>
-                                            <input type="date" class="form-control form-control-sm"
-                                                id="session_to_{{ $student->id }}_{{ $courseId }}_{{ $yr }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label class="form-label small">Issue Date</label>
-                                            <input type="date" class="form-control form-control-sm"
-                                                id="issue_date_{{ $student->id }}_{{ $courseId }}_{{ $yr }}">
-                                        </div>
-                                    </div>
+                                        <div class="col-md-12 mb-3 border rounded p-3">
+                                            <p class="fw-bold mb-2">{{ $label }} Marksheet</p>
 
-                                    <button type="button"
-                                        class="btn btn-outline-primary w-100"
-                                        onclick="openMarksheet({{ $student->id }}, {{ $courseId }}, {{ $yr }}, '{{ route('admin.student.marksheet', ['student_id' => $student->id, 'course_id' => $courseId]) }}')">
-                                        <i class="bi bi-eye"></i> View {{ $label }} Marksheet
-                                    </button>
-                                </div>
-                                @endforeach
+                                            <div class="row g-2 mb-2">
+                                                <div class="col-md-4">
+                                                    <label class="form-label small">Session From</label>
+                                                    <input type="date" class="form-control form-control-sm"
+                                                        id="session_from_{{ $student->id }}_{{ $courseId }}_{{ $yr }}" value="{{ $markRecord->session_from ?? '' }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label small">Session To</label>
+                                                    <input type="date" class="form-control form-control-sm"
+                                                        id="session_to_{{ $student->id }}_{{ $courseId }}_{{ $yr }}" value="{{ $markRecord->session_to ?? '' }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label small">Issue Date</label>
+                                                    <input type="date" class="form-control form-control-sm"
+                                                        id="issue_date_{{ $student->id }}_{{ $courseId }}_{{ $yr }}" value="{{ $markRecord->issue_date ?? '' }}">
+                                                </div>
+                                            </div>
+
+                                            <button type="button"
+                                                class="btn btn-outline-primary w-100"
+                                                onclick="openMarksheet({{ $student->id }}, {{ $courseId }}, {{ $yr }}, '{{ route('admin.student.marksheet', ['student_id' => $student->id, 'course_id' => $courseId]) }}')">
+                                                <i class="bi bi-eye"></i> View {{ $label }} Marksheet
+                                            </button>
+                                        </div>
+                                        @endforeach
                             </div>
                         </div>
                     </div>
@@ -390,8 +395,8 @@
                     if (!$course) continue;
 
                     $hasMarks = \App\Models\Mark::where('student_id', $student->id)
-                        ->where('course_id', $courseId)
-                        ->exists();
+                    ->where('course_id', $courseId)
+                    ->exists();
                     @endphp
 
                     @if($hasMarks)
@@ -401,10 +406,22 @@
                             <small class="d-block">{{ $course->course_unique_id }} | Duration: {{ $course->duration }} Months</small>
                         </div>
                         <div class="card-body">
+                            @php
+                            $course = $courses->firstWhere('id', $courseId);
+                            if (!$course) continue;
+
+                            $hasMarks = \App\Models\Mark::where('student_id', $student->id)
+                            ->where('course_id', $courseId)
+                            ->exists();
+
+                            $markRecord = \App\Models\Mark::where('student_id', $student->id) // ← add this
+                            ->where('course_id', $courseId)
+                            ->first();
+                            @endphp
                             <div class="mb-2">
                                 <label class="form-label small">Issue Date Certificate</label>
                                 <input type="date" class="form-control form-control-sm"
-                                    id="issue_date_cert_{{ $student->id }}_{{ $courseId }}">
+                                    id="issue_date_cert_{{ $student->id }}_{{ $courseId }}" value="{{ $markRecord->issue_date_certificate ?? '' }}">
                             </div>
                             <button type="button"
                                 class="btn btn-primary w-100"
@@ -439,8 +456,8 @@
     <script>
         function openMarksheet(studentId, courseId, year, baseUrl) {
             const sessionFrom = document.getElementById(`session_from_${studentId}_${courseId}_${year}`).value;
-            const sessionTo   = document.getElementById(`session_to_${studentId}_${courseId}_${year}`).value;
-            const issueDate   = document.getElementById(`issue_date_${studentId}_${courseId}_${year}`).value;
+            const sessionTo = document.getElementById(`session_to_${studentId}_${courseId}_${year}`).value;
+            const issueDate = document.getElementById(`issue_date_${studentId}_${courseId}_${year}`).value;
 
             if (!sessionFrom || !sessionTo || !issueDate) {
                 alert('Please fill Session From, Session To, and Issue Date.');

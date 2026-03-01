@@ -361,7 +361,7 @@
                     <!-- Student Name -->
                      <div class="mb-3">
                         <label>Date of Issue</label>
-                        <input type="date" class="form-control" name="issue_date_certificate" required>
+                        <input type="date" class="form-control" name="issue_date_certificate">
                     </div>
 
                     <div class="mb-3">
@@ -563,7 +563,6 @@
 
 
     <!-- Download Marksheet(actually view) -->
-    <!-- Download Marksheet (Individual Year Selection) -->
     @foreach($students as $student)
     <div class="modal fade" id="downloadMarksheetIndividual{{ $student->id }}" tabindex="-1">
         <div class="modal-dialog modal-lg">
