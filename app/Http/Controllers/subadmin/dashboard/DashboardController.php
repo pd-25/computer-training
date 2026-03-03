@@ -592,6 +592,8 @@ class DashboardController extends Controller
             abort(404, 'No marks found for this student in this course.');
         }
 
+        $mark = $allMarks->first();
+
         // Calculate total marks across ALL years
         $grandTotalObtained = 0;
         $grandTotalMax = 0;
@@ -647,7 +649,8 @@ class DashboardController extends Controller
             'grandTotalMax',
             'grade',
             'yearWiseData',
-            'qrCodeBase64'
+            'qrCodeBase64',
+            'mark'
         ));
     }
 
