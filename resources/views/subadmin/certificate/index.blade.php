@@ -333,7 +333,7 @@
             <div class="bottomImage">
                 <img src={{asset("images/bottom-image.png")}} alt="">
             </div>
-            <div class="qrIsoContainer" style="position: absolute; bottom: 12%; left: 2%; display: flex; gap: 20px; align-items: center;">
+            <div class="qrIsoContainer" style="position: absolute; bottom: 9%; left: 2%; display: flex; gap: 20px; align-items: center;">
                 <div class="qrCode">
                     @if(isset($qrCodeBase64))
                     <img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="QR Code" style="border: 2px solid #d4af37; padding: 5px; border-radius: 4px; width: 100px;">
