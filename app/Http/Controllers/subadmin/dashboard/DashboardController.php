@@ -684,11 +684,11 @@ class DashboardController extends Controller
                 'student_id' => $validated['student_id'],
                 'course_id' => $validated['course_id'],
                 'year' => $validated['year'],
+            ],
+            [
                 'session_from' => $validated['session_from'],
                 'session_to' => $validated['session_to'],
                 'issue_date' => $validated['issue_date'],
-            ],
-            [
                 'marks' => $validated['marks'],
             ]
         );
@@ -736,7 +736,13 @@ class DashboardController extends Controller
 
         // If specific year requested, return that year's marks
         if ($year) {
-            return response()->json($marks->first()->marks ?? []);
+            $mark = $marks->first();
+            return response()->json([
+                'marks' => $mark->marks ?? [],
+                'session_from' => $mark->session_from ?? '',
+                'session_to' => $mark->session_to ?? '',
+                'issue_date' => $mark->issue_date ?? '',
+            ]);
         }
 
         // Otherwise return all years' marks

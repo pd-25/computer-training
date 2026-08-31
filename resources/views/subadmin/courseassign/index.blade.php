@@ -500,7 +500,7 @@
                         </div>
                         <div class="col-4">
                             <label>Date of Issue</label>
-                            <input type="date" class="form-control" value="" name="issue_date">
+                            <input type="date" class="form-control" value="" name="issue_date" required>
                         </div>
                     </div>
 
@@ -908,7 +908,23 @@
                                 .replace(":course", courseId) + `?year=${year}`;
 
                             const marksRes = await fetch(marksUrl);
-                            if (marksRes.ok) existingMarks = await marksRes.json();
+                            if (marksRes.ok) {
+                                const data = await marksRes.json();
+                                if (data && !Array.isArray(data) && data.marks) {
+                                    existingMarks = data.marks;
+                                    const modal = document.getElementById("generateIdMarks" + studentId);
+                                    if (modal) {
+                                        if (data.session_from) modal.querySelector('input[name="session_from"]').value = data.session_from.split(' ')[0];
+                                        else modal.querySelector('input[name="session_from"]').value = "";
+                                        if (data.session_to) modal.querySelector('input[name="session_to"]').value = data.session_to.split(' ')[0];
+                                        else modal.querySelector('input[name="session_to"]').value = "";
+                                        if (data.issue_date) modal.querySelector('input[name="issue_date"]').value = data.issue_date.split(' ')[0];
+                                        else modal.querySelector('input[name="issue_date"]').value = "";
+                                    }
+                                } else {
+                                    existingMarks = data;
+                                }
+                            }
                         }
 
                         // Get selected label
