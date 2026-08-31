@@ -1029,5 +1029,29 @@
 
 
 
+    <!-- Generate Certificate Submit Button State -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const certModals = document.querySelectorAll('[id^="generateCertificate"]');
+            
+            certModals.forEach(modal => {
+                const dateInput = modal.querySelector('input[name="issue_date_certificate"]');
+                const submitBtn = modal.querySelector('button[type="submit"]');
+                
+                if (dateInput && submitBtn) {
+                    // Initial state
+                    submitBtn.disabled = !dateInput.value;
+                    
+                    // Add listener to date input
+                    dateInput.addEventListener('change', function() {
+                        submitBtn.disabled = !this.value;
+                    });
+                    dateInput.addEventListener('input', function() {
+                        submitBtn.disabled = !this.value;
+                    });
+                }
+            });
+        });
+    </script>
 </section>
 @endsection
