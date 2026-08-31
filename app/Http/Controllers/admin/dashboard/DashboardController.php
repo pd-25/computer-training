@@ -144,6 +144,7 @@ class DashboardController extends Controller
                 'price' => 'nullable|numeric|min:0',
                 'description' => 'nullable|string',
                 'duration' => 'nullable|string',
+                'duration_type' => 'nullable|string|in:months,days',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:3048',
                 'subjects' => 'required|array|min:1',
                 'subjects.*' => 'required|array',
@@ -159,6 +160,7 @@ class DashboardController extends Controller
             $course->slug = Str::slug($request->course_name, '-');
             $course->description = $request->description;
             $course->duration = $request->duration;
+            $course->duration_type = $request->duration_type ?? 'months';
 
             // Handle image
             if ($request->hasFile('image')) {
@@ -194,6 +196,7 @@ class DashboardController extends Controller
                 'price' => 'nullable|numeric|min:0',
                 'description' => 'nullable|string',
                 'duration' => 'nullable|string',
+                'duration_type' => 'nullable|string|in:months,days',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:3048',
                 'subjects' => 'required|array|min:1',
                 'subjects.*' => 'required|array',
@@ -210,6 +213,7 @@ class DashboardController extends Controller
             $course->slug = Str::slug($request->course_name, '-');
             $course->description = $request->description;
             $course->duration = $request->duration;
+            $course->duration_type = $request->duration_type ?? 'months';
 
             // Handle image
             if ($request->hasFile('image')) {

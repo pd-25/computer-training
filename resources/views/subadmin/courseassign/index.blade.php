@@ -594,7 +594,7 @@
                     <div class="card mb-3">
                         <div class="card-header bg-primary text-white">
                             <strong>{{ $course->course_name }}</strong>
-                            <small class="d-block">{{ $course->course_unique_id }} | Duration: {{ $course->duration }} Months</small>
+                            <small class="d-block">{{ $course->course_unique_id }} | Duration: {{ $course->duration }} {{ ucfirst($course->duration_type ?? 'months') }}</small>
                         </div>
                         <div class="card-body">
                             <label class="form-label fw-bold">Select Year/Duration:</label>
@@ -603,16 +603,19 @@
                                 @foreach($availableMarks as $yr)
                                 @php
                                 $label = "";
-                                if ($duration < 12) {
-                                    $label=$duration . " Month" . ($duration> 1 ? "s" : "");
-                                    } else {
+                                $durationType = $course->duration_type ?? 'months';
+                                if ($durationType === 'days') {
+                                    $label = $duration . " Day" . ($duration > 1 ? "s" : "");
+                                } elseif ($duration < 12) {
+                                    $label = $duration . " Month" . ($duration > 1 ? "s" : "");
+                                } else {
                                     if ($yr <= $years) {
-                                        $label="Year " . $yr;
-                                        } else if ($yr> $years && $remainingMonths > 0) {
+                                        $label = "Year " . $yr;
+                                    } else if ($yr > $years && $remainingMonths > 0) {
                                         $label = $remainingMonths . " Month" . ($remainingMonths > 1 ? "s" : "");
-                                        }
-                                        }
-                                        @endphp
+                                    }
+                                }
+                                @endphp
 
                                         <div class="col-md-6 mb-2">
                                             <button type="button"
@@ -819,15 +822,18 @@
                         }
 
                         // -----------------------------
-                        // Populate Year/Month Dropdown
+                        // Populate Year/Month/Day Dropdown
                         // -----------------------------
                         Object.keys(subjects).forEach(key => {
                             const option = document.createElement("option");
                             option.value = key;
 
                             let label = "";
+                            const durationType = data.duration_type ?? 'months';
 
-                            if (durationInfo) {
+                            if (durationType === 'days') {
+                                label = `${courseDuration} Day${courseDuration > 1 ? "s" : ""}`;
+                            } else if (durationInfo) {
                                 if (durationInfo.totalMonths < 12) {
                                     label = `${durationInfo.totalMonths} Month${durationInfo.totalMonths > 1 ? "s" : ""}`;
                                 } else {

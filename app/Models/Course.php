@@ -18,6 +18,7 @@ class Course extends Model
         'description',
         'image',
         'duration',
+        'duration_type',
     ];
 
     protected $casts = [

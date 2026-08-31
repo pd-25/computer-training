@@ -321,7 +321,7 @@
                 </div>
                 <div class="certificateInfoItem">
                     <span class="label">of Duration</span>
-                    <span class="value" style="text-align: center;">{{ $course->duration }} Months</span>
+                    <span class="value" style="text-align: center;">{{ $course->duration }} {{ ucfirst($course->duration_type ?? 'months') }}</span>
                 </div>
                 <div class="certificateInfoItem">
                     <span class="label">and Obtained</span>

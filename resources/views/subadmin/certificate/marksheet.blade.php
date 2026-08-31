@@ -361,7 +361,7 @@
                             </td>
                             <td>
                                 <span class="label">DURATION:</span>
-                                <span class="value">{{ $course->duration }} MONTHS</span>
+                                <span class="value">{{ $course->duration }} {{ strtoupper($course->duration_type ?? 'MONTHS') }}</span>
                                 <br>
                                 <span class="label">SESSION:</span>
                                 <span class="value">{{ \Carbon\Carbon::parse($mark->session_from)->format('d-m-Y') }} to {{ \Carbon\Carbon::parse($mark->session_to)->format('d-m-Y') }}</span>

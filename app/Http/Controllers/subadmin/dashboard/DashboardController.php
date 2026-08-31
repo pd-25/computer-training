@@ -712,8 +712,11 @@ class DashboardController extends Controller
             return response()->json([]);
         }
 
-        // Return subjects grouped by year
-        return response()->json(json_decode($course->subjects, true));
+        return response()->json([
+            'subjects' => json_decode($course->subjects, true),
+            'duration' => $course->duration,
+            'duration_type' => $course->duration_type ?? 'months'
+        ]);
     }
 
     public function getStudentMarks($student_id, $course_id, $year = null)

@@ -184,7 +184,7 @@
 
                                     <td>
                                         @if($course->duration)
-                                        <span class="badge bg-secondary">{{ $course->duration }} Months</span>
+                                        <span class="badge bg-secondary">{{ $course->duration }} {{ ucfirst($course->duration_type ?? 'months') }}</span>
                                         @else
                                         <span class="text-muted">Not specified</span>
                                         @endif
@@ -326,7 +326,21 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Duration (in months)</label>
+                        <label class="form-label">Duration Type</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input duration-type-add" type="radio" name="duration_type" id="durationTypeMonth" value="months" checked>
+                                <label class="form-check-label" for="durationTypeMonth">Month-wise</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input duration-type-add" type="radio" name="duration_type" id="durationTypeDay" value="days">
+                                <label class="form-check-label" for="durationTypeDay">Day-wise</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" id="durationLabelAdd">Duration (in months)</label>
                         <input type="number" class="form-control" id="durationInput" name="duration" placeholder="E.g. 24">
                     </div>
 
@@ -398,8 +412,22 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Duration (in months)</label>
-                        <input type="number" class="form-control duration-input-edit" data-course-id="{{ $course->id }}" name="duration" placeholder="E.g. 24" value="{{ $course->duration }}">
+                        <label class="form-label">Duration Type</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input duration-type-edit" type="radio" name="duration_type" id="durationTypeMonthEdit{{ $course->id }}" value="months" {{ $course->duration_type !== 'days' ? 'checked' : '' }} data-course-id="{{ $course->id }}">
+                                <label class="form-check-label" for="durationTypeMonthEdit{{ $course->id }}">Month-wise</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input duration-type-edit" type="radio" name="duration_type" id="durationTypeDayEdit{{ $course->id }}" value="days" {{ $course->duration_type === 'days' ? 'checked' : '' }} data-course-id="{{ $course->id }}">
+                                <label class="form-check-label" for="durationTypeDayEdit{{ $course->id }}">Day-wise</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" id="durationLabelEdit{{ $course->id }}">Duration (in {{ $course->duration_type === 'days' ? 'days' : 'months' }})</label>
+                        <input type="number" class="form-control duration-input-edit" data-course-id="{{ $course->id }}" name="duration" placeholder="E.g. {{ $course->duration_type === 'days' ? '30' : '24' }}" value="{{ $course->duration }}">
                     </div>
 
                     <div class="mb-3">
@@ -487,7 +515,7 @@
                                 </tr>
                                 <tr>
                                     <th>Duration:</th>
-                                    <td>{{ $course->duration ?? 'Not specified' }} months</td>
+                                    <td>{{ $course->duration ?? 'Not specified' }} {{ strtolower($course->duration_type ?? 'months') }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -780,21 +808,23 @@
         // ========================
 // ADD MODAL FUNCTIONALITY
 // ========================
-document.getElementById("durationInput").addEventListener("input", function() {
-    let duration = parseInt(this.value);
-    let years = Math.floor(duration / 12);
-    let remainingMonths = duration % 12;
 
+function handleDurationChangeAdd() {
+    let durationInput = document.getElementById("durationInput");
+    let duration = parseInt(durationInput.value);
+    let durationType = document.querySelector('input[name="duration_type"]:checked').value;
     let container = document.getElementById("yearsContainer");
+    
     container.innerHTML = ""; // Clear old data
 
-    // If duration is less than 12 months, show as "X Month(s)"
-    if (duration < 12 && duration > 0) {
+    if (isNaN(duration) || duration <= 0) return;
+
+    if (durationType === 'days') {
         let yearDiv = document.createElement("div");
         yearDiv.classList.add("mb-3", "p-3", "border", "rounded");
 
         yearDiv.innerHTML = `
-            <h5>${duration} Month${duration > 1 ? 's' : ''}</h5>
+            <h5>${duration} Day${duration > 1 ? 's' : ''}</h5>
             <div id="year-1-subjects">
                 <div class="d-flex gap-2 mb-2 subject-row">
                     <input type="text" name="subjects[1][0][subject_name]" class="form-control" placeholder="Subject name" required>
@@ -804,92 +834,149 @@ document.getElementById("durationInput").addEventListener("input", function() {
                 </div>
             </div>
         `;
-
         container.appendChild(yearDiv);
     } else {
-        // Handle full years
-        for (let i = 1; i <= years; i++) {
+        let years = Math.floor(duration / 12);
+        let remainingMonths = duration % 12;
+
+        // If duration is less than 12 months, show as "X Month(s)"
+        if (duration < 12 && duration > 0) {
             let yearDiv = document.createElement("div");
             yearDiv.classList.add("mb-3", "p-3", "border", "rounded");
 
             yearDiv.innerHTML = `
-                <h5>Year ${i}</h5>
-                <div id="year-${i}-subjects">
+                <h5>${duration} Month${duration > 1 ? 's' : ''}</h5>
+                <div id="year-1-subjects">
                     <div class="d-flex gap-2 mb-2 subject-row">
-                        <input type="text" name="subjects[${i}][0][subject_name]" class="form-control" placeholder="Subject name" required>
-                        <input type="number" name="subjects[${i}][0][min_marks]" class="form-control" placeholder="Min marks" required>
-                        <input type="number" name="subjects[${i}][0][max_marks]" class="form-control" placeholder="Max marks" required>
-                        <button type="button" class="btn btn-success add" data-year="${i}">+</button>
+                        <input type="text" name="subjects[1][0][subject_name]" class="form-control" placeholder="Subject name" required>
+                        <input type="number" name="subjects[1][0][min_marks]" class="form-control" placeholder="Min marks" required>
+                        <input type="number" name="subjects[1][0][max_marks]" class="form-control" placeholder="Max marks" required>
+                        <button type="button" class="btn btn-success add" data-year="1">+</button>
                     </div>
                 </div>
             `;
-
             container.appendChild(yearDiv);
-        }
+        } else {
+            // Handle full years
+            for (let i = 1; i <= years; i++) {
+                let yearDiv = document.createElement("div");
+                yearDiv.classList.add("mb-3", "p-3", "border", "rounded");
 
-        // Handle remaining months if any
-        if (remainingMonths > 0) {
-            let yearDiv = document.createElement("div");
-            yearDiv.classList.add("mb-3", "p-3", "border", "rounded");
-
-            yearDiv.innerHTML = `
-                <h5>${remainingMonths} Month${remainingMonths > 1 ? 's' : ''}</h5>
-                <div id="year-${years + 1}-subjects">
-                    <div class="d-flex gap-2 mb-2 subject-row">
-                        <input type="text" name="subjects[${years + 1}][0][subject_name]" class="form-control" placeholder="Subject name" required>
-                        <input type="number" name="subjects[${years + 1}][0][min_marks]" class="form-control" placeholder="Min marks" required>
-                        <input type="number" name="subjects[${years + 1}][0][max_marks]" class="form-control" placeholder="Max marks" required>
-                        <button type="button" class="btn btn-success add" data-year="${years + 1}">+</button>
+                yearDiv.innerHTML = `
+                    <h5>Year ${i}</h5>
+                    <div id="year-${i}-subjects">
+                        <div class="d-flex gap-2 mb-2 subject-row">
+                            <input type="text" name="subjects[${i}][0][subject_name]" class="form-control" placeholder="Subject name" required>
+                            <input type="number" name="subjects[${i}][0][min_marks]" class="form-control" placeholder="Min marks" required>
+                            <input type="number" name="subjects[${i}][0][max_marks]" class="form-control" placeholder="Max marks" required>
+                            <button type="button" class="btn btn-success add" data-year="${i}">+</button>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+                container.appendChild(yearDiv);
+            }
 
-            container.appendChild(yearDiv);
+            // Handle remaining months if any
+            if (remainingMonths > 0) {
+                let yearDiv = document.createElement("div");
+                yearDiv.classList.add("mb-3", "p-3", "border", "rounded");
+
+                yearDiv.innerHTML = `
+                    <h5>${remainingMonths} Month${remainingMonths > 1 ? 's' : ''}</h5>
+                    <div id="year-${years + 1}-subjects">
+                        <div class="d-flex gap-2 mb-2 subject-row">
+                            <input type="text" name="subjects[${years + 1}][0][subject_name]" class="form-control" placeholder="Subject name" required>
+                            <input type="number" name="subjects[${years + 1}][0][min_marks]" class="form-control" placeholder="Min marks" required>
+                            <input type="number" name="subjects[${years + 1}][0][max_marks]" class="form-control" placeholder="Max marks" required>
+                            <button type="button" class="btn btn-success add" data-year="${years + 1}">+</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(yearDiv);
+            }
         }
     }
+}
 
-    // Add subject event handler for ADD modal
-    container.addEventListener("click", function(e) {
-        if (e.target.classList.contains("add")) {
-            let year = e.target.getAttribute("data-year");
-            let subjectArea = document.getElementById(`year-${year}-subjects`);
+document.getElementById("durationInput").addEventListener("input", handleDurationChangeAdd);
 
-            let index = subjectArea.querySelectorAll(".subject-row").length;
-
-            let newRow = document.createElement("div");
-            newRow.classList.add("d-flex", "gap-2", "mb-2", "subject-row");
-
-            newRow.innerHTML = `
-                <input type="text" name="subjects[${year}][${index}][subject_name]" class="form-control" placeholder="Subject name" required>
-                <input type="number" name="subjects[${year}][${index}][min_marks]" class="form-control" placeholder="Min marks" required>
-                <input type="number" name="subjects[${year}][${index}][max_marks]" class="form-control" placeholder="Max marks" required>
-                <button type="button" class="btn btn-danger remove">-</button>
-            `;
-
-            subjectArea.appendChild(newRow);
+// Listen to radio changes in ADD modal
+document.querySelectorAll('.duration-type-add').forEach(radio => {
+    radio.addEventListener('change', function() {
+        let label = document.getElementById("durationLabelAdd");
+        let input = document.getElementById("durationInput");
+        if (this.value === 'days') {
+            label.textContent = "Duration (in days)";
+            input.placeholder = "E.g. 30";
+        } else {
+            label.textContent = "Duration (in months)";
+            input.placeholder = "E.g. 24";
         }
-
-        if (e.target.classList.contains("remove")) {
-            e.target.parentElement.remove();
-        }
+        handleDurationChangeAdd();
     });
 });
+
+// Add subject event handler for ADD modal
+document.getElementById("yearsContainer").addEventListener("click", function(e) {
+    if (e.target.classList.contains("add")) {
+        let year = e.target.getAttribute("data-year");
+        let subjectArea = document.getElementById(`year-${year}-subjects`);
+
+        let index = subjectArea.querySelectorAll(".subject-row").length;
+
+        let newRow = document.createElement("div");
+        newRow.classList.add("d-flex", "gap-2", "mb-2", "subject-row");
+
+        newRow.innerHTML = `
+            <input type="text" name="subjects[${year}][${index}][subject_name]" class="form-control" placeholder="Subject name" required>
+            <input type="number" name="subjects[${year}][${index}][min_marks]" class="form-control" placeholder="Min marks" required>
+            <input type="number" name="subjects[${year}][${index}][max_marks]" class="form-control" placeholder="Max marks" required>
+            <button type="button" class="btn btn-danger remove">-</button>
+        `;
+
+        subjectArea.appendChild(newRow);
+    }
+
+    if (e.target.classList.contains("remove")) {
+        e.target.parentElement.remove();
+    }
+});
+
 
 // ========================
 // EDIT MODAL FUNCTIONALITY
 // ========================
 
-// Handle duration change in EDIT modal
-document.addEventListener("input", function(e) {
-    if (e.target.classList.contains("duration-input-edit")) {
-        let duration = parseInt(e.target.value);
+function handleDurationChangeEdit(inputElement) {
+    let duration = parseInt(inputElement.value);
+    let courseId = inputElement.getAttribute("data-course-id");
+    let durationType = document.querySelector(`input[name="duration_type"][id^="durationType"][data-course-id="${courseId}"]:checked`).value;
+    let container = document.getElementById(`yearsContainerEdit${courseId}`);
+
+    // Clear existing content
+    container.innerHTML = "";
+
+    if (isNaN(duration) || duration <= 0) return;
+
+    if (durationType === 'days') {
+        let yearDiv = document.createElement("div");
+        yearDiv.classList.add("mb-3", "p-3", "border", "rounded", "year-container");
+
+        yearDiv.innerHTML = `
+            <h5>${duration} Day${duration > 1 ? 's' : ''}</h5>
+            <div class="year-subjects-area" data-year="1">
+                <div class="d-flex gap-2 mb-2 subject-row">
+                    <input type="text" name="subjects[1][0][subject_name]" class="form-control" placeholder="Subject name" required>
+                    <input type="number" name="subjects[1][0][min_marks]" class="form-control" placeholder="Min marks" required>
+                    <input type="number" name="subjects[1][0][max_marks]" class="form-control" placeholder="Max marks" required>
+                    <button type="button" class="btn btn-success add-subject-edit" data-year="1" data-course-id="${courseId}">+</button>
+                </div>
+            </div>
+        `;
+        container.appendChild(yearDiv);
+    } else {
         let years = Math.floor(duration / 12);
         let remainingMonths = duration % 12;
-        let courseId = e.target.getAttribute("data-course-id");
-        let container = document.getElementById(`yearsContainerEdit${courseId}`);
-
-        // Clear existing content
-        container.innerHTML = "";
 
         // If duration is less than 12 months, show as "X Month(s)"
         if (duration < 12 && duration > 0) {
@@ -907,7 +994,6 @@ document.addEventListener("input", function(e) {
                     </div>
                 </div>
             `;
-
             container.appendChild(yearDiv);
         } else {
             // Handle full years
@@ -926,7 +1012,6 @@ document.addEventListener("input", function(e) {
                         </div>
                     </div>
                 `;
-
                 container.appendChild(yearDiv);
             }
 
@@ -946,10 +1031,34 @@ document.addEventListener("input", function(e) {
                         </div>
                     </div>
                 `;
-
                 container.appendChild(yearDiv);
             }
         }
+    }
+}
+
+// Handle duration change in EDIT modal
+document.addEventListener("input", function(e) {
+    if (e.target.classList.contains("duration-input-edit")) {
+        handleDurationChangeEdit(e.target);
+    }
+});
+
+// Listen to radio changes in EDIT modal
+document.addEventListener('change', function(e) {
+    if (e.target.classList.contains('duration-type-edit')) {
+        let courseId = e.target.getAttribute("data-course-id");
+        let label = document.getElementById(`durationLabelEdit${courseId}`);
+        let input = document.querySelector(`.duration-input-edit[data-course-id="${courseId}"]`);
+        
+        if (e.target.value === 'days') {
+            label.textContent = "Duration (in days)";
+            input.placeholder = "E.g. 30";
+        } else {
+            label.textContent = "Duration (in months)";
+            input.placeholder = "E.g. 24";
+        }
+        handleDurationChangeEdit(input);
     }
 });
 
