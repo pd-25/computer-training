@@ -361,7 +361,7 @@
                     <!-- Student Name -->
                      <div class="mb-3">
                         <label>Date of Issue</label>
-                        <input type="date" class="form-control" name="issue_date_certificate">
+                        <input type="date" class="form-control" name="issue_date_certificate" required>
                     </div>
 
                     <div class="mb-3">
@@ -389,7 +389,7 @@
                                     type="radio"
                                     name="course_id"
                                     value="{{ $course->id }}"
-                                    id="course_{{ $student->id }}_{{ $course->id }}">
+                                    id="course_{{ $student->id }}_{{ $course->id }}" required>
                                 <label class="form-check-label" for="course_{{ $student->id }}_{{ $course->id }}">
                                     {{ $course->course_name }}
                                 </label>
@@ -450,7 +450,7 @@
                                     type="radio"
                                     name="course_id"
                                     value="{{ $course->id }}"
-                                    id="course_{{ $student->id }}_{{ $course->id }}">
+                                    id="course_{{ $student->id }}_{{ $course->id }}" required>
                                 <label class="form-check-label" for="course_{{ $student->id }}_{{ $course->id }}">
                                     {{ $course->course_name }}
                                 </label>
