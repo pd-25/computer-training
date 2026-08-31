@@ -298,6 +298,7 @@ class FrontendController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'city' => 'required|string|max:255',
             'state' => 'nullable|string|max:255',
             'investment' => 'required|numeric|min:0',
@@ -314,11 +315,20 @@ class FrontendController extends Controller
         }
 
         try {
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('uploads/franchise'), $imageName);
+                $imagePath = 'uploads/franchise/' . $imageName;
+            }
+
             // Create franchise request
             $franchiseRequest = FranchiseRequest::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'image' => $imagePath,
                 'city' => $request->city,
                 'state' => $request->state,
                 'investment' => $request->investment,

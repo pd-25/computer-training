@@ -286,6 +286,7 @@ class DashboardController extends Controller
             'org_name' => 'required|string|max:255',
             'email' => 'required|email|unique:sub_admins,email',
             'password' => 'required|string|min:5|confirmed',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -295,10 +296,19 @@ class DashboardController extends Controller
         }
 
         try {
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('uploads/franchise'), $imageName);
+                $imagePath = 'uploads/franchise/' . $imageName;
+            }
+
             $subAdmin = ModelsSubAdmin::create([
                 'name' => $request->name,
                 'org_name' => $request->org_name,
                 'email' => $request->email,
+                'image' => $imagePath,
                 'password' => bcrypt($request->password),
             ]);
 
@@ -325,6 +335,7 @@ class DashboardController extends Controller
             'org_name' => 'required|string|max:255',
             'email' => 'required|email|unique:sub_admins,email,' . $subAdmin->id,
             'password' => 'nullable|string|min:5|confirmed',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -334,6 +345,16 @@ class DashboardController extends Controller
         }
 
         try {
+            if ($request->hasFile('image')) {
+                if ($subAdmin->image && file_exists(public_path($subAdmin->image))) {
+                    unlink(public_path($subAdmin->image));
+                }
+                $image = $request->file('image');
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('uploads/franchise'), $imageName);
+                $subAdmin->image = 'uploads/franchise/' . $imageName;
+            }
+
             $subAdmin->name = $request->name;
             $subAdmin->org_name = $request->org_name;
             $subAdmin->email = $request->email;
@@ -501,6 +522,7 @@ class DashboardController extends Controller
                 $subadmin = ModelsSubAdmin::create([
                     'name' => $franchise->name,
                     'email' => $franchise->email,
+                    'image' => $franchise->image,
                     'org_name' => $franchise->experience,
                     'password' => Hash::make('12345678'),
                 ]);

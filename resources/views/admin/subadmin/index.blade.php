@@ -184,6 +184,11 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="" class="form-label">Profile Image</label>
+                        <input type="file" class="form-control" name="image" accept="image/*">
+                    </div>
+
+                    <div class="mb-3">
                         <label for="" class="form-label">Email<span class="text-danger">*</span></label>
                         <input type="email" class="form-control" placeholder="Enter the email" name="email" value="{{ old('email') }}" autocomplete="off">
                     </div>
@@ -213,7 +218,7 @@
     @foreach ($subAdmins as $subadmin)
     <div class="modal fade" id="editSubAdminModal{{ $subadmin->id }}" tabindex="-1" aria-labelledby="editSubAdminLabel{{ $subadmin->id }}" aria-hidden="true">
         <div class="modal-dialog">
-            <form class="modal-content" action="{{ route('admin.subadmins.edit', $subadmin->id) }}" method="POST" autocomplete="off">
+            <form class="modal-content" action="{{ route('admin.subadmins.edit', $subadmin->id) }}" method="POST" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
@@ -230,6 +235,16 @@
                     <div class="mb-3">
                         <label>Name<span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control" value="{{ old('name', $subadmin->name) }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Profile Image</label>
+                        <input type="file" class="form-control" name="image" accept="image/*">
+                        @if($subadmin->image)
+                            <div class="mt-2">
+                                <img src="{{ asset($subadmin->image) }}" alt="Current Image" width="50" height="50" style="object-fit:cover; border-radius:50%;">
+                            </div>
+                        @endif
                     </div>
                     <div class="mb-3">
                         <label>Email<span class="text-danger">*</span></label>

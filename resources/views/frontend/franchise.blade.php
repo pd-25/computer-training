@@ -71,33 +71,38 @@
                 </div>
                 @endif
 
-                <form action="{{ route('frontend.franchise.submit') }}" method="POST" class="row">
+                <form action="{{ route('frontend.franchise.submit') }}" method="POST" class="row" enctype="multipart/form-data">
                     @csrf
+                    
                     <div class="col-md-6">
+                        <label class="form-label">Full Name <span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control mb-3 @error('name') is-invalid @enderror"
-                            placeholder="Full Name*" value="{{ old('name') }}" required>
-                        @error('name')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                            value="{{ old('name') }}" placeholder="Enter your name" required>
+                        @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="col-md-6">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control mb-3 @error('email') is-invalid @enderror"
-                            placeholder="Email Address*" value="{{ old('email') }}" required>
-                        @error('email')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                            value="{{ old('email') }}" placeholder="Enter your email" required>
+                        @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="col-md-6">
+                        <label class="form-label">Phone Number <span class="text-danger">*</span></label>
                         <input type="tel" name="phone" class="form-control mb-3 @error('phone') is-invalid @enderror"
-                            placeholder="Phone Number*" value="{{ old('phone') }}" required>
-                        @error('phone')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                            value="{{ old('phone') }}" placeholder="Enter phone number" required>
+                        @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="col-md-6">
+                        <label class="form-label">Profile Image <span class="text-danger">*</span></label>
+                        <input type="file" name="image" class="form-control mb-3 @error('image') is-invalid @enderror" accept="image/*" required>
+                        @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">City <span class="text-danger">*</span></label>
                         <input type="text" name="city" class="form-control mb-3 @error('city') is-invalid @enderror"
                             placeholder="City*" value="{{ old('city') }}" required>
                         @error('city')

@@ -74,6 +74,7 @@
         .content {
             text-align: center;
             margin: 30px 0;
+            padding: 0 160px;
         }
         .text-regular {
             font-size: 18px;
@@ -124,7 +125,28 @@
             font-size: 16px;
         }
         
-            .watermark {
+        .profile-image-container {
+            position: absolute;
+            left: 60px;
+            top: 250px;
+            width: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border: 3px solid #d4af37;
+            padding: 4px;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .watermark {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -170,6 +192,16 @@
             <h1 class="title">Certificate of Affiliation</h1>
         </div>
 
+        <div class="profile-image-container">
+            @if($subadmin->image && file_exists(public_path($subadmin->image)))
+                <img src="{{ asset($subadmin->image) }}" class="profile-image" alt="Franchise Profile">
+            @else
+                <div class="profile-image" style="display: flex; align-items: center; justify-content: center; background: #f9f9f9; color: #ccc;">
+                    No Image
+                </div>
+            @endif
+        </div>
+
         <div class="content">
             <p class="text-regular">This is to certify that</p>
             
@@ -203,7 +235,7 @@
                 <!-- <img src="{{ asset('signature.png') }}" alt="Signature" style="max-height: 50px;"> -->
                 <div class="signature-line"></div>
                 <div class="signature-text">Authorized Signature</div>
-                <div style="font-size: 12px;">{{ env('APP_NAME') }}</div>
+                <div style="font-size: 12px;">National Institute of Technical Education</div>
             </div>
         </div>
     </div>
