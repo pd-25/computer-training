@@ -66,8 +66,15 @@
 
         <li class="nav-item {{ Route::is('admin.account.setting') ? 'active' : ''}}">
             <a class="nav-link " href="{{route('admin.account.setting')}}">
-                <i class="bi bi-gear"></i>
+                <i class="bi bi-person"></i>
                 <span>Account Setting</span>
+            </a>
+        </li>
+
+        <li class="nav-item {{ Route::is('admin.settings') ? 'active' : ''}}">
+            <a class="nav-link " href="{{route('admin.settings')}}">
+                <i class="bi bi-gear"></i>
+                <span>Global Settings</span>
             </a>
         </li>
 

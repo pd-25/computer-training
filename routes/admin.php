@@ -99,9 +99,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
 
 
-    // Account Setting
     Route::get('/account-setting', [AuthController::class, 'accountSetting'])->name('admin.account.setting');
     Route::post('/account-setting', [AuthController::class, 'updateAccountSetting'])->name('admin.account.update');
+
+    // Settings
+    Route::get('/settings', [DashboardController::class, 'settingsView'])->name('admin.settings');
+    Route::post('/settings', [DashboardController::class, 'settingsUpdate'])->name('admin.settings.update');
 
     Route::get('log-out', [AuthController::class, 'adminLogout'])->name('admin.logout');
 });

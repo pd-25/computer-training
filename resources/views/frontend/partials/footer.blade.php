@@ -30,44 +30,35 @@
             <li class="mb-2">niteducation2024@gmail.com</li>
           </ul>
         </div>
-        <!-- company -->
+        <!-- QUICK LINKS -->
         <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-5 mb-md-0">
-          <h4 class="text-white mb-5">COMPANY</h4>
+          <h4 class="text-white mb-5">QUICK LINKS</h4>
           <ul class="list-unstyled">
-            <li class="mb-3"><a class="text-color" href="about.html">About Us</a></li>
-            <li class="mb-3"><a class="text-color" href="teacher.html">Our Teacher</a></li>
-            <li class="mb-3"><a class="text-color" href="contact.html">Contact</a></li>
-            <li class="mb-3"><a class="text-color" href="blog.html">Blog</a></li>
+            <li class="mb-3"><a class="text-color" href="{{ route('frontend.index') }}">Home</a></li>
+            <li class="mb-3"><a class="text-color" href="{{ route('frontend.about') }}">About</a></li>
+            <li class="mb-3"><a class="text-color" href="{{ route('frontend.contact') }}">Contact</a></li>
+            <li class="mb-3"><a class="text-color" href="{{ route('frontend.gallery') }}">Gallery</a></li>
           </ul>
         </div>
-        <!-- links -->
+        <!-- COURSES -->
         <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-5 mb-md-0">
-          <h4 class="text-white mb-5">LINKS</h4>
+          <h4 class="text-white mb-5">COURSES</h4>
           <ul class="list-unstyled">
-            <li class="mb-3"><a class="text-color" href="courses.html">Courses</a></li>
-            <li class="mb-3"><a class="text-color" href="events.html">Events</a></li>
-            <li class="mb-3"><a class="text-color" href="notice.html">Notice</a></li>
-            <li class="mb-3"><a class="text-color" href="scholarship.html">Scholarship</a></li>
+            <li class="mb-3"><a class="text-color" href="{{ route('frontend.categories') }}">All Categories</a></li>
+            <li class="mb-3"><a class="text-color" href="{{ route('frontend.franchise') }}">Get Franchise</a></li>
+            <li class="mb-3"><a class="text-color" href="{{ route('frontend.franchise-mode') }}">Franchise Model</a></li>
+            <li class="mb-3"><a class="text-color" href="{{ route('frontend.mission') }}">Mission</a></li>
           </ul>
         </div>
-        <!-- support -->
+        
+        <!-- STUDENT ZONE -->
         <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-5 mb-md-0">
-          <h4 class="text-white mb-5">SUPPORT</h4>
+          <h4 class="text-white mb-5">STUDENT ZONE</h4>
           <ul class="list-unstyled">
-            <li class="mb-3"><a class="text-color" href="https://themefisher.com/blog">Forums</a></li>
-            <li class="mb-3"><a class="text-color" href="https://docs.themefisher.com/">Documentation</a></li>
-            <li class="mb-3"><a class="text-color" href="#!">Language</a></li>
-            <li class="mb-3"><a class="text-color" href="#!">Release Status</a></li>
-          </ul>
-        </div>
-        <!-- support -->
-        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-5 mb-md-0">
-          <h4 class="text-white mb-5">RECOMMEND</h4>
-          <ul class="list-unstyled">
-            <li class="mb-3"><a class="text-color" href="https://themefisher.com/">WordPress</a></li>
-            <li class="mb-3"><a class="text-color" href="https://themefisher.com/">LearnPress</a></li>
-            <li class="mb-3"><a class="text-color" href="https://themefisher.com/">WooCommerce</a></li>
-            <li class="mb-3"><a class="text-color" href="https://themefisher.com/">bbPress</a></li>
+            <li class="mb-3"><a class="text-color" href="{{ route('frontend.verification') }}">Student Zone</a></li>
+            <li class="mb-3"><a class="text-color" href="{{ route('frontend.paynow') }}">Pay Now</a></li>
+            <li class="mb-3"><a class="text-color" href="{{ route('frontend.wallet') }}">Wallet</a></li>
+            <li class="mb-3"><a class="text-color" href="{{ route('frontend.computer-marksheet') }}">Computer Marksheet</a></li>
           </ul>
         </div>
       </div>

@@ -1251,4 +1251,25 @@ public function showCertificate($student_id, $course_id)
         if ($percentage >= 33) return 'D';
         return 'F';
     }
+
+    // Settings========================================================================================================>
+    public function settingsView()
+    {
+        $marqueeText = \App\Models\Setting::where("key", "marquee_text")->value("value");
+        return view("admin.settings.index", compact("marqueeText"));
+    }
+
+    public function settingsUpdate(Request $request)
+    {
+        $request->validate([
+            "marquee_text" => "nullable|string"
+        ]);
+
+        \App\Models\Setting::updateOrCreate(
+            ["key" => "marquee_text"],
+            ["value" => $request->marquee_text]
+        );
+
+        return redirect()->back()->with("success", "Settings updated successfully.");
+    }
 }
