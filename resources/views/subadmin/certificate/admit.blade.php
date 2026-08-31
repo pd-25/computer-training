@@ -235,7 +235,13 @@
             </div>
 
             <div class="topImage" style="margin-bottom: 20px;">
-                <img src="{{asset('images/certificate-top-image.png')}}" alt="">
+                <img src="{{asset('images/top-image-admit.png')}}" alt="">
+            </div>
+
+            <div class="candidatePic" style="position: absolute; top: 38%; right: 40px; z-index: 10;">
+                <div class="userPhoto" style="width: 130px; border: 2px solid #ccc; padding: 2px; background: #fff;">
+                    <img src="{{ asset($student->image) }}" alt="Student Photo" style="width: 100%; height: auto; display: block;">
+                </div>
             </div>
 
             <div class="admitHeader" style="text-align: center; margin-top: 15px; margin-bottom: 30px;">
@@ -251,7 +257,7 @@
                 <div style="margin-top: 10px; font-size: 18px; font-weight: 600; color: #333;">
                     <span>Registration Year: <span style="color: #000;">{{ $student->registration_year }}</span></span>
                     <span style="margin: 0 20px;">|</span>
-                    <span>Branch Code: <span style="color: #000;">{{ $branchCode }}</span></span>
+                    <span>Enrollment No: <span style="color: #000;">{{ $student->enrollment_no }}</span></span>
                 </div>
             </div>
 
@@ -291,35 +297,22 @@
                         </tr>
                     </table>
                 </div>
-
-                <div class="admitPhoto"
-                    style="width: 130px; border: 2px solid #ccc; padding: 2px; background: #fff; margin-right: 40px;">
-                    <img src="{{ asset($student->image) }}" alt="Student Photo"
-                        style="width: 100%; height: auto; display: block;">
-                </div>
             </div>
 
-            <div class="admitFooter"
-                style="position: absolute; bottom: 8%; left: 0; right: 0; padding: 0 40px; display: flex; justify-content: space-between; align-items: flex-end;">
-                <div class="issueDate">
-                    <p style="font-size: 18px; font-weight: bold; margin: 0;">Date : <span
-                            style="color: #0d6efd; margin-left: 5px;">{{ \Carbon\Carbon::parse($issueDate)->format('d-m-Y') }}</span>
-                    </p>
-                </div>
+            <div class="issueDate" style="position: absolute; bottom: 5%; left: 40px;">
+                <p style="font-size: 18px; font-weight: bold; margin: 0;">Date : <span
+                        style="color: #0d6efd; margin-left: 5px;">{{ \Carbon\Carbon::parse($issueDate)->format('d-m-Y') }}</span>
+                </p>
+            </div>
 
-                <div class="authSignature" style="text-align: center; position: relative;">
-                    <img src="{{asset('images/signature.png')}}" alt="Signature"
-                        style="position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); width: 140px; z-index: 10;">
-                    <div
-                        style="border-top: 2px solid #ccc; color: #0d6efd; font-size: 18px; font-weight: 600; padding-top: 5px;">
-                        Authorised Signatory</div>
-                </div>
-
-                <div class="candidateSignature" style="text-align: center;">
-                    <div
-                        style="border-top: 2px solid #ccc; color: #0d6efd; font-size: 18px; font-weight: 600; padding-top: 5px; width: 200px;">
-                        Candidate Signature</div>
-                </div>
+            <div class="directorSignatureBlock" style="position: absolute; bottom: 5%; right: 40px; text-align: center;">
+                <img src="{{asset('images/5.png')}}" alt="Stamp"
+                    style="position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%); width: 100px; z-index: 1; opacity: 0.8;">
+                <img src="{{asset('images/signature.png')}}" alt="Signature"
+                    style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); width: 140px; z-index: 10;">
+                <div
+                    style="border-top: 2px solid #ccc; color: #0d6efd; font-size: 18px; font-weight: 600; padding-top: 5px; width: 200px; position: relative; z-index: 20;">
+                    Director Signature</div>
             </div>
         </div>
     </div>
