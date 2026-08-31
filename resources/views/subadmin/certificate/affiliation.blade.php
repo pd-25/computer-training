@@ -230,12 +230,11 @@
                 </div>
             </div>
 
-            <div class="signature-group">
-                <!-- You can add a signature image here -->
-                <!-- <img src="{{ asset('signature.png') }}" alt="Signature" style="max-height: 50px;"> -->
-                <div class="signature-line"></div>
-                <div class="signature-text">Authorized Signature</div>
-                <div style="font-size: 12px;">National Institute of Technical Education</div>
+            <div class="signature-group" style="position: relative;">
+                <img src="{{ asset('images/5.png') }}" alt="Stamp" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); max-width: 130px; opacity: 0.8; z-index: 1; pointer-events: none;">
+                <div class="signature-line" style="position: relative; z-index: 2;"></div>
+                <div class="signature-text" style="position: relative; z-index: 2;">Authorized Signature</div>
+                <div style="font-size: 12px; position: relative; z-index: 2;">National Institute of Technical Education</div>
             </div>
         </div>
     </div>
