@@ -157,9 +157,7 @@
         }
 
         .issueDate {
-            position: absolute;
-            bottom: 5%;
-            left: 2%;
+            /* Removed absolute positioning so it flows in flexbox */
         }
 
         .issueDate p {
@@ -234,7 +232,7 @@
                 <img src="{{asset('images/7.png')}}" alt="">
             </div>
 
-            <div class="topImage" style="margin-bottom: 20px;">
+            <div class="topImage" style="margin-bottom: 5px;">
                 <img src="{{asset('images/top-image-admit.png')}}" alt="">
             </div>
 
@@ -244,14 +242,14 @@
                 </div>
             </div>
 
-            <div class="admitHeader" style="text-align: center; margin-top: 15px; margin-bottom: 30px;">
+            <div class="admitHeader" style="text-align: center; margin-top: 5px; margin-bottom: 10px;">
                 <h1
-                    style="color: #fe472f; font-weight: 800; font-size: 32px; letter-spacing: 2px; margin: 0; background-color: rgba(255,255,255,0.7); display: inline-block; padding: 5px 20px; border-radius: 5px;">
+                    style="color: #fe472f; font-weight: 800; font-size: 30px; letter-spacing: 2px; margin: 0; background-color: rgba(255,255,255,0.7); display: inline-block; padding: 5px 20px; border-radius: 5px;">
                     REGISTRATION CERTIFICATE</h1>
             </div>
 
             <div class="registrationHighlight"
-                style="text-align: center; margin-bottom: 30px; background: #fff3f3; padding: 15px; border-radius: 8px; border: 2px dashed #fe472f;">
+                style="text-align: center; margin-bottom: 10px; background: #fff3f3; padding: 10px; border-radius: 8px; border: 2px dashed #fe472f;">
                 <h2 style="margin: 0; color: #fe472f; font-weight: 800; font-size: 26px; letter-spacing: 1px;">
                     Registration No: {{ $student->registration_no }}</h2>
                 <div style="margin-top: 10px; font-size: 18px; font-weight: 600; color: #333;">
@@ -262,19 +260,19 @@
             </div>
 
             <div class="admitContent"
-                style="display: flex; justify-content: space-between; padding: 0 40px; position: relative; z-index: 2; align-items: flex-start; margin-top: 20px;">
+                style="display: flex; justify-content: space-between; padding: 0 40px; position: relative; z-index: 2; align-items: flex-start; margin-top: 10px;">
                 <div class="admitDetails" style="flex: 1; padding-right: 20px;">
-                    <table style="width: 100%; border-collapse: separate; border-spacing: 0 22px;">
+                    <table style="width: 100%; border-collapse: separate; border-spacing: 0 12px;">
                         <tr>
                             <td style="font-weight: bold; font-size: 20px; vertical-align: top;">Candidate Name</td>
                             <td style="font-weight: bold; font-size: 20px; vertical-align: top;">:</td>
-                            <td style="font-size: 20px; color: #0d6efd; font-weight: 700; text-transform: uppercase;">
+                            <td style="font-size: 20px; color: #000; font-weight: 700; text-transform: uppercase;">
                                 {{ $student->name }}</td>
                         </tr>
                         <tr>
                             <td style="font-weight: bold; font-size: 20px; vertical-align: top;">Father's Name</td>
                             <td style="font-weight: bold; font-size: 20px; vertical-align: top;">:</td>
-                            <td style="font-size: 20px; color: #0d6efd; font-weight: 700; text-transform: uppercase;">
+                            <td style="font-size: 20px; color: #000; font-weight: 700; text-transform: uppercase;">
                                 {{ $student->father_name }}</td>
                         </tr>
                         <tr>
@@ -299,20 +297,22 @@
                 </div>
             </div>
 
-            <div class="issueDate" style="position: absolute; bottom: 5%; left: 40px;">
-                <p style="font-size: 18px; font-weight: bold; margin: 0;">Date : <span
-                        style="color: #0d6efd; margin-left: 5px;">{{ \Carbon\Carbon::parse($issueDate)->format('d-m-Y') }}</span>
-                </p>
-            </div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; padding: 0 40px; margin-top: 30px; margin-bottom: 20px;">
+                <div class="issueDate">
+                    <p style="font-size: 18px; font-weight: bold; margin: 0;">Date : <span
+                            style="color: #000; margin-left: 5px;">{{ \Carbon\Carbon::parse($issueDate)->format('d-m-Y') }}</span>
+                    </p>
+                </div>
 
-            <div class="directorSignatureBlock" style="position: absolute; bottom: 5%; right: 40px; text-align: center;">
-                <img src="{{asset('images/5.png')}}" alt="Stamp"
-                    style="position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%); width: 100px; z-index: 1; opacity: 0.8;">
-                <img src="{{asset('images/signature.png')}}" alt="Signature"
-                    style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); width: 140px; z-index: 10;">
-                <div
-                    style="border-top: 2px solid #ccc; color: #0d6efd; font-size: 18px; font-weight: 600; padding-top: 5px; width: 200px; position: relative; z-index: 20;">
-                    Director Signature</div>
+                <div class="directorSignatureBlock" style="text-align: center; position: relative;">
+                    <img src="{{asset('images/5.png')}}" alt="Stamp"
+                        style="position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%); width: 100px; z-index: 1; opacity: 0.8;">
+                    <img src="{{asset('images/signature.png')}}" alt="Signature"
+                        style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); width: 140px; z-index: 10;">
+                    <div
+                        style="border-top: 2px solid #ccc; color: #000; font-size: 18px; font-weight: 600; padding-top: 5px; width: 200px; position: relative; z-index: 20;">
+                        Director Signature</div>
+                </div>
             </div>
         </div>
     </div>
