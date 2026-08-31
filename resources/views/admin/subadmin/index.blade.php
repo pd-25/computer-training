@@ -139,7 +139,12 @@
                                     @if ($subadmin->affiliation == 0)
                                         <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#giveAffiliationModal{{ $subadmin->id }}"><i class="bi bi-share"></i> Give Affiliation</button>
                                     @else
-                                        <button class="btn btn-sm btn-success" disabled><i class="bi bi-check-circle"></i> Granted</button>
+                                        <button class="btn btn-sm btn-success" disabled><i class="bi bi-check-circle"></i> Affiliated</button>
+                                        @if ($subadmin->id_card_status == 0)
+                                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#giveIdCardModal{{ $subadmin->id }}"><i class="bi bi-person-badge"></i> Give ID Card</button>
+                                        @else
+                                            <a href="{{ route('admin.subadmins.idcard', $subadmin->id) }}" class="btn btn-sm btn-info" target="_blank"><i class="bi bi-person-badge"></i> View ID Card</a>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>
@@ -307,6 +312,26 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-success">Give Affiliation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Give ID Card Modal -->
+    <div class="modal fade" id="giveIdCardModal{{ $subadmin->id }}" tabindex="-1" aria-labelledby="giveIdCardLabel{{ $subadmin->id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <form class="modal-content" action="{{ route('admin.subadmins.give_idcard', $subadmin->id) }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="giveIdCardLabel{{ $subadmin->id }}">Give ID Card</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to grant ID Card access to <strong>{{ $subadmin->name }}</strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info">Give ID Card</button>
                 </div>
             </form>
         </div>

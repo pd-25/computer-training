@@ -36,10 +36,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::put('/subadmins/edit/{id}', [DashboardController::class, 'editSubAdmin'])->name('admin.subadmins.edit');
     Route::delete('/subadmins/delete/{id}', [DashboardController::class, 'deleteSubAdmin'])->name('admin.subadmins.delete');
     Route::post('/subadmins/affiliation/{id}', [DashboardController::class, 'giveAffiliation'])->name('admin.subadmins.affiliation');
+    Route::post('/subadmins/give-idcard/{id}', [DashboardController::class, 'giveIdCard'])->name('admin.subadmins.give_idcard');
 
     // Auth
     Route::get('/subadmins/login-as/{id}', [DashboardController::class, 'loginAsSubAdmin'])->name('admin.subadmins.loginAs');
     Route::get('/subadmins/return-admin', [DashboardController::class, 'returnToAdmin'])->name('admin.subadmins.return');
+    Route::get('/subadmins/idcard/{id}', [DashboardController::class, 'showFranchiseIdCard'])->name('admin.subadmins.idcard');
 
 
 

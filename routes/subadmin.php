@@ -45,6 +45,7 @@ Route::group(['prefix' => 'subadmin', 'middleware' => 'subadmin'], function () {
 
     // Affiliation Certificate
     Route::get('/affiliation-certificate', [DashboardController::class, 'showAffiliation'])->name('subadmin.affiliation.certificate');
+    Route::get('/my-idcard', [DashboardController::class, 'showMyIdCard'])->name('subadmin.my_idcard');
 
     Route::get('log-out', [AuthController::class, 'adminLogout'])->name('subadmin.logout');
 });

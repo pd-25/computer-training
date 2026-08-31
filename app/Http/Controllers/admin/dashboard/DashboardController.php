@@ -1149,6 +1149,13 @@ public function showCertificate($student_id, $course_id)
     }
 
 
+    public function showFranchiseIdCard($id)
+    {
+        $subadmin = ModelsSubAdmin::findOrFail($id);
+
+        return view('admin.subadmin.idcard', compact('subadmin'));
+    }
+
     public function giveAffiliation($id)
     {
         try {
@@ -1158,6 +1165,19 @@ public function showCertificate($student_id, $course_id)
             return redirect()->back()->with('success', 'Affiliation granted successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to grant affiliation: ' . $e->getMessage());
+        }
+    }
+
+    public function giveIdCard($id)
+    {
+        try {
+            $subAdmin = ModelsSubAdmin::findOrFail($id);
+            $subAdmin->id_card_status = 1;
+            $subAdmin->save();
+
+            return redirect()->back()->with('success', 'ID Card access granted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to grant ID Card access: ' . $e->getMessage());
         }
     }
 

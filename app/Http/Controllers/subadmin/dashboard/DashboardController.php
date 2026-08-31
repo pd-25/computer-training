@@ -940,11 +940,20 @@ class DashboardController extends Controller
     public function showAffiliation()
     {
         $subadmin = Auth::guard('subadmin')->user();
-        
         if ($subadmin->affiliation != 1) {
-            return redirect()->back()->with('error', 'Affiliation certificate is not available yet.');
+            return redirect()->back()->with('error', 'You do not have an affiliation certificate yet.');
         }
 
         return view('subadmin.certificate.affiliation', compact('subadmin'));
+    }
+
+    public function showMyIdCard()
+    {
+        $subadmin = Auth::guard('subadmin')->user();
+        if ($subadmin->id_card_status != 1) {
+            return redirect()->back()->with('error', 'You do not have an ID card generated yet.');
+        }
+
+        return view('admin.subadmin.idcard', compact('subadmin'));
     }
 }
