@@ -654,6 +654,33 @@ class DashboardController extends Controller
         ));
     }
 
+    public function generateAdmitCard(Request $request)
+    {
+        $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'course_id' => 'required|exists:courses,id',
+            'issue_date' => 'required|date',
+        ]);
+
+        $student = Student::findOrFail($request->student_id);
+        $course = Course::findOrFail($request->course_id);
+
+        if (!$student->registration_no) {
+            $prefix = "NITE000";
+            $student->update([
+                'registration_no' => $prefix . $student->id,
+                'registration_year' => \Carbon\Carbon::parse($request->issue_date)->format('Y'),
+            ]);
+            $student->refresh();
+        }
+
+        $subadmin = \App\Models\SubAdmin::find($student->created_by);
+        $branchCode = $subadmin ? $subadmin->subadmin_unique_id : 'N/A';
+        $issueDate = $request->issue_date;
+
+        return view('subadmin.certificate.admit', compact('student', 'course', 'branchCode', 'issueDate'));
+    }
+
     public function generateIdCard(Request $request)
     {
         $request->validate([

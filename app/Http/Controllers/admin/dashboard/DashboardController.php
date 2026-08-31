@@ -1153,6 +1153,28 @@ public function showCertificate($student_id, $course_id)
     ));
 }
 
+    public function showAdmitCard($student_id, $course_id)
+    {
+        $student = Student::findOrFail($student_id);
+        $course = Course::findOrFail($course_id);
+
+        $subadmin = \App\Models\SubAdmin::find($student->created_by);
+        $branchCode = $subadmin ? $subadmin->subadmin_unique_id : 'N/A';
+
+        if (!$student->registration_no) {
+            return redirect()->back()->with('error', 'Admit Card not generated yet.');
+        }
+
+        $issueDate = \Carbon\Carbon::now()->format('Y-m-d'); // Default if not found
+
+        return view('subadmin.certificate.admit', compact(
+            'student',
+            'course',
+            'branchCode',
+            'issueDate'
+        ));
+    }
+
     public function demoCerTest(){
         return view('subadmin.certificate.index_up');
         // return view('subadmin.certificate.index_marks');

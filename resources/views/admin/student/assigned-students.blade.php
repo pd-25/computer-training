@@ -162,6 +162,11 @@
                                             data-bs-target="#viewCertificate{{ $student->id }}">
                                             <i class="bi bi-award"></i> Certificate
                                         </button>
+                                        <button class="btn btn-sm btn-secondary"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#viewAdmitCard{{ $student->id }}">
+                                            <i class="bi bi-person-badge"></i> Admit
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -436,6 +441,54 @@
                         No marks available for <strong>{{ $course->course_name }}</strong>. Certificate cannot be generated.
                     </div>
                     @endif
+                    @endforeach
+                    @else
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        No courses assigned to this student.
+                    </div>
+                    @endif
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endforeach
+
+    <!-- View Admit Card Modal -->
+    @foreach($students as $student)
+    <div class="modal fade" id="viewAdmitCard{{ $student->id }}" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">View Admit Card - {{ $student->name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    @if(!empty($student->assigned_course_id))
+                    @foreach($student->assigned_course_id as $courseId)
+                    @php
+                    $course = $courses->firstWhere('id', $courseId);
+                    if (!$course) continue;
+                    @endphp
+
+                    <div class="card mb-3">
+                        <div class="card-header text-dark">
+                            <strong>{{ $course->course_name }}</strong>
+                            <small class="d-block">{{ $course->course_unique_id }} | Duration: {{ $course->duration }} Months</small>
+                        </div>
+                        <div class="card-body">
+                            <button type="button"
+                                class="btn btn-primary w-100"
+                                onclick="window.open('{{ route('admin.student.admit', ['student_id' => $student->id, 'course_id' => $courseId]) }}', '_blank')">
+                                <i class="bi bi-eye"></i> View Admit Card
+                            </button>
+                        </div>
+                    </div>
                     @endforeach
                     @else
                     <div class="alert alert-info">

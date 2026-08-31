@@ -164,6 +164,7 @@
                                         </button> -->
 
                                         <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#generateIdCard{{ $student->id }}">Generate ID</button>
+                                        <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#generateAdmitCard{{ $student->id }}">Generate Admit</button>
                                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#generateIdMarks{{ $student->id }}">Give Marks</button>
                                         <button class="btn btn-sm btn-primary"
                                             data-bs-toggle="modal"
@@ -405,6 +406,69 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success">Generate & View Certificate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="generateAdmitCard{{ $student->id }}" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <form class="modal-content" action="{{ route('subadmin.admit.generate') }}" method="POST" target="_blank">
+                @csrf
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Generate Admit Card for {{ $student->name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Date of Issue -->
+                     <div class="mb-3">
+                        <label>Date of Issue</label>
+                        <input type="date" class="form-control" name="issue_date" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Student Name</label>
+                        <input type="text" class="form-control" value="{{ $student->name }}" readonly>
+                    </div>
+
+                    <!-- Student Email -->
+                    <div class="mb-3">
+                        <label>Student Email</label>
+                        <input type="email" class="form-control" value="{{ $student->email }}" readonly>
+                    </div>
+
+                    <!-- Assigned Courses -->
+                    <div class="mb-3">
+                        <label>Select Course to Generate Admit Card</label>
+                        <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+                            @foreach($student->assigned_course_id as $course_id)
+                            @php
+                            $course = $courses->where('id', $course_id)->first();
+                            @endphp
+                            @if($course)
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                    type="radio"
+                                    name="course_id"
+                                    value="{{ $course->id }}"
+                                    id="course_admit_{{ $student->id }}_{{ $course->id }}" required>
+                                <label class="form-check-label" for="course_admit_{{ $student->id }}_{{ $course->id }}">
+                                    {{ $course->course_name }}
+                                </label>
+                            </div>
+                            @endif
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="student_id" value="{{ $student->id }}">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Generate & View Admit Card</button>
                 </div>
             </form>
         </div>

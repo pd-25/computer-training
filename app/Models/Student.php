@@ -16,6 +16,8 @@ class Student extends Model
         'dob',
         'admission_date',
         'enrollment_no',
+        'registration_no',
+        'registration_year',
         'image',
         'org_name',
         'assigned_course_id',
