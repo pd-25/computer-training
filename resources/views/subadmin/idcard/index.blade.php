@@ -5,9 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ID Card - NITE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playball&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Montserrat', sans-serif;
             background: #f5f5f5;
             margin: 0;
             padding: 20px;
@@ -16,35 +19,64 @@
         }
 
         .id-card {
-            background: #fff;
+            background-color: #fff;
+            background-image: url("{{asset('images/4.png')}}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             width: 360px;
-            border: 1px solid #ccc;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 4px solid #fe472f;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             text-align: center;
-            border-radius: 6px;
+            /* border-radius: 10px; */
             overflow: hidden;
-            padding: 50px;
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .centeralWatermark {
+            position: absolute;
+            opacity: 0.15;
+            inset: 0;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .centeralWatermark img {
+            width: 80%;
         }
 
         .header {
             background-color: #fff;
+            position: relative;
+            z-index: 2;
+            border-bottom: 3px solid #fe472f;
         }
 
         .header-logo {
             width: 100%;
             height: auto;
+            display: block;
         }
 
         .profile-section {
-            padding: 10px 0;
+            padding: 20px 0 10px;
+            position: relative;
+            z-index: 2;
         }
 
         .photo-box {
-            border: 2px solid #000;
-            width: 150px;
-            height: 180px;
+            border: 3px solid #fe472f;
+            width: 110px;
+            height: 130px;
             margin: 0 auto;
             overflow: hidden;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .profile-photo {
@@ -54,76 +86,126 @@
         }
 
         .name {
-            font-size: 1.6em;
-            font-weight: bold;
-            margin: 10px 0 5px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4em;
+            font-weight: 800;
+            color: #000;
+            margin: 12px 0 4px;
+            text-transform: uppercase;
         }
 
         .course {
-            font-size: 0.9em;
-            font-weight: 600;
+            font-family: 'Playball', cursive;
+            font-size: 1.2em;
+            color: #fe472f;
             margin-bottom: 15px;
+            margin-top: 0;
+            text-transform: capitalize;
         }
 
         .details {
             text-align: left;
-            padding: 0 30px 10px;
+            padding: 0 25px 10px;
+            position: relative;
+            z-index: 2;
         }
 
-        .details h3 {
+        .org-name {
             text-align: center;
-            text-decoration: underline;
-            margin-bottom: 10px;
+            font-size: 0.85em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #333;
+            text-transform: uppercase;
+            border: 2px solid #fe472f;
+            padding: 5px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.8);
         }
 
-        .details p {
-            font-size: 0.9em;
-            margin: 5px 0;
-            line-height: 1.4;
+        .info-row {
+            display: flex;
+            align-items: flex-end;
+            margin-bottom: 12px;
+        }
+
+        .info-row .label {
+            font-family: 'Playball', cursive;
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+            width: 115px;
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .info-row .value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: #000;
+            flex-grow: 1;
+            border-bottom: 2px dotted #000;
+            padding-bottom: 2px;
+            margin-left: 5px;
         }
 
         .footer {
-            /* border-top: 1px solid #ccc; */
-            /* padding: 10px 15px; */
-            font-size: 0.8em;
+            position: relative;
+            z-index: 2;
+            font-size: 0.75em;
             color: #333;
+            margin-top: 15px;
+            padding: 0 20px;
         }
 
         .footer a {
-            color: #0077cc;
+            color: #fe472f;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 800;
+            font-size: 1.1em;
+            display: inline-block;
+            margin-bottom: 8px;
         }
 
         .footer-info {
-            margin-top: 5px;
             line-height: 1.4;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 5px;
+            border-radius: 4px;
         }
-
 
         /* Print button styling */
         .print-btn {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: #007bff;
+            background: #fe472f;
             color: white;
             border: none;
             border-radius: 6px;
             padding: 12px 20px;
             cursor: pointer;
             font-size: 15px;
+            font-weight: bold;
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            font-family: 'Montserrat', sans-serif;
         }
 
         .print-btn:hover {
-            background: #0056b3;
+            background: #d93d28;
         }
     </style>
 </head>
 
 <body>
     <div class="id-card" id="idCard">
+        
+        <div class="centeralWatermark">
+            <img src="{{asset('images/7.png')}}" alt="">
+        </div>
+
         <!-- Header -->
         <div class="header">
             <img src="{{ asset('./assets/img/idtop.png') }}" alt="NITE Logo" class="header-logo">
@@ -134,55 +216,45 @@
             <div class="photo-box">
                 <img src="{{ asset($student->image) }}" alt="Profile Photo" class="profile-photo">
             </div>
-            <h2 class="name" style="text-transform: capitalize;">{{$student->name}}</h2>
-            <p class="course" style="text-transform: uppercase;">{{ $course->course_name }}</p>
+            <h2 class="name">{{$student->name}}</h2>
+            <p class="course">{{ $course->course_name }}</p>
         </div>
 
         <!-- Details -->
         <div class="details">
-            <p style="text-align: center; text-transform: uppercase;">{{ $student->org_name }}</p>
+            <div class="org-name">{{ $student->org_name }}</div>
 
-            <div>
-                <div style="display: grid; grid-template-columns: 4fr 8fr; gap:5px; justify-content: space-between; align-items: center;">
-                    <p>Father's Name</p>
-                    <p>: {{ $student->father_name }}</p>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 4fr 8fr; gap:5px; justify-content: space-between; align-items: center;">
-                    <p>Date Of Birth</p>
-                    <p>: {{ $student->dob }}</p>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 4fr 8fr; gap:5px; justify-content: space-between; align-items: center;">
-                    <p>Mobile No</p>
-                    <p>: {{ $student->phone }}</p>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 4fr 8fr; gap:5px; justify-content: space-between; align-items: center;">
-                    <p>Admission Date</p>
-                    <p>: {{ $student->admission_date }}</p>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 4fr 8fr; gap:5px; justify-content: space-between; align-items: center;">
-                    <p>Enrollment No.</p>
-                    <p>: {{ $student->enrollment_no }}</p>
-                </div>
+            <div class="info-row">
+                <span class="label">Father's Name</span>
+                <span class="value">{{ $student->father_name }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Date Of Birth</span>
+                <span class="value">{{ $student->dob }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Mobile No</span>
+                <span class="value">{{ $student->phone }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Admission Date</span>
+                <span class="value">{{ $student->admission_date }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Enrollment No.</span>
+                <span class="value">{{ $student->enrollment_no }}</span>
             </div>
         </div>
-
-        <p><a href="https://www.niote.in" style="text-decoration: none; color: black;">www.niote.in</a></p>
-        <hr>
 
         <!-- Footer -->
         <div class="footer">
+            <a href="https://www.niote.in" target="_blank">www.niote.in</a>
             <div class="footer-info">
                 <strong>"NITE"</strong> House no. 113, Sankar Azan Path, Hatigaon, Bhetapara Road, Near Hatigaon police station,
-                P.O.- Hatigaon, Guwahati, Assam, 781038<br>
+                P.O.- Hatigaon, Guwahati, Assam, 781038
             </div>
         </div>
     </div>
-
-
 
     <!-- Print Button -->
     <button class="print-btn" id="downloadBtn">⬇️ Download ID Card</button>
@@ -217,7 +289,6 @@
 
         });
     </script>
-
 </body>
 
 </html>
