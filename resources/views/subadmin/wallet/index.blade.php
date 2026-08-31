@@ -282,9 +282,9 @@
                     <div class="col-md-12 mb-3">
                         <label for="paymentMethod" class="form-label">NITE QR Code</label>
                         <div class="border" style="width: fit-content;">
-                            <img src="https://media.istockphoto.com/id/1347277582/vector/qr-code-sample-for-smartphone-scanning-on-white-background.jpg?s=612x612&w=0&k=20&c=6e6Xqb1Wne79bJsWpyyNuWfkrUgNhXR4_UYj3i_poc0=" alt="NITE QR Code" class="img-fluid" style="max-width: 200px;">
+                            <img src="{{ asset('images/qrrr.jpeg') }}" alt="NITE QR Code" class="img-fluid" style="max-width: 200px;">
                         </div>
-                    </div>
+                    </div>qr
 
                     <div class="col-md-12 mb-3">
                         <label for="payment_reciept" class="form-label">Upload Payment Receipt<span class="text-danger">*</span></label>
