@@ -346,6 +346,7 @@
             </div>
             <div class="controlExamination">
                 <!-- <span>Signature</span> -->
+                <img src="{{asset('images/signature.png')}}" alt="Signature" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 80px; z-index: 10;">
                 <p>Controller of Examination</p>
             </div>
             <div class="directorSignature">
