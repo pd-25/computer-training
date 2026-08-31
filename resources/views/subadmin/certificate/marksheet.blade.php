@@ -245,9 +245,9 @@
         }
 
         .studentInfo td {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            padding: 8px 0;
+            padding: 4px 0;
         }
 
         .studentInfo td .label {
@@ -257,10 +257,10 @@
 
         .designCopyright p {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 600;
             text-align: center;
-            padding: 5px;
+            padding: 2px;
             border: 4px solid #fe472f;
             border-radius: 4px;
         }
@@ -272,8 +272,8 @@
 
         .marksTable table th,
         .marksTable table td {
-            font-size: 20px;
-            padding: 8px;
+            font-size: 18px;
+            padding: 5px;
             text-align: center;
             font-family: 'Playball', cursive;
             text-transform: uppercase;
@@ -298,8 +298,8 @@
         .bottoLogoHolder {
             display: flex;
             gap: 40px;
-            margin-top: 40px;
-            margin-bottom: 50px;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         .marksheetWrapper .bottomImage {
