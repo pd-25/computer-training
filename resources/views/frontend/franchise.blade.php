@@ -104,37 +104,41 @@
                     <div class="col-md-6">
                         <label class="form-label">City <span class="text-danger">*</span></label>
                         <input type="text" name="city" class="form-control mb-3 @error('city') is-invalid @enderror"
-                            placeholder="City*" value="{{ old('city') }}" required>
+                            placeholder="Enter your city" value="{{ old('city') }}" required>
                         @error('city')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="col-md-6">
+                        <label class="form-label">State/Province</label>
                         <input type="text" name="state" class="form-control mb-3 @error('state') is-invalid @enderror"
-                            placeholder="State/Province" value="{{ old('state') }}">
+                            placeholder="Enter state or province" value="{{ old('state') }}">
                         @error('state')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="col-md-6">
+                        <label class="form-label">Available Investment Amount <span class="text-danger">*</span></label>
                         <input type="number" name="investment" class="form-control mb-3 @error('investment') is-invalid @enderror"
-                            placeholder="Available Investment Amount*" value="{{ old('investment') }}" min="0" step="1000" required>
+                            placeholder="Enter investment amount" value="{{ old('investment') }}" min="0" step="1000" required>
                         @error('investment')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="col-12">
+                        <label class="form-label">Organization or Institution Name <span class="text-danger">*</span></label>
                         <input type="text" name="experience" class="form-control mb-3 @error('experience') is-invalid @enderror"
-                            placeholder="Enter Your Organization or Institution Name*" value="{{ old('experience') }}">
+                            placeholder="Enter organization or institution name" value="{{ old('experience') }}">
                         @error('experience')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="col-12">
+                        <label class="form-label">Message</label>
                         <textarea name="message" class="form-control mb-3 @error('message') is-invalid @enderror"
                             rows="5" placeholder="Tell us why you're interested in our franchise and any questions you have...">{{ old('message') }}</textarea>
                         @error('message')

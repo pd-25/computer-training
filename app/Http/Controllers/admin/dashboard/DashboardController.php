@@ -285,6 +285,8 @@ class DashboardController extends Controller
             'name' => 'required|string|max:255',
             'org_name' => 'required|string|max:255',
             'email' => 'required|email|unique:sub_admins,email',
+            'city' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
             'password' => 'required|string|min:5|confirmed',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -308,6 +310,8 @@ class DashboardController extends Controller
                 'name' => $request->name,
                 'org_name' => $request->org_name,
                 'email' => $request->email,
+                'city' => $request->city,
+                'state' => $request->state,
                 'image' => $imagePath,
                 'password' => bcrypt($request->password),
             ]);
@@ -333,7 +337,9 @@ class DashboardController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'org_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:sub_admins,email,' . $subAdmin->id,
+            'email' => 'required|email|unique:sub_admins,email,' . $id,
+            'city' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
             'password' => 'nullable|string|min:5|confirmed',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -358,8 +364,10 @@ class DashboardController extends Controller
             $subAdmin->name = $request->name;
             $subAdmin->org_name = $request->org_name;
             $subAdmin->email = $request->email;
+            $subAdmin->city = $request->city;
+            $subAdmin->state = $request->state;
 
-            if (!empty($request->password)) {
+            if ($request->filled('password')) {
                 $subAdmin->password = bcrypt($request->password);
             }
 
@@ -523,6 +531,8 @@ class DashboardController extends Controller
                     'name' => $franchise->name,
                     'email' => $franchise->email,
                     'image' => $franchise->image,
+                    'city' => $franchise->city,
+                    'state' => $franchise->state,
                     'org_name' => $franchise->experience,
                     'password' => Hash::make('12345678'),
                 ]);

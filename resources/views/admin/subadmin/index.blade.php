@@ -199,6 +199,16 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="" class="form-label">City</label>
+                        <input type="text" class="form-control" placeholder="Enter the city" name="city" value="{{ old('city') }}" autocomplete="off">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="" class="form-label">State</label>
+                        <input type="text" class="form-control" placeholder="Enter the state" name="state" value="{{ old('state') }}" autocomplete="off">
+                    </div>
+
+                    <div class="mb-3">
                         <label for="" class="form-label">Password<span class="text-danger">*</span></label>
                         <input type="password" class="form-control" placeholder="Enter the password" name="password" autocomplete="new-password">
                     </div>
@@ -254,6 +264,16 @@
                     <div class="mb-3">
                         <label>Email<span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control" value="{{ old('email', $subadmin->email) }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>City</label>
+                        <input type="text" name="city" class="form-control" value="{{ old('city', $subadmin->city) }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>State</label>
+                        <input type="text" name="state" class="form-control" value="{{ old('state', $subadmin->state) }}">
                     </div>
                     <div class="mb-3">
                         <label>Password (Leave empty to keep current)</label>

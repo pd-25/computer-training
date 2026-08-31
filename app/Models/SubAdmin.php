@@ -20,6 +20,8 @@ class SubAdmin extends Authenticatable
         'subadmin_unique_id',
         'name',
         'email',
+        'city',
+        'state',
         'image',
         'org_name',
         'password',

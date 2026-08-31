@@ -213,12 +213,15 @@
 
         <!-- Profile Section -->
         <div class="profile-section">
-            <div class="photo-box">
-                @if($subadmin->image && file_exists(public_path($subadmin->image)))
-                    <img src="{{ asset($subadmin->image) }}" alt="Profile Photo" class="profile-photo">
-                @else
-                    <div class="profile-photo" style="display: flex; align-items: center; justify-content: center; background: #eee; height: 100%;">No Image</div>
-                @endif
+            <div style="position: relative; display: inline-block;">
+                <div class="photo-box">
+                    @if($subadmin->image && file_exists(public_path($subadmin->image)))
+                        <img src="{{ asset($subadmin->image) }}" alt="Profile Photo" class="profile-photo">
+                    @else
+                        <div class="profile-photo" style="display: flex; align-items: center; justify-content: center; background: #eee; height: 100%;">No Image</div>
+                    @endif
+                </div>
+                <img src="{{ asset('images/5.png') }}" alt="Stamp" style="position: absolute; bottom: -15px; right: -25px; width: 65px; z-index: 10; opacity: 0.9; transform: rotate(-15deg);">
             </div>
             <h2 class="name">{{$subadmin->name}}</h2>
             <p class="course">Franchise Director</p>
@@ -235,6 +238,10 @@
             <div class="info-row">
                 <span class="label">Email</span>
                 <span class="value" style="font-size: 11px; padding-bottom: 5px;">{{ $subadmin->email }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Location</span>
+                <span class="value">{{ $subadmin->city ? $subadmin->city . ', ' : '' }}{{ $subadmin->state }}</span>
             </div>
             <div class="info-row">
                 <span class="label">Designation</span>
